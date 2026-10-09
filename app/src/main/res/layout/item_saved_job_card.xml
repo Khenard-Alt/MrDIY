@@ -38,7 +38,7 @@
                     android:layout_width="match_parent" android:layout_height="match_parent"
                     android:text="DIY"
                     android:textColor="@color/orange_primary"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:gravity="center" />
 
@@ -55,7 +55,7 @@
                     android:id="@+id/tv_job_title"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="Store Supervisor"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:maxLines="1"
@@ -65,8 +65,9 @@
                     android:id="@+id/tv_company_branch"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="MR.D.I.Y. Philippines · SM Marikina"
-                    android:textSize="11sp"
-                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginTop="2dp"
                     android:maxLines="1"
                     android:ellipsize="end" />
@@ -134,15 +135,16 @@
                 android:layout_width="0dp" android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="₱25,000 – ₱32,000/mo"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
             <Button
                 android:id="@+id/btn_apply"
-                android:layout_width="wrap_content" android:layout_height="32dp"
+                android:layout_width="wrap_content" android:layout_height="36dp"
                 android:text="Apply"
-                android:textSize="11sp"
+                android:textSize="13sp"
+                android:textStyle="bold"
                 android:paddingHorizontal="16dp"
                 app:backgroundTint="@color/orange_primary"
                 app:cornerRadius="8dp" />

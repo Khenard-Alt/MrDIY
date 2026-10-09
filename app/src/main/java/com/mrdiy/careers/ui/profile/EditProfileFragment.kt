@@ -193,8 +193,9 @@ class EditProfileFragment : Fragment() {
         if (currentExperiences.isEmpty()) {
             val empty = TextView(requireContext()).apply {
                 text     = "No experience added yet."
-                textSize = 12f
-                setTextColor(resources.getColor(R.color.text_muted, null))
+                textSize = 13f
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                setTextColor(resources.getColor(R.color.text_secondary, null))
             }
             container.addView(empty)
             return

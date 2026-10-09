@@ -45,7 +45,8 @@
         android:padding="32dp"
         android:text="No applications yet. Apply to a job to see it here."
         android:textColor="@color/text_secondary"
-        android:textSize="14sp"
+        android:textSize="15sp"
+        android:textStyle="bold"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView

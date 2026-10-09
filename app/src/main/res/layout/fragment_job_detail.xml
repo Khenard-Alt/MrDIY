@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:text="Store Supervisor"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp" />
 
@@ -83,8 +83,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MR.D.I.Y. Philippines · SM North EDSA, Quezon City"
-                android:textColor="#CCFFFFFF"
-                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:layout_marginBottom="10dp" />
 
             <!-- Tags Row -->
@@ -166,7 +167,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Monthly Salary Range"
-                            android:textSize="11sp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
                             android:textColor="@color/orange_dark"
                             android:layout_marginBottom="3dp" />
 
@@ -175,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="₱25,000 – ₱32,000"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/orange_dark" />
 
@@ -197,7 +199,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="About the Role"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="6dp" />
@@ -207,7 +209,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Lead daily store operations and drive sales performance across all product categories. You will mentor a team of associates, ensure exceptional customer experience, and maintain MR.D.I.Y. store standards."
-                android:textSize="13sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingExtra="4dp"
                 android:layout_marginBottom="16dp" />
@@ -217,7 +220,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Responsibilities"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
@@ -240,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Requirements"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
@@ -262,7 +265,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Benefits"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
@@ -297,7 +300,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:text="Save"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginEnd="10dp"
             app:cornerRadius="10dp"
@@ -310,7 +313,7 @@
             android:layout_weight="1"
             android:enabled="false"
             android:text="Apply Now"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             style="@style/DiyFilledButton" />

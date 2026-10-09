@@ -61,16 +61,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PDF or TXT file supported. We will automatically match you to the best MR.D.I.Y. jobs!"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="6dp"
-                        android:textColor="@color/colorOnSurfaceVariant" />
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:id="@+id/tvFileName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginTop="10dp"
                         android:visibility="gone" />
@@ -80,6 +82,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Choose File"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
                         android:layout_marginTop="16dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -104,6 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
+                    android:textStyle="bold"
                     android:layout_marginTop="8dp"
                     android:text="Processing…" />
             </LinearLayout>
@@ -123,6 +128,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     android:textColor="#C62828"
                     android:text="Error" />
             </androidx.cardview.widget.CardView>
@@ -163,22 +170,25 @@
                         android:id="@+id/tvParsedExp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
-                        android:textColor="@color/colorOnSurfaceVariant"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
                         android:layout_marginTop="2dp" />
 
                     <TextView
                         android:id="@+id/tvParsedSummary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
                         android:layout_marginTop="8dp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Skills Detected"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginTop="16dp" />
 
@@ -192,7 +202,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Education"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginTop="16dp" />
 
@@ -200,14 +210,16 @@
                         android:id="@+id/tvParsedEducation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Work Experience"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:layout_marginTop="16dp" />
 
@@ -215,7 +227,9 @@
                         android:id="@+id/tvParsedExperience"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -226,6 +240,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="View My Job Matches →"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:layout_marginTop="16dp"
                 android:visibility="gone" />
 

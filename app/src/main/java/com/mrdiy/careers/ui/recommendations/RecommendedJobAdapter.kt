@@ -61,17 +61,31 @@ class RecommendedJobAdapter(
                 ContextCompat.getColor(binding.root.context, labelColor)
             )
 
-            // ── Matched skills chips ──────────────────────────────────────────
-            binding.chipGroupMatchedSkills.removeAllViews()
-            result.matchedSkills.take(3).forEach { skill ->
-                val chip = com.google.android.material.chip.Chip(binding.root.context).apply {
-                    text = skill
-                    isClickable = false
-                    setChipBackgroundColorResource(R.color.chip_skill_matched_bg)
-                    setTextColor(ContextCompat.getColor(context, R.color.chip_skill_matched_text))
-                    textSize = 11f
+            // ── Matched skills chips (reusing views to avoid GC allocations during scroll) ──
+            val skillsToShow = result.matchedSkills.take(3)
+            val chipGroup = binding.chipGroupMatchedSkills
+
+            skillsToShow.forEachIndexed { index, skill ->
+                val chip = if (index < chipGroup.childCount) {
+                    (chipGroup.getChildAt(index) as? com.google.android.material.chip.Chip)
+                } else {
+                    com.google.android.material.chip.Chip(binding.root.context).apply {
+                        isClickable = false
+                        setChipBackgroundColorResource(R.color.chip_skill_matched_bg)
+                        setTextColor(ContextCompat.getColor(context, R.color.chip_skill_matched_text))
+                        textSize = 12f
+                        setTypeface(null, android.graphics.Typeface.BOLD)
+                        chipGroup.addView(this)
+                    }
                 }
-                binding.chipGroupMatchedSkills.addView(chip)
+                chip?.apply {
+                    text = skill
+                    visibility = View.VISIBLE
+                }
+            }
+
+            for (i in skillsToShow.size until chipGroup.childCount) {
+                chipGroup.getChildAt(i).visibility = View.GONE
             }
 
             // ── First match reason ────────────────────────────────────────────

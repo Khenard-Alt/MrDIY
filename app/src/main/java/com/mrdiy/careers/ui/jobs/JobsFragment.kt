@@ -38,6 +38,8 @@ class JobsFragment : BaseFragment() {
         binding.jobsRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = jobAdapter
+            setHasFixedSize(true)
+            setItemViewCacheSize(12)
         }
 
         viewModel.filteredJobs.observe(viewLifecycleOwner) { jobs ->

@@ -43,9 +43,12 @@ class SavedJobAdapter(
             binding.jobCard.setOnClickListener { onJobClick(job) }
 
             binding.btnRemove.setOnClickListener {
-                onRemoveClick?.invoke(job)
-                jobsList.remove(job)
-                notifyDataSetChanged()
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION && pos < jobsList.size) {
+                    onRemoveClick?.invoke(job)
+                    jobsList.removeAt(pos)
+                    notifyItemRemoved(pos)
+                }
             }
         }
     }

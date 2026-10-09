@@ -39,7 +39,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Sign up to get started"
-            android:textColor="@color/text_muted"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
@@ -60,6 +62,7 @@
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="14sp"
                 android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -81,6 +84,7 @@
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="14sp"
                 android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -102,6 +106,7 @@
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="14sp"
                 android:inputType="phone" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -124,6 +129,7 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="14sp"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -146,6 +152,7 @@
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="14sp"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -156,7 +163,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="I agree to the Terms of Service and Privacy Policy"
-            android:textColor="@color/text_muted"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword" />
@@ -168,6 +177,8 @@
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/orange_primary"
             android:text="Register"
+            android:textSize="15sp"
+            android:textStyle="bold"
             android:textColor="@color/white"
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -190,7 +201,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="or continue with"
-            android:textColor="@color/text_muted"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnRegister" />
@@ -257,13 +270,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already have an account? "
-                android:textColor="@color/text_muted" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/tvLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Login"
+                android:textSize="14sp"
                 android:textColor="@color/orange_primary"
                 android:textStyle="bold" />
 

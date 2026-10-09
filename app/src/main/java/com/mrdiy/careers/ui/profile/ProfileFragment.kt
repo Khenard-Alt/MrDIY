@@ -213,8 +213,9 @@ class ProfileFragment : Fragment() {
         binding.experienceContainer.removeAllViews()
         val emptyExp = TextView(requireContext()).apply {
             text = "No work experience added yet."
-            textSize = 12f
-            setTextColor(resources.getColor(R.color.text_muted, null))
+            textSize = 13f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setTextColor(resources.getColor(R.color.text_secondary, null))
         }
         if (profile.workExperiences.isEmpty()) binding.experienceContainer.addView(emptyExp)
         profile.workExperiences.forEach { experience ->

@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="ACCOUNT"
-                android:textSize="11sp" android:textColor="@color/text_muted"
+                android:textSize="12sp" android:textColor="@color/text_secondary"
                 android:textStyle="bold" android:letterSpacing="0.08"
                 android:paddingHorizontal="16dp" android:paddingVertical="8dp" />
 
@@ -76,7 +76,7 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Change Password"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
                         <ImageView
@@ -94,7 +94,7 @@
             <TextView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="PREFERENCES"
-                android:textSize="11sp" android:textColor="@color/text_muted"
+                android:textSize="12sp" android:textColor="@color/text_secondary"
                 android:textStyle="bold" android:letterSpacing="0.08"
                 android:paddingHorizontal="16dp" android:paddingVertical="8dp" />
 
@@ -130,7 +130,7 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Notifications"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
                         <ImageView
@@ -163,7 +163,7 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Privacy"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
                         <ImageView
@@ -196,7 +196,7 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Resume Settings"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
                         <ImageView
@@ -214,7 +214,7 @@
             <TextView
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="SUPPORT"
-                android:textSize="11sp" android:textColor="@color/text_muted"
+                android:textSize="12sp" android:textColor="@color/text_secondary"
                 android:textStyle="bold" android:letterSpacing="0.08"
                 android:paddingHorizontal="16dp" android:paddingVertical="8dp" />
 
@@ -250,7 +250,7 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Help and Support"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
                         <ImageView
@@ -283,7 +283,7 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="About"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
+                            android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
                         <ImageView
@@ -331,7 +331,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Logout"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:textColor="@color/red_error"
                         android:textStyle="bold"
                         android:layout_marginStart="12dp" />

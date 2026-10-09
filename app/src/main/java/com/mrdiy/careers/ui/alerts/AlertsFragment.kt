@@ -32,6 +32,8 @@ class AlertsFragment : BaseFragment() {
             InboxRepository(requireContext()).alerts().onSuccess { alerts ->
                 binding.alertsRecycler.visibility = if (alerts.isEmpty()) View.GONE else View.VISIBLE
                 binding.alertsRecycler.layoutManager = LinearLayoutManager(requireContext())
+                binding.alertsRecycler.setHasFixedSize(true)
+                binding.alertsRecycler.setItemViewCacheSize(10)
                 binding.tvUnreadCount.text = if (alerts.isEmpty()) "" else "${alerts.count { !it.isRead }} unread"
                 binding.tvEmptyAlerts.visibility = if (alerts.isEmpty()) View.VISIBLE else View.GONE
                 binding.tvEmptyAlerts.text = "No notifications yet."

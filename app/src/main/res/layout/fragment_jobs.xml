@@ -28,7 +28,7 @@
                 android:id="@+id/tv_job_count"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="8 jobs found"
-                android:textColor="#B8B8B0" android:textSize="12sp"/>
+                android:textColor="@color/white" android:textSize="13sp" android:textStyle="bold"/>
         </LinearLayout>
 
         <!-- Search Bar -->
@@ -53,7 +53,7 @@
                         android:layout_width="0dp" android:layout_height="match_parent"
                         android:layout_weight="1" android:layout_marginHorizontal="8dp"
                         android:hint="Search title, company, location…"
-                        android:textColorHint="@color/text_muted" android:textSize="13sp"
+                        android:textColorHint="@color/text_muted" android:textSize="14sp"
                         android:textColor="@color/text_primary" android:background="@null"
                         android:imeOptions="actionSearch" android:inputType="text"
                         android:singleLine="true"/>
@@ -72,8 +72,8 @@
             <!-- Category filter label -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp" android:layout_marginBottom="6dp"
-                android:text="CATEGORY" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="@color/text_muted" android:letterSpacing="0.08"/>
+                android:text="CATEGORY" android:textSize="12sp" android:textStyle="bold"
+                android:textColor="@color/text_secondary" android:letterSpacing="0.08"/>
 
             <HorizontalScrollView android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:scrollbars="none"
@@ -103,8 +103,8 @@
             <!-- Location filter label -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp" android:layout_marginBottom="6dp"
-                android:text="LOCATION" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="@color/text_muted" android:letterSpacing="0.08"/>
+                android:text="LOCATION" android:textSize="12sp" android:textStyle="bold"
+                android:textColor="@color/text_secondary" android:letterSpacing="0.08"/>
 
             <HorizontalScrollView android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:scrollbars="none"
@@ -137,8 +137,8 @@
             <!-- Salary range -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp" android:layout_marginBottom="4dp"
-                android:text="SALARY RANGE" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="@color/text_muted" android:letterSpacing="0.08"/>
+                android:text="SALARY RANGE" android:textSize="12sp" android:textStyle="bold"
+                android:textColor="@color/text_secondary" android:letterSpacing="0.08"/>
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/salary_slider"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -154,14 +154,14 @@
                 android:id="@+id/btn_clear_filters"
                 android:layout_width="wrap_content" android:layout_height="36dp"
                 android:layout_marginHorizontal="16dp" android:layout_marginBottom="12dp"
-                android:text="Clear Filters" android:textSize="12sp"
+                android:text="Clear Filters" android:textSize="13sp" android:textStyle="bold"
                 style="@style/DiyOutlinedButton" app:cornerRadius="8dp"/>
 
             <!-- Empty state -->
             <TextView android:id="@+id/tv_empty_state"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="No jobs match your filters." android:gravity="center"
-                android:textSize="14sp" android:textColor="@color/text_muted"
+                android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_secondary"
                 android:padding="32dp" android:visibility="gone"/>
 
             <!-- Jobs list -->

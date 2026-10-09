@@ -35,7 +35,7 @@
                     android:layout_width="match_parent" android:layout_height="match_parent"
                     android:text="DIY"
                     android:textColor="@color/orange_primary"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:gravity="center" />
 
@@ -66,7 +66,7 @@
                     android:layout_width="0dp" android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="MR.D.I.Y. HR Team"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:maxLines="1"
@@ -76,8 +76,9 @@
                     android:id="@+id/tv_time_ago"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="5 min ago"
-                    android:textSize="11sp"
-                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginStart="8dp" />
 
             </LinearLayout>
@@ -93,7 +94,8 @@
                     android:layout_width="0dp" android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Your interview is scheduled for tomorrow..."
-                    android:textSize="12sp"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
                     android:textColor="@color/text_secondary"
                     android:maxLines="2"
                     android:ellipsize="end" />
@@ -103,7 +105,7 @@
                     android:layout_width="20dp" android:layout_height="20dp"
                     android:background="@drawable/badge_circle"
                     android:text="2"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:gravity="center"

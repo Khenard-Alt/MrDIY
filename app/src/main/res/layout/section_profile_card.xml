@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Personal Info"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Edit"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:textColor="@color/orange_primary"
                 android:clickable="true"
@@ -58,9 +58,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="FULL NAME"
-                android:textSize="9sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="2dp" />
 
@@ -69,7 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Juan Dela Cruz"
-                android:textSize="13sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
         </LinearLayout>
@@ -91,9 +92,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="EMAIL"
-                android:textSize="9sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="2dp" />
 
@@ -102,7 +103,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="juan.delacruz@email.com"
-                android:textSize="13sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
         </LinearLayout>
@@ -124,9 +126,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PHONE"
-                android:textSize="9sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="2dp" />
 
@@ -135,7 +137,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+63 917 123 4567"
-                android:textSize="13sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
         </LinearLayout>
@@ -156,9 +159,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="LOCATION"
-                android:textSize="9sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="2dp" />
 
@@ -167,7 +170,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Quezon City, Metro Manila"
-                android:textSize="13sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
         </LinearLayout>

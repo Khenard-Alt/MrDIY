@@ -28,7 +28,8 @@
             android:layout_marginTop="8dp"
             android:text="Let's set up your profile"
             android:textColor="@color/text_secondary"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,7 +37,8 @@
             android:layout_marginTop="32dp"
             android:text="Full Name"
             android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFullName"
@@ -51,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter your full name"
+                android:textSize="14sp"
                 android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -61,7 +64,8 @@
             android:layout_marginTop="16dp"
             android:text="Location"
             android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilLocation"
@@ -76,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="City, Province"
+                android:textSize="14sp"
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -86,7 +91,8 @@
             android:layout_marginTop="16dp"
             android:text="Desired Job Position"
             android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPosition"
@@ -101,6 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter your desired job position"
+                android:textSize="14sp"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -111,7 +118,8 @@
             android:layout_marginTop="16dp"
             android:text="Years of Experience"
             android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilExperience"
@@ -126,6 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Select years of experience"
+                android:textSize="14sp"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -143,6 +152,7 @@
                 android:text="Continue"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:cornerRadius="12dp" />
 
             <ProgressBar

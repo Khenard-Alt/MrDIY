@@ -28,7 +28,11 @@ class ApplicationsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         repository = ApplicationsRepository(requireContext())
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
-        binding.applicationsList.layoutManager = LinearLayoutManager(requireContext())
+        binding.applicationsList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            setItemViewCacheSize(10)
+        }
         loadApplications()
     }
 

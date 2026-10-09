@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change Profile Photo"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textColor="@color/orange_primary"
                     android:textStyle="bold" />
 
@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Personal Information"
-                        android:textSize="13sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:layout_marginBottom="14dp" />
@@ -146,7 +146,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -160,7 +160,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -174,7 +174,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textEmailAddress"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -188,7 +188,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="phone"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -201,7 +201,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
@@ -228,7 +228,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Professional Details"
-                        android:textSize="13sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:layout_marginBottom="14dp" />
@@ -244,7 +244,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -258,7 +258,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
-                            android:textSize="13sp" />
+                            android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -274,7 +274,7 @@
                             android:inputType="textMultiLine"
                             android:minLines="3"
                             android:maxLines="5"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:gravity="top" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -283,9 +283,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Skills"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_muted"
+                        android:textColor="@color/text_secondary"
                         android:letterSpacing="0.05"
                         android:layout_marginBottom="8dp" />
 
@@ -318,7 +318,7 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="textCapWords"
                                 android:imeOptions="actionDone"
-                                android:textSize="13sp" />
+                                android:textSize="14sp" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -327,6 +327,7 @@
                             android:layout_height="wrap_content"
                             android:text="Add"
                             android:textSize="13sp"
+                            android:textStyle="bold"
                             style="@style/DiyOutlinedButton" />
 
                     </LinearLayout>
@@ -364,7 +365,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:text="Work Experience"
-                            android:textSize="13sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/text_primary" />
 
@@ -373,7 +374,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="36dp"
                             android:text="+ Add"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
                             style="@style/DiyOutlinedButton" />
 
                     </LinearLayout>
@@ -406,7 +408,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="Save Changes"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             app:cornerRadius="12dp"
             style="@style/DiyFilledButton" />

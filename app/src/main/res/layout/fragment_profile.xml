@@ -139,7 +139,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
-                        android:textSize="13sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
@@ -184,8 +185,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Applied"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_secondary"
                             android:layout_marginTop="2dp" />
 
                     </LinearLayout>
@@ -217,8 +219,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Saved"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_secondary"
                             android:layout_marginTop="2dp" />
 
                     </LinearLayout>
@@ -263,8 +266,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Top Match"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_secondary"
                             android:layout_marginTop="4dp" />
 
                     </LinearLayout>
@@ -311,7 +315,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="About Me"
-                            android:textSize="13sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/text_primary" />
 
@@ -320,7 +324,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Edit"
-                            android:textSize="11sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
                             android:textColor="@color/orange_primary"
                             android:clickable="true"
@@ -333,7 +337,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="No about section added yet."
-                        android:textSize="12sp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
                         android:textColor="@color/text_secondary"
                         android:lineSpacingExtra="3dp" />
 
@@ -364,7 +369,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Resume / CV"
-                        android:textSize="13sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
                         android:layout_marginBottom="8dp" />
@@ -374,7 +379,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="No resume uploaded yet"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
                         android:textColor="@color/text_secondary"
                         android:layout_marginBottom="10dp" />
 
@@ -391,7 +397,8 @@
                             android:layout_height="36dp"
                             android:layout_weight="1"
                             android:text="View Resume"
-                            android:textSize="11sp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
                             android:singleLine="true"
                             android:minWidth="0dp"
                             android:layout_marginEnd="6dp"
@@ -406,7 +413,8 @@
                             android:layout_height="36dp"
                             android:layout_weight="1"
                             android:text="Upload Resume"
-                            android:textSize="11sp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
                             android:singleLine="true"
                             android:minWidth="0dp"
                             app:backgroundTint="@color/orange_primary"
@@ -448,7 +456,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Skills"
-                            android:textSize="13sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/text_primary" />
 
@@ -457,7 +465,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Edit"
-                            android:textSize="11sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
                             android:textColor="@color/orange_primary"
                             android:clickable="true"
@@ -506,7 +514,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Work Experience"
-                            android:textSize="13sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/text_primary" />
 
@@ -515,7 +523,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="+ Add"
-                            android:textSize="11sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
                             android:textColor="@color/orange_primary"
                             android:clickable="true"
@@ -572,7 +580,8 @@
                             android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Saved Jobs"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
                             android:textColor="@color/text_primary"
                             android:layout_marginStart="12dp" />
 
@@ -580,8 +589,9 @@
                             android:id="@+id/tv_saved_count"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="0 jobs"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_muted"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_secondary"
                             android:layout_marginEnd="4dp" />
 
                         <ImageView
@@ -621,7 +631,8 @@
                             android:layout_weight="1"
                             android:text="Applications"
                             android:textColor="@color/text_primary"
-                            android:textSize="14sp" />
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
 
                         <ImageView
                             android:layout_width="20dp" android:layout_height="20dp"

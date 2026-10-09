@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Experience"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:textStyle="bold"
         android:textColor="@color/text_primary"
         android:layout_marginBottom="16dp" />
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,8 +61,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Currently working here"
-        android:textSize="13sp"
-        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
         android:checked="true"
         android:layout_marginBottom="12dp"
         app:thumbTint="@color/orange_primary"
@@ -91,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:maxLength="4"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:maxLength="4"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,6 +130,8 @@
             android:layout_weight="1"
             android:layout_height="48dp"
             android:text="Cancel"
+            android:textSize="14sp"
+            android:textStyle="bold"
             android:layout_marginEnd="8dp"
             style="@style/DiyOutlinedButton" />
 
@@ -138,6 +141,8 @@
             android:layout_weight="1"
             android:layout_height="48dp"
             android:text="Save"
+            android:textSize="14sp"
+            android:textStyle="bold"
             style="@style/DiyFilledButton" />
 
     </LinearLayout>

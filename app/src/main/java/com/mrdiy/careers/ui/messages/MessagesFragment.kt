@@ -47,6 +47,8 @@ class MessagesFragment : Fragment() {
         binding.messagesRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = adapter
+            setHasFixedSize(true)
+            setItemViewCacheSize(10)
         }
 
         if (messages.isEmpty()) {

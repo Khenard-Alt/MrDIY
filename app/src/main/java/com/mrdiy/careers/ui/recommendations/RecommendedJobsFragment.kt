@@ -59,8 +59,12 @@ class RecommendedJobsFragment : Fragment() {
             }
         )
 
-        binding.recommendedJobsRecycler.layoutManager = LinearLayoutManager(requireContext())
-        binding.recommendedJobsRecycler.adapter = jobAdapter
+        binding.recommendedJobsRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = jobAdapter
+            setHasFixedSize(true)
+            setItemViewCacheSize(12)
+        }
     }
 
     private fun setupSearchBar() {

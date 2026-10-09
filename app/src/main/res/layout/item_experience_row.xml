@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:text="AB"
             android:gravity="center"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/text_secondary" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Job Title"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary" />
 
@@ -50,7 +50,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Company Name"
-            android:textSize="12sp"
+            android:textSize="13sp"
+            android:textStyle="bold"
             android:textColor="@color/text_secondary"
             android:layout_marginTop="1dp" />
 
@@ -59,8 +60,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2020 - Present"
-            android:textSize="11sp"
-            android:textColor="@color/text_muted"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_secondary"
             android:layout_marginTop="2dp" />
 
     </LinearLayout>

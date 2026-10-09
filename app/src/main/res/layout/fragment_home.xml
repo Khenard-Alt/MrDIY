@@ -40,7 +40,6 @@
                     android:contentDescription="App Logo"
                     android:padding="2dp"/>
 
-
             </com.google.android.material.card.MaterialCardView>
 
             <!-- App Title Block -->
@@ -60,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:text="MR.D.I.Y."
                     android:textColor="@color/brand_black"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
 
@@ -68,8 +67,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CAREERS"
-                    android:textColor="#CC1B1B1B"
-                    android:textSize="9sp"
+                    android:textColor="@color/brand_black"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
                     android:letterSpacing="0.1" />
 
             </LinearLayout>
@@ -164,7 +164,7 @@
                         android:layout_marginHorizontal="8dp"
                         android:hint="Search jobs, skills, locations…"
                         android:textColorHint="@color/text_muted"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textColor="@color/text_primary"
                         android:background="@null"
                         android:imeOptions="actionSearch"
@@ -176,8 +176,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Clear"
-                        android:textSize="11sp"
-                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"
+                        android:textColor="@color/orange_dark"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -202,65 +202,64 @@
             android:paddingTop="12dp"
             android:paddingBottom="16dp">
 
-    <!-- Welcome Banner -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:paddingHorizontal="16dp"
-        android:paddingTop="16dp" android:paddingBottom="4dp">
-        <TextView android:id="@+id/tv_greeting"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Good morning," android:textSize="12sp" android:textColor="@color/text_muted"/>
-        <TextView android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Juan Dela Cruz 👋" android:textSize="20sp" android:textStyle="bold"
-            android:textColor="@color/text_primary"/>
-    </LinearLayout>
-
-    <!-- Quick Stats Row -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:paddingHorizontal="16dp"
-        android:paddingTop="10dp" android:paddingBottom="12dp">
-
-        <!-- Applied -->
-        <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
-            android:layout_height="wrap_content" android:layout_weight="1"
-            android:layout_marginEnd="6dp" app:cardBackgroundColor="@color/orange_light"
-            app:cardCornerRadius="12dp" app:cardElevation="0dp">
+            <!-- Welcome Banner -->
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="14dp">
-                <TextView android:id="@+id/tv_stat_applied"
+                android:orientation="vertical" android:paddingHorizontal="16dp"
+                android:paddingTop="16dp" android:paddingBottom="4dp">
+                <TextView android:id="@+id/tv_greeting"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textSize="26sp" android:textStyle="bold"
-                    android:textColor="@color/orange_primary"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Applied Jobs" android:textSize="11sp" android:textColor="@color/text_secondary"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Saved -->
-        <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
-            android:layout_height="wrap_content" android:layout_weight="1"
-            android:layout_marginStart="6dp" app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="12dp" app:cardElevation="0dp"
-            app:strokeColor="@color/border_light" app:strokeWidth="1dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="14dp">
-                <TextView android:id="@+id/tv_stat_saved"
+                    android:text="Good morning," android:textSize="14sp" android:textStyle="bold" android:textColor="@color/text_secondary"/>
+                <TextView android:id="@+id/tv_user_name"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="0" android:textSize="26sp" android:textStyle="bold"
+                    android:text="Juan Dela Cruz 👋" android:textSize="20sp" android:textStyle="bold"
                     android:textColor="@color/text_primary"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Saved Jobs" android:textSize="11sp" android:textColor="@color/text_secondary"/>
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
 
-    <!-- Empty state (below stats) -->
-    <TextView android:id="@+id/tv_empty_state"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="No jobs match your search." android:gravity="center"
-        android:textSize="14sp" android:textColor="@color/text_muted"
-        android:padding="32dp" android:visibility="gone"/>
+            <!-- Quick Stats Row -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:paddingHorizontal="16dp"
+                android:paddingTop="10dp" android:paddingBottom="12dp">
 
+                <!-- Applied -->
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:layout_weight="1"
+                    android:layout_marginEnd="6dp" app:cardBackgroundColor="@color/orange_light"
+                    app:cardCornerRadius="12dp" app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:padding="14dp">
+                        <TextView android:id="@+id/tv_stat_applied"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="0" android:textSize="26sp" android:textStyle="bold"
+                            android:textColor="@color/orange_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Applied Jobs" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_secondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Saved -->
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:layout_weight="1"
+                    android:layout_marginStart="6dp" app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="12dp" app:cardElevation="0dp"
+                    app:strokeColor="@color/border_light" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" android:padding="14dp">
+                        <TextView android:id="@+id/tv_stat_saved"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="0" android:textSize="26sp" android:textStyle="bold"
+                            android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Saved Jobs" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_secondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Empty state (below stats) -->
+            <TextView android:id="@+id/tv_empty_state"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="No jobs match your search." android:gravity="center"
+                android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_secondary"
+                android:padding="32dp" android:visibility="gone"/>
 
             <!-- Filter Chips -->
             <HorizontalScrollView
@@ -326,9 +325,9 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="10dp"
                 android:text="LATEST PUBLISHED JOBS"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08" />
 
             <!-- Job Cards RecyclerView -->

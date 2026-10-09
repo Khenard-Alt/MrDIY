@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:text="MR.D.I.Y."
                     android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
 
@@ -66,8 +66,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CAREERS"
-                    android:textColor="#CCFFFFFF"
-                    android:textSize="9sp"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
                     android:letterSpacing="0.1" />
 
             </LinearLayout>
@@ -161,7 +162,7 @@
                         android:layout_marginHorizontal="8dp"
                         android:hint="Search jobs, skills, locations…"
                         android:textColorHint="@color/text_muted"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textColor="@color/text_primary"
                         android:background="@null"
                         android:imeOptions="actionSearch"
@@ -173,8 +174,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Clear"
-                        android:textSize="11sp"
-                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"
+                        android:textColor="@color/orange_dark"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -262,9 +263,9 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="10dp"
                 android:text="RECOMMENDED FOR YOU"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08" />
 
             <!-- AI Description -->
@@ -275,7 +276,8 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="8dp"
                 android:text="Based on your profile, we found these opportunities."
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:textColor="@color/text_secondary" />
 
             <!-- Jobs RecyclerView -->
@@ -317,8 +319,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Try clearing your filters or check back for published jobs. Add a resume to improve matching."
-                    android:textSize="13sp"
-                    android:textColor="@color/text_muted"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
                     android:gravity="center"
                     android:layout_marginTop="8dp" />
 
@@ -327,6 +330,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Upload Resume"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     app:backgroundTint="@color/orange_primary" />
 
@@ -348,13 +353,16 @@
                     android:layout_height="wrap_content"
                     android:text="Something went wrong"
                     android:textColor="@color/red_error"
-                    android:textSize="14sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btn_retry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Retry"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     android:layout_marginTop="16dp" />
 
             </LinearLayout>
@@ -379,7 +387,8 @@
                     android:layout_height="wrap_content"
                     android:text="Matching published jobs..."
                     android:textColor="@color/text_secondary"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     android:layout_marginTop="12dp" />
 
             </LinearLayout>

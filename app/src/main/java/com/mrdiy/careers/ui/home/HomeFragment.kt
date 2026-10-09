@@ -112,13 +112,12 @@ class HomeFragment : Fragment() {
             }
         )
 
-        binding.jobsRecycler.layoutManager =
-            LinearLayoutManager(
-                requireContext()
-            )
-
-        binding.jobsRecycler.adapter =
-            jobAdapter
+        binding.jobsRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = jobAdapter
+            setHasFixedSize(true)
+            setItemViewCacheSize(12)
+        }
     }
 
     // ───────────────── Search ─────────────────

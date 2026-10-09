@@ -29,8 +29,8 @@ class MessageAdapter(
             } else {
                 binding.tvSenderName.setTextColor(ContextCompat.getColor(binding.root.context, R.color.text_primary))
                 binding.tvLastMessage.setTextColor(ContextCompat.getColor(binding.root.context, R.color.text_primary))
-                binding.tvSenderName.textSize = 15f
-                binding.tvLastMessage.textSize = 13f
+                binding.tvSenderName.textSize = 16f
+                binding.tvLastMessage.textSize = 14f
             }
 
             if (message.unreadCount > 0) {
