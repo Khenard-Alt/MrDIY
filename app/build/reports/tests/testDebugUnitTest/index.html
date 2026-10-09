@@ -14,7 +14,7 @@
 <div class="tab-container">
 <ul class="tabLinks">
 <li>
-<a class="failureGroup" href="#">Gradle Test Run :app:testDebugUnitTest</a>
+<a class="successGroup" href="#">Gradle Test Run :app:testDebugUnitTest</a>
 </li>
 </ul>
 <div class="tab">
@@ -38,13 +38,13 @@
 <tr>
 <td>
 <div class="infoBox">
-<div class="counter">1</div>
+<div class="counter">30</div>
 <p>tests</p>
 </div>
 </td>
 <td>
 <div class="infoBox">
-<div class="counter">1</div>
+<div class="counter">0</div>
 <p>failures</p>
 </div>
 </td>
@@ -56,7 +56,7 @@
 </td>
 <td>
 <div class="infoBox duration">
-<div class="counter">0.906s</div>
+<div class="counter">0.822s</div>
 <p>duration</p>
 </div>
 </td>
@@ -65,51 +65,93 @@
 </div>
 </td>
 <td>
-<div class="infoBox failures successRate">
-<div class="percent">0%</div>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
 <p>successful</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div class="result-details">
-<h3>Failure details</h3>
-<span class="code">
-<pre id="root-0-test-failure-Gradle Test Run :app:testDebugUnitTest">org.gradle.process.ProcessExecutionException: Process 'Gradle Test Executor 1' finished with non-zero exit value 1
-	at org.gradle.process.internal.DefaultExecHandle$ExecResultImpl.assertNormalExitValue(DefaultExecHandle.java:459)
-	at org.gradle.process.internal.worker.DefaultWorkerProcess.onProcessStop(DefaultWorkerProcess.java:146)
-	at org.gradle.process.internal.worker.DefaultWorkerProcess.access$000(DefaultWorkerProcess.java:43)
-	at org.gradle.process.internal.worker.DefaultWorkerProcess$1.executionFinished(DefaultWorkerProcess.java:99)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.MethodInvocation.invokeOn(MethodInvocation.java:77)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:28)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:19)
-	at org.gradle.internal.event.AbstractBroadcastDispatch.dispatch(AbstractBroadcastDispatch.java:44)
-	at org.gradle.internal.event.BroadcastDispatch$SingletonDispatch.dispatch(BroadcastDispatch.java:270)
-	at org.gradle.internal.event.BroadcastDispatch$SingletonDispatch.dispatch(BroadcastDispatch.java:172)
-	at org.gradle.internal.event.ListenerBroadcast.dispatch(ListenerBroadcast.java:160)
-	at org.gradle.internal.event.ListenerBroadcast.dispatch(ListenerBroadcast.java:37)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:88)
-	at jdk.proxy1/jdk.proxy1.$Proxy151.executionFinished(Unknown Source)
-	at org.gradle.process.internal.DefaultExecHandle.setEndStateInfo(DefaultExecHandle.java:225)
-	at org.gradle.process.internal.DefaultExecHandle.finished(DefaultExecHandle.java:397)
-	at org.gradle.process.internal.ExecHandleRunner.completed(ExecHandleRunner.java:213)
-	at org.gradle.process.internal.ExecHandleRunner.lambda$run$2(ExecHandleRunner.java:176)
-	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
-	at org.gradle.process.internal.ExecHandleRunner.run(ExecHandleRunner.java:174)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
-	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-</pre>
-<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-failure-Gradle Test Run :app:testDebugUnitTest">Copy</button>
-</span>
-</div>
+<table class="test-results">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th>Tests</th>
+<th>Failures</th>
+<th>Skipped</th>
+<th>Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tr>
+<td class="success">
+<a href="eRYMQJor1nc/index.html">AccountAndResumeTest</a>
+</td>
+<td class="path">com.mrdiy.careers.AccountAndResumeTest</td>
+<td>9</td>
+<td>0</td>
+<td>0</td>
+<td>0.037s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="ttzT4d_UQ34/index.html">GeographicScopeTest</a>
+</td>
+<td class="path">com.mrdiy.careers.GeographicScopeTest</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0.063s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="sjuycldPJv8/index.html">PublishedJobsTest</a>
+</td>
+<td class="path">com.mrdiy.careers.PublishedJobsTest</td>
+<td>9</td>
+<td>0</td>
+<td>0</td>
+<td>0.064s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="XfnZSiFuuGg/index.html">ResumeSkillsTest</a>
+</td>
+<td class="path">com.mrdiy.careers.ResumeSkillsTest</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.004s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="237BFHUJRvE/index.html">ResumeValidationTest</a>
+</td>
+<td class="path">com.mrdiy.careers.ResumeValidationTest</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0.011s</td>
+<td class="success">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="j-k5X0rEOA4/index.html">UniversalJobSearchEngineTest</a>
+</td>
+<td class="path">com.mrdiy.careers.UniversalJobSearchEngineTest</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>0.007s</td>
+<td class="success">100%</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -122,7 +164,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="https://www.gradle.org">Gradle 9.4.1</a> at 23 Sep 2026, 6:54:11 am</p>
+<a href="https://www.gradle.org">Gradle 9.4.1</a> at 8 Oct 2026, 1:27:54 pm</p>
 </div>
 </div>
 </body>

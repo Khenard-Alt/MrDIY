@@ -3,7 +3,7 @@ package com.mrdiy.careers.data.auth
 import java.util.concurrent.atomic.AtomicBoolean
 
 object AccountRules {
-    fun email(value: String): Boolean = Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$").matches(value.trim())
+    fun email(value: String): Boolean = Regex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$").matches(value.trim())
     fun password(value: String): Boolean = value.length >= 6
     fun phone(value: String): Boolean = Regex("^\\+?[0-9 ()-]+$").matches(value) && value.count(Char::isDigit) in 10..15
     fun registrationError(name: String, email: String, password: String, terms: Boolean): String? = when {

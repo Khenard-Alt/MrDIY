@@ -1,12 +1,18 @@
 package com.mrdiy.careers.data.repository
 
 import android.content.Context
-import android.util.Log
 import com.mrdiy.careers.data.auth.AuthManager
 import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.model.Job
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.postgresChangeFlow
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -55,10 +61,30 @@ class ApplicationsRepository(context: Context) {
             })
         } catch (cancelled: CancellationException) {
             throw cancelled
-        } catch (error: Exception) {
+        } catch (e: Exception) {
             Result.failure(IllegalStateException("Applications could not be loaded."))
         }
     }
+
+    fun observeApplicationsRealtime(): Flow<Result<List<ApplicationRow>>> = flow {
+        emit(getApplications())
+        try {
+            val userId = authManager.getCurrentUserId().orEmpty()
+            if (userId.isNotBlank()) {
+                val realtime = SupabaseProvider.client.pluginManager.getPlugin(Realtime)
+                val channel = realtime.channel("apps_realtime_${UUID.randomUUID()}")
+                val changeFlow = channel.postgresChangeFlow<PostgresAction>(schema = "public")
+                channel.subscribe()
+                changeFlow.collect {
+                    this@flow.emit(getApplications())
+                }
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (e: Exception) {
+            com.mrdiy.careers.data.SafeDiagnostics.record("applications_realtime", e)
+        }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun apply(job: Job): Result<Unit> = applyLock.withLock { applyOnce(job) }
     private suspend fun applyOnce(job: Job): Result<Unit> = withContext(Dispatchers.IO) {

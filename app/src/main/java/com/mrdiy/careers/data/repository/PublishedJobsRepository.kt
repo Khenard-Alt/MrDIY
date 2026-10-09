@@ -4,8 +4,15 @@ import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.model.Job
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.realtime.realtime
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import io.github.jan.supabase.realtime.PostgresAction
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonPrimitive
@@ -44,6 +51,22 @@ class PublishedJobsRepository(
             ?.takeIf { com.mrdiy.careers.data.search.MetroManilaScope.matches(it.location, allowedLocations) }
             ?: error("This job is no longer available.")
     }
+
+    fun observeJobsRealtime(): Flow<Result<List<Job>>> = flow {
+        emit(fetchOpenJobs())
+        try {
+            val channel = SupabaseProvider.client.realtime.channel("jobs_realtime_${java.util.UUID.randomUUID()}")
+            val changeFlow = channel.postgresChangeFlow<PostgresAction>(schema = "public")
+            channel.subscribe()
+            changeFlow.collect {
+                this@flow.emit(fetchOpenJobs())
+            }
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Exception) {
+            com.mrdiy.careers.data.SafeDiagnostics.record("jobs_realtime", error)
+        }
+    }.flowOn(Dispatchers.IO)
 
     private suspend fun <T> request(block: suspend () -> T): Result<T> = withContext(Dispatchers.IO) {
         try {

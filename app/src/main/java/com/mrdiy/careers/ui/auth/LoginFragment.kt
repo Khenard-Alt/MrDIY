@@ -129,7 +129,7 @@ binding.cardPhone.setOnClickListener {
 
         if (email.isEmpty()) {
             binding.tilEmail.error = "Email is required"; isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!AccountRules.email(email)) {
             binding.tilEmail.error = "Enter a valid email"; isValid = false
         } else { binding.tilEmail.error = null }
 
@@ -151,7 +151,7 @@ binding.cardPhone.setOnClickListener {
             .setView(dialogView)
             .setPositiveButton("Send") { _, _ ->
                 val email = etEmail.text?.trim().toString()
-                if (email.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (email.isNotEmpty() && AccountRules.email(email)) {
                     authManager.resetPassword(email) { _, message ->
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }

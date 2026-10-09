@@ -1,7 +1,6 @@
 package com.mrdiy.careers.data.repository
 
 import android.content.Context
-import android.net.Uri
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
@@ -27,7 +26,49 @@ class ResumeRepository(private val context: Context) {
     }
 
     suspend fun parseResume(resumeText: String): UserProfile = withContext(Dispatchers.Default) {
+        if (!validateResumeContent(resumeText)) {
+            throw IllegalArgumentException("Selected file does not appear to be a valid resume. Please upload a document containing your work experience, education, or skills.")
+        }
         parseResumeLocally(resumeText)
+    }
+
+    companion object {
+        fun validateResumeContent(text: String): Boolean {
+            val trimmed = text.trim()
+            if (trimmed.length < 40) return false
+
+            val lower = trimmed.lowercase()
+
+            val resumeHeaders = listOf(
+                "experience", "work history", "employment", "career history", "duties", "responsibilities",
+                "education", "educational background", "academic", "degree", "school", "university", "college", "diploma",
+                "skills", "qualifications", "competencies", "proficiencies",
+                "summary", "profile", "objective", "about me", "professional summary",
+                "projects", "certifications", "licenses", "training", "seminars", "references",
+                "curriculum vitae", "resume", "cv", "personal information", "contact information",
+                "edukasyon", "karanasan", "trabaho", "kasanayan", "sanggunian"
+            )
+            val headerCount = resumeHeaders.count { lower.contains(it) }
+
+            val hasEmail = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}").containsMatchIn(text)
+            val hasPhone = Regex("(?:09|\\+639)\\d{9}|\\b\\d{10,12}\\b").containsMatchIn(text)
+            val hasContactInfo = hasEmail || hasPhone
+
+            val hasTimeline = Regex("\\b(?:20\\d{2}|19\\d{2})\\s*(?:-|–|to)\\s*(?:20\\d{2}|19\\d{2}|present|current)\\b|\\b(?:years|yrs)\\b", RegexOption.IGNORE_CASE)
+                .containsMatchIn(text)
+
+            val extractedSkills = com.mrdiy.careers.data.ml.ResumeSkills.extract(text)
+            val hasSkills = extractedSkills.isNotEmpty()
+
+            var score = 0
+            if (headerCount >= 1) score += 2
+            if (headerCount >= 3) score += 1
+            if (hasContactInfo) score += 1
+            if (hasTimeline) score += 1
+            if (hasSkills) score += 1
+
+            return score >= 2
+        }
     }
 
     private fun parseResumeLocally(text: String): UserProfile {

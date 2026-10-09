@@ -116,7 +116,7 @@ class RegisterFragment : Fragment() {
 
         if (email.isEmpty()) {
             binding.tilEmail.error = "Email is required"; isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!AccountRules.email(email)) {
             binding.tilEmail.error = "Enter a valid email"; isValid = false
         } else { binding.tilEmail.error = null }
 

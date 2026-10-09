@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrdiy.careers.R
 import com.mrdiy.careers.data.repository.ApplicationsRepository
 import com.mrdiy.careers.databinding.FragmentApplicationsBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ApplicationsFragment : Fragment() {
     private var _binding: FragmentApplicationsBinding? = null
@@ -38,14 +36,15 @@ class ApplicationsFragment : Fragment() {
         binding.progressBar.visibility = View.VISIBLE
         binding.tvEmpty.visibility = View.GONE
         viewLifecycleOwner.lifecycleScope.launch {
-            val result = withContext(Dispatchers.IO) { repository.getApplications() }
-            if (!isAdded || _binding == null) return@launch
-            binding.progressBar.visibility = View.GONE
-            result.onSuccess { applications ->
-                binding.tvEmpty.visibility = if (applications.isEmpty()) View.VISIBLE else View.GONE
-                binding.applicationsList.adapter = ApplicationsAdapter(applications)
-            }.onFailure { error ->
-                Toast.makeText(requireContext(), "Could not load applications. Please try again.", Toast.LENGTH_LONG).show()
+            repository.observeApplicationsRealtime().collect { result ->
+                if (!isAdded || _binding == null) return@collect
+                binding.progressBar.visibility = View.GONE
+                result.onSuccess { applications ->
+                    binding.tvEmpty.visibility = if (applications.isEmpty()) View.VISIBLE else View.GONE
+                    binding.applicationsList.adapter = ApplicationsAdapter(applications)
+                }.onFailure { error ->
+                    Toast.makeText(requireContext(), "Could not load applications. Please try again.", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

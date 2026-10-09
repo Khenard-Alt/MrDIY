@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.util.PatternsCompat
+import com.mrdiy.careers.data.auth.AccountRules
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -256,7 +257,7 @@ class EditProfileFragment : Fragment() {
         val email = binding.etEmail.text?.trim().toString()
         if (email.isEmpty()) {
             check(binding.etEmail, "Email is required")
-        } else if (!PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!AccountRules.email(email)) {
             binding.etEmail.error = "Enter a valid email address"
             if (valid) binding.etEmail.requestFocus()
             valid = false

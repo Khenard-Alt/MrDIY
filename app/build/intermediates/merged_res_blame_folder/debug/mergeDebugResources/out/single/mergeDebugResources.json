@@ -1,410 +1,406 @@
 [
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xhdpi\\ic_launcher_foreground.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_badge_red.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/badge_red.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_notifications.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_notifications.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_heart.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_heart.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/color_chip_filter_stroke_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/color/chip_filter_stroke_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_application.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_application.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_job_detail.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_job_detail.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\anim_pulse_scale.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\anim\\pulse_scale.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_circle_orange_dot.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/circle_orange_dot.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_edit.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_edit.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xxhdpi\\ic_launcher_foreground.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_home.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_home.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_email_verification.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_email_verification.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_chevron_right.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_chevron_right.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_back.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_back.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_applications.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_applications.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-mdpi\\ic_launcher_foreground.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_alert.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_alert.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_facebook.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_facebook.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_settings.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_settings.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_email_envelope.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_email_envelope.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_chat.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_chat.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_bg_email_chip.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/bg_email_chip.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_google.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_google.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\anim_slide_in_right.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\anim\\slide_in_right.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_jobs.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_jobs.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_payments.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_payments.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_welcome.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_welcome.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_activity_main.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\activity_main.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-hdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_dialog_forgot_password.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\dialog_forgot_password.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_settings.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_settings.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_saved_job_card.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_saved_job_card.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_experience_row.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_experience_row.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_resume_upload.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_resume_upload.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_share.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_share.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_chat.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_chat.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_recommended_job_card.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_recommended_job_card.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_help.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_help.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\anim_slide_out_left.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\anim\\slide_out_left.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_alert.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_alert.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_phone_login.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_phone_login.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_resume_upload.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_resume_upload.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_application.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_application.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_match_circle.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\match_circle.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_bottom_nav_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/bottom_nav_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_help.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_help.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_info.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_info.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\color_chip_filter_bg_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\color\\chip_filter_bg_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/anim_pulse_scale.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/anim/pulse_scale.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_saved_job_card.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_saved_job_card.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_circle_white_20.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/circle_white_20.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_messages.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_messages.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/anim_slide_in_right.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/anim/slide_in_right.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_clipboard.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_clipboard.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_google.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_google.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_circle_verification_bg.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\circle_verification_bg.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_saved_jobs.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_saved_jobs.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_job_accent.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\job_accent.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_edit.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_edit.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\color_text_input_stroke_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\color\\text_input_stroke_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_bookmark_filled.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_bookmark_filled.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_applications.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_applications.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/color_text_input_hint_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/color/text_input_hint_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_document.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_document.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/color_bottom_nav_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/color/bottom_nav_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\color_chip_filter_stroke_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\color\\chip_filter_stroke_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xhdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_home.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_home.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_panda_mascot.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/panda_mascot.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_launcher_background.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_launcher_background.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_dialog_add_experience.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/dialog_add_experience.xml"
+    },
+    {
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_payments.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_payments.xml"
+    },
+    {
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_messages.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_messages.xml"
+    },
+    {
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_email_envelope.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_email_envelope.xml"
     },
     {
         "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_login.xml.flat",
         "source": "com.mrdiy.careers.app-main-72:/layout/fragment_login.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_badge_red.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\badge_red.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_phone.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_phone.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_mr_diy_logo1.png.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\mr_diy_logo1.png"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_bullet_point.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_bullet_point.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\color_text_input_hint_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\color\\text_input_hint_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_person.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_person.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-anydpi-v26\\ic_launcher.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_recommended_jobs.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_recommended_jobs.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-hdpi\\ic_launcher_round.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_badge_circle.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/badge_circle.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_bookmark_outline.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_bookmark_outline.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_job_card.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_job_card.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_person.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_person.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_share.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_share.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-hdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-hdpi\\ic_launcher_foreground.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_yellow_wave.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/yellow_wave.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_profile.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_profile.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/menu/bottom_nav_menu.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_recommended_jobs.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_recommended_jobs.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_mr_diy_logo1.png.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/mr_diy_logo1.png"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_badge_circle.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\badge_circle.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xxhdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_section_profile_card.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\section_profile_card.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_register.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_register.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_bottom_nav_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\bottom_nav_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_bookmark_outline.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_bookmark_outline.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_lock.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_lock.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_work.png.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_work.png"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_circle_white_20.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\circle_white_20.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_email_verification.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_email_verification.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_bullet_point.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_bullet_point.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_document.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_document.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xxxhdpi\\ic_launcher_foreground.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/anim_slide_out_left.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/anim/slide_out_left.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_edit_profile.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_edit_profile.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_search.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_search.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_notifications.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_notifications.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_dialog_add_experience.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\dialog_add_experience.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_job_accent.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/job_accent.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_settings.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_settings.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_delete.png.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_delete.png"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_home.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_home.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_mr_diy_logo.png.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/mr_diy_logo.png"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_saved_jobs.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_saved_jobs.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_match_circle.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/match_circle.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_panda_mascot.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\panda_mascot.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_search.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_search.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-mdpi\\ic_launcher.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/anim_slide_out_right.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/anim/slide_out_right.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_delete.png.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_delete.png"
+        "merged": "com.mrdiy.careers.app-debug-70:/anim_slide_in_left.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/anim/slide_in_left.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xhdpi\\ic_launcher.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_section_profile_card.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/section_profile_card.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_circle_orange_dot.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\circle_orange_dot.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_recommended_job_card.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_recommended_job_card.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_alerts.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_alerts.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_logout.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_logout.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-mdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_arrow_back.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_arrow_back.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_chevron_right.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_chevron_right.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\menu_bottom_nav_menu.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\menu\\bottom_nav_menu.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-hdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_circle_verification_bg.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/circle_verification_bg.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\anim_slide_in_left.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\anim\\slide_in_left.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_message.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_message.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-hdpi\\ic_launcher.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_clipboard.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_clipboard.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_welcome.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_welcome.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_facebook.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_facebook.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_camera.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_camera.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_profile.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_profile.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\color_bottom_nav_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\color\\bottom_nav_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_logout.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_logout.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_bg_email_chip.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\bg_email_chip.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_heart.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_heart.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_job_card.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_job_card.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/color_chip_filter_text_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/color/chip_filter_text_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\color_chip_filter_text_selector.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\color\\chip_filter_text_selector.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_dialog_forgot_password.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/dialog_forgot_password.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_login.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_login.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_camera.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_camera.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_work.png.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_work.png"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_bg_step_circle.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/bg_step_circle.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_yellow_wave.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\yellow_wave.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_activity_main.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_item_message.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\item_message.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_alerts.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_alerts.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_arrow_back.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_arrow_back.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_edit_profile.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_edit_profile.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_phone_login.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_phone_login.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_item_experience_row.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/item_experience_row.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xxxhdpi\\ic_launcher.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/color_text_input_stroke_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/color/text_input_stroke_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-mdpi\\ic_launcher_round.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_back.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_back.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_settings.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_settings.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_bg_step_circle.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\bg_step_circle.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/layout_fragment_home.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/layout/fragment_home.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_jobs.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_jobs.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/drawable_ic_lock.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/drawable/ic_lock.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_register.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_register.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/color_chip_filter_bg_selector.xml.flat",
+        "source": "com.mrdiy.careers.app-main-72:/color/chip_filter_bg_selector.xml"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_mr_diy_logo.png.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\mr_diy_logo.png"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\layout_fragment_job_detail.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\layout\\fragment_job_detail.xml"
-    },
-    {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_phone.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_phone.xml"
-    },
-    {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\anim_slide_out_right.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\anim\\slide_out_right.xml"
-    },
-    {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_bookmark_filled.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_bookmark_filled.xml"
-    },
-    {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xhdpi\\ic_launcher_round.webp"
-    },
-    {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\mipmap-xxhdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-debug-70:\\drawable_ic_info.xml.flat",
-        "source": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-main-72:\\drawable\\ic_info.xml"
+        "merged": "com.mrdiy.careers.app-debug-70:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.mrdiy.careers.app-main-72:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
     }
 ]

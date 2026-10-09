@@ -4,13 +4,24 @@
             "outputFile": "com.mrdiy.careers.app-mergeDebugResources-68:/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "C:\\xampp\\htdocs\\lars-dazsma-nextjs\\mrdiyreact\\app\\src\\main\\res\\values-v26\\styles.xml",
+                    "source": "C:\\Users\\My PC\\.gradle\\caches\\9.4.1\\transforms\\c5511c5d959ce68edfe4407e61a644f2\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",
+                    "from": {
+                        "startLines": "2,3,4,8,12,16",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,130,217,381,557,796",
+                        "endLines": "2,3,7,11,15,16",
+                        "endColumns": "74,86,12,12,12,92",
+                        "endOffsets": "125,212,376,552,791,884"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\My PC\\AndroidStudioProjects\\mrdiyreact\\app\\src\\main\\res\\values-v26\\styles.xml",
                     "from": {
                         "startLines": "1",
                         "startColumns": "4",
-                        "startOffsets": "16",
+                        "startOffsets": "17",
                         "endColumns": "116",
-                        "endOffsets": "128"
+                        "endOffsets": "129"
                     },
                     "to": {
                         "startLines": "17",
@@ -18,38 +29,6 @@
                         "startOffsets": "889",
                         "endColumns": "116",
                         "endOffsets": "1001"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\9.4.1\\transforms\\c5511c5d959ce68edfe4407e61a644f2\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",
-                    "from": {
-                        "startLines": "-1,-1,-1,-1,-1,-1",
-                        "startColumns": "-1,-1,-1,-1,-1,-1",
-                        "startOffsets": "-1,-1,-1,-1,-1,-1"
-                    },
-                    "to": {
-                        "startLines": "2,3,4,8,12,16",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "55,130,217,381,557,796",
-                        "endLines": "2,3,7,11,15,16",
-                        "endColumns": "74,86,12,12,12,92",
-                        "endOffsets": "125,212,376,552,791,884"
-                    }
-                }
-            ]
-        },
-        {
-            "outputFile": "C:\\Users\\HP\\.gradle\\daemon\\9.4.1\\com.mrdiy.careers.app-mergeDebugResources-68:\\values-v26\\values-v26.xml",
-            "map": [
-                {
-                    "source": "C:\\Users\\HP\\.gradle\\caches\\9.4.1\\transforms\\c5511c5d959ce68edfe4407e61a644f2\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",
-                    "from": {
-                        "startLines": "2,3,4,8,12,16",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "55,130,217,381,557,796",
-                        "endLines": "2,3,7,11,15,16",
-                        "endColumns": "74,86,12,12,12,92",
-                        "endOffsets": "125,212,376,552,791,884"
                     }
                 }
             ]

@@ -11,6 +11,7 @@ import io.github.jan.supabase.auth.providers.builtin.Phone
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import io.github.jan.supabase.storage.Storage
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +45,7 @@ object SupabaseProvider {
             }
             install(Postgrest)
             install(Storage)
+            install(Realtime)
             defaultSerializer = KotlinXSerializer(supabaseJson)
         }
     }

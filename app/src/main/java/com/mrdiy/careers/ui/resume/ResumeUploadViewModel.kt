@@ -81,7 +81,9 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
                 throw cancelled
             } catch (invalid: IllegalArgumentException) {
                 SafeDiagnostics.record("resume_upload", invalid)
-                _state.value = ResumeUploadState.Error("Could not upload this file. Choose a valid PDF or TXT smaller than 10 MB, then retry.")
+                val errorMessage = invalid.message?.takeIf { it.isNotBlank() && "Unreadable" !in it }
+                    ?: "Could not upload this file. Choose a valid PDF or TXT smaller than 10 MB, then retry."
+                _state.value = ResumeUploadState.Error(errorMessage)
             } catch (error: Exception) {
                 SafeDiagnostics.record("resume_upload", error)
                 // The PDF has already been parsed at this point. Preserve the scan
