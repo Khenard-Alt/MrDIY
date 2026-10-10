@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS public.admin_users (
 
 -- Insert Default Admin Account (Username: admin, Password: admin123)
 INSERT INTO public.admin_users (username, password, full_name, role)
-VALUES ('admin', 'admin123', 'MR.D.I.Y. HR Administrator')
+VALUES ('admin', 'admin123', 'MR.D.I.Y. HR Administrator', 'admin')
 ON CONFLICT (username) DO NOTHING;
 
 -- Profiles Table
