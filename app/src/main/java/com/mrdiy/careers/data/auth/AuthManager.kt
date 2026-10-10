@@ -93,7 +93,10 @@ class AuthManager(private val context: Context) {
 
     suspend fun signOut() {
         client.auth.awaitInitialization()
-        try { client.auth.signOut() }
+        try {
+            com.mrdiy.careers.notifications.PushTokenRegistrar.unregisterCurrentUser(context)
+            client.auth.signOut()
+        }
         catch (e: CancellationException) { throw e }
         catch (e: Exception) { SafeDiagnostics.record("sign_out", e) }
         finally {

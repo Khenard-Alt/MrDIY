@@ -1,8 +1,13 @@
 package com.mrdiy.careers
 
 import android.content.Intent
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,17 +23,24 @@ import com.mrdiy.careers.data.auth.AuthManager
 import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
+import com.mrdiy.careers.notifications.AppNotificationManager
+import com.mrdiy.careers.notifications.PushTokenRegistrar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: androidx.navigation.NavController
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AppNotificationManager.createChannel(this)
+        requestNotificationPermissionIfNeeded()
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainContainer) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -67,9 +79,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         handleDeepLink(intent)
+        handleNotificationIntent(intent)
         lifecycleScope.launch {
             SupabaseProvider.client.auth.awaitInitialization()
+            PushTokenRegistrar.registerCurrentUser(this@MainActivity)
             SupabaseProvider.client.auth.sessionStatus.collect { status ->
+                PushTokenRegistrar.registerCurrentUser(this@MainActivity)
                 val publicScreens = setOf(R.id.loginFragment, R.id.registerFragment,
                     R.id.phoneLoginFragment, R.id.emailVerificationFragment)
                 if (status is io.github.jan.supabase.auth.status.SessionStatus.NotAuthenticated &&
@@ -86,6 +101,26 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleDeepLink(intent)
+        handleNotificationIntent(intent)
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun handleNotificationIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra(AppNotificationManager.EXTRA_OPEN_ALERTS, false) == true &&
+            AuthManager(this).isLoggedIn &&
+            navController.currentDestination?.id != R.id.alertsFragment
+        ) {
+            navController.navigate(R.id.alertsFragment)
+            intent.removeExtra(AppNotificationManager.EXTRA_OPEN_ALERTS)
+        }
     }
 
     private fun handleDeepLink(intent: Intent?) {

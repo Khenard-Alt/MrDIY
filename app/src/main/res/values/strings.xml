@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">MR.D.I.Y. Careers</string>
+    <string name="notification_channel_id">career_updates</string>
+    <string name="notification_channel_name">Career updates</string>
+    <string name="notification_channel_description">Job, application, and account updates</string>
 
     <!-- Google Sign-In - Replace with actual Client ID from Firebase Console -->
     <string name="default_web_client_id">YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com</string>
