@@ -1,0 +1,179 @@
+-- ==========================================================================
+-- COMPLETE 1-CLICK FRESH SUPABASE SETUP SCRIPT for MrDIY Careers
+--
+-- Run this SINGLE script in your new Supabase SQL Editor:
+-- Supabase Dashboard → SQL Editor → New Query → Paste → RUN
+-- ==========================================================================
+
+BEGIN;
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- 1. CREATE ALL TABLES
+-- ──────────────────────────────────────────────────────────────────────────
+
+-- Profiles Table
+CREATE TABLE IF NOT EXISTS public.profiles (
+    user_id TEXT PRIMARY KEY,
+    full_name TEXT,
+    location TEXT,
+    desired_position TEXT,
+    years_experience TEXT,
+    email TEXT,
+    phone TEXT,
+    about TEXT,
+    skills TEXT,
+    headline TEXT,
+    photo_path TEXT,
+    work_experiences JSONB DEFAULT '[]'::jsonb,
+    education JSONB DEFAULT '[]'::jsonb,
+    resume_url TEXT,
+    resume_name TEXT,
+    resume_uploaded_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Jobs Table
+CREATE TABLE IF NOT EXISTS public.jobs (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    title TEXT,
+    description TEXT,
+    location TEXT,
+    salary TEXT,
+    salary_type TEXT DEFAULT 'monthly',
+    status TEXT DEFAULT 'published',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    job_type TEXT DEFAULT 'Not specified',
+    category TEXT DEFAULT 'Not specified',
+    level TEXT DEFAULT 'Not specified'
+);
+
+-- Applications Table
+CREATE TABLE IF NOT EXISTS public.applications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id TEXT NOT NULL,
+    job_id TEXT NOT NULL,
+    job_title TEXT,
+    status TEXT NOT NULL DEFAULT 'Pending',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    applied_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (user_id, job_id)
+);
+
+-- Saved Jobs Table
+CREATE TABLE IF NOT EXISTS public.saved_jobs (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    user_id TEXT NOT NULL,
+    job_id TEXT NOT NULL,
+    saved_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (user_id, job_id)
+);
+
+-- Alerts Table
+CREATE TABLE IF NOT EXISTS public.alerts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'JOB_MATCH',
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
+    time_ago TEXT NOT NULL DEFAULT 'Just now',
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    job_id TEXT
+);
+
+-- Messages Table
+CREATE TABLE IF NOT EXISTS public.messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id TEXT NOT NULL,
+    sender_name TEXT NOT NULL,
+    sender_avatar TEXT NOT NULL DEFAULT 'HR',
+    last_message TEXT NOT NULL,
+    time_ago TEXT NOT NULL DEFAULT 'Just now',
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    unread_count INTEGER NOT NULL DEFAULT 0,
+    job_id TEXT
+);
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- 2. CREATE RESUMES STORAGE BUCKET
+-- ──────────────────────────────────────────────────────────────────────────
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'resumes',
+    'resumes',
+    false,
+    10485760, -- 10 MB limit
+    '{application/pdf,text/plain}'
+)
+ON CONFLICT (id) DO UPDATE SET public = false;
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- 3. ENABLE ROW LEVEL SECURITY (RLS)
+-- ──────────────────────────────────────────────────────────────────────────
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.jobs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.saved_jobs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- 4. APPLY ROW LEVEL SECURITY POLICIES
+-- ──────────────────────────────────────────────────────────────────────────
+
+-- Profiles Policies
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
+CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid()::text = user_id);
+
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
+CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid()::text = user_id OR auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid()::text = user_id) WITH CHECK (auth.uid()::text = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own profile" ON public.profiles;
+CREATE POLICY "Users can delete own profile" ON public.profiles FOR DELETE USING (auth.uid()::text = user_id);
+
+-- Jobs Policies
+DROP POLICY IF EXISTS "Applicants can read published jobs" ON public.jobs;
+CREATE POLICY "Applicants can read published jobs" ON public.jobs FOR SELECT TO anon, authenticated USING (status = 'published');
+
+DROP POLICY IF EXISTS "Admins can manage jobs" ON public.jobs;
+CREATE POLICY "Admins can manage jobs" ON public.jobs FOR ALL TO authenticated USING (true);
+
+-- Applications Policies
+DROP POLICY IF EXISTS "Users can view own applications" ON public.applications;
+CREATE POLICY "Users can view own applications" ON public.applications FOR SELECT USING (auth.uid()::text = user_id OR auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Users can submit own applications" ON public.applications;
+CREATE POLICY "Users can submit own applications" ON public.applications FOR INSERT WITH CHECK (auth.uid()::text = user_id);
+
+DROP POLICY IF EXISTS "Admins can update applications" ON public.applications;
+CREATE POLICY "Admins can update applications" ON public.applications FOR UPDATE USING (auth.role() = 'authenticated');
+
+-- Saved Jobs Policies
+DROP POLICY IF EXISTS "Users can manage own saved jobs" ON public.saved_jobs;
+CREATE POLICY "Users can manage own saved jobs" ON public.saved_jobs FOR ALL USING (auth.uid()::text = user_id);
+
+-- Alerts & Messages Policies
+DROP POLICY IF EXISTS "Users can read own alerts" ON public.alerts;
+CREATE POLICY "Users can read own alerts" ON public.alerts FOR SELECT USING (auth.uid()::text = user_id);
+
+DROP POLICY IF EXISTS "Users can read own messages" ON public.messages;
+CREATE POLICY "Users can read own messages" ON public.messages FOR SELECT USING (auth.uid()::text = user_id);
+
+-- Storage Objects Policies
+DROP POLICY IF EXISTS "Users can upload own resume" ON storage.objects;
+CREATE POLICY "Users can upload own resume" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'resumes' AND auth.role() = 'authenticated' AND (storage.foldername(name))[1] = auth.uid()::text);
+
+DROP POLICY IF EXISTS "Users can view own resume" ON storage.objects;
+CREATE POLICY "Users can view own resume" ON storage.objects FOR SELECT USING (bucket_id = 'resumes' AND auth.role() = 'authenticated');
+
+-- ──────────────────────────────────────────────────────────────────────────
+-- 5. GRANT PERMISSIONS
+-- ──────────────────────────────────────────────────────────────────────────
+
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+
+COMMIT;
