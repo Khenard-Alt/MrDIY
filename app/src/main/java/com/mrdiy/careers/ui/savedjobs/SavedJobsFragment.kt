@@ -39,7 +39,11 @@ class SavedJobsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        binding.savedJobsRecycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.savedJobsRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            setItemViewCacheSize(12)
+        }
     }
 
     private fun setupClickListeners() {
