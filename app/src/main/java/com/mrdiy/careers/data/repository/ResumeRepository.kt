@@ -15,14 +15,53 @@ import java.io.InputStreamReader
 class ResumeRepository(private val context: Context) {
 
     suspend fun extractText(bytes: ByteArray, extension: String): String = withContext(Dispatchers.IO) {
-        if (extension == "pdf") {
-            PDFBoxResourceLoader.init(context)
-            PDDocument.load(bytes).use { document ->
-                require(!document.isEncrypted)
-                require(document.numberOfPages <= 100)
-                PDFTextStripper().getText(document).take(200_000)
+        when (extension) {
+            "pdf" -> {
+                PDFBoxResourceLoader.init(context)
+                PDDocument.load(bytes).use { document ->
+                    require(!document.isEncrypted)
+                    require(document.numberOfPages <= 100)
+                    PDFTextStripper().getText(document).take(200_000)
+                }
             }
-        } else bytes.toString(Charsets.UTF_8).take(200_000)
+            "docx" -> extractDocxText(bytes).take(200_000)
+            else -> bytes.toString(Charsets.UTF_8).take(200_000)
+        }
+    }
+
+    // DOCX is a ZIP archive; the body text lives in word/document.xml as a series
+    // of <w:t> runs. We stream-parse just that entry instead of pulling in Apache POI.
+    private fun extractDocxText(bytes: ByteArray): String {
+        java.util.zip.ZipInputStream(bytes.inputStream()).use { zip ->
+            var entry = zip.nextEntry
+            while (entry != null) {
+                if (entry.name == "word/document.xml") {
+                    val parser = android.util.Xml.newPullParser()
+                    parser.setInput(InputStreamReader(zip, Charsets.UTF_8))
+
+                    val text = StringBuilder()
+                    var inTextRun = false
+                    var event = parser.eventType
+
+                    while (event != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
+                        when (event) {
+                            org.xmlpull.v1.XmlPullParser.START_TAG -> {
+                                when (parser.name) {
+                                    "t" -> inTextRun = true
+                                    "p", "br", "tab" -> text.append(if (parser.name == "tab") "\t" else "\n")
+                                }
+                            }
+                            org.xmlpull.v1.XmlPullParser.TEXT -> if (inTextRun) text.append(parser.text)
+                            org.xmlpull.v1.XmlPullParser.END_TAG -> if (parser.name == "t") inTextRun = false
+                        }
+                        event = parser.next()
+                    }
+                    return text.toString()
+                }
+                entry = zip.nextEntry
+            }
+        }
+        throw IllegalArgumentException("Unsupported file")
     }
 
     suspend fun parseResume(resumeText: String): UserProfile = withContext(Dispatchers.Default) {

@@ -61,7 +61,11 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
                 uploadedPath = path
                 SupabaseProvider.client.storage.from(ResumeFiles.BUCKET).upload(path, bytes) {
                     upsert = false
-                    contentType = if (extension == "pdf") ContentType.Application.Pdf else ContentType.Text.Plain
+                    contentType = when (extension) {
+                        "pdf" -> ContentType.Application.Pdf
+                        "docx" -> ContentType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                        else -> ContentType.Text.Plain
+                    }
                 }
                 ensureActive()
                 // Finish a started DB commit before cancellation cleanup can delete the object.
@@ -82,7 +86,7 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
             } catch (invalid: IllegalArgumentException) {
                 SafeDiagnostics.record("resume_upload", invalid)
                 val errorMessage = invalid.message?.takeIf { it.isNotBlank() && "Unreadable" !in it }
-                    ?: "Could not upload this file. Choose a valid PDF or TXT smaller than 10 MB, then retry."
+                    ?: "Could not upload this file. Choose a valid PDF, DOCX, or TXT smaller than 10 MB, then retry."
                 _state.value = ResumeUploadState.Error(errorMessage)
             } catch (error: Exception) {
                 SafeDiagnostics.record("resume_upload", error)
@@ -109,5 +113,4 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
                 }
             }
         }
-    }
-}
+   

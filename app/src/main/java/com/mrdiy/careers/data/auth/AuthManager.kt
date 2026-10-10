@@ -23,11 +23,11 @@ import kotlinx.coroutines.CancellationException
 import com.mrdiy.careers.data.SafeDiagnostics
 
 object SupabaseProvider {
-    private const val SUPABASE_URL      = "https://sfjpiyevasnmvddgtofz.supabase.co"
+    private const val SUPABASE_URL      = "https://xbsrnnuhepljpvzewvsp.supabase.co"
     private const val SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
-                "eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmanBpeWV2YXNubXZkZGd0b2Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyODAxNTIsImV4cCI6MjA5NDg1NjE1Mn0." +
-                "ySYf_WZYJr_A7oXhH5wGkri5qW0OctsINK82716t0Ac"
+                "eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhic3JubnVoZXBsanB2emV3dnNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2NTU4NDcsImV4cCI6MjEwNzIzMTg0N30." +
+                "-TrtGsQDfh9x3HZIQkSMjvrm5id-Dwn8VFx4j4NkWOw"
 
     val supabaseJson: Json = Json {
         ignoreUnknownKeys  = true

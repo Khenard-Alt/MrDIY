@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.mrdiy.careers.app-mergeDebugResources-68:/values-v25/values-v25.xml",
+            "outputFile": "com.mrdiy.careers.app-mergeDebugResources-77:/values-v25/values-v25.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\My PC\\.gradle\\caches\\9.4.1\\transforms\\c5511c5d959ce68edfe4407e61a644f2\\transformed\\appcompat-1.6.1\\res\\values-v25\\values-v25.xml",
+                    "source": "C:\\Users\\My PC\\.gradle\\caches\\9.4.1\\transforms\\496111a490b7f44e9d94af721407dbf2\\transformed\\appcompat-1.6.1\\res\\values-v25\\values-v25.xml",
                     "from": {
                         "startLines": "2,3,4,6",
                         "startColumns": "4,4,4,4",

@@ -72,6 +72,11 @@
     <string name="edit_profile">Edit</string>
     <string name="edit_profile_title">Edit Profile</string>
     <string name="filter_label">Filter</string>
+    <string name="gcm_defaultSenderId" translatable="false">490640195498</string>
+    <string name="google_api_key" translatable="false">AIzaSyBddb0SadLIwIBtyUE86WbVHvs5iWYZs90</string>
+    <string name="google_app_id" translatable="false">1:490640195498:android:f04eb83588c490d3fef5d3</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBddb0SadLIwIBtyUE86WbVHvs5iWYZs90</string>
+    <string name="google_storage_bucket" translatable="false">mrdiycareers-app.firebasestorage.app</string>
     <string name="helper_skills">e.g. Customer Service, Sales, Inventory</string>
     <string name="hint_about_me">About Me</string>
     <string name="hint_desired_position">Desired Position</string>
@@ -86,7 +91,11 @@
     <string name="nav_home">Home</string>
     <string name="nav_jobs">Jobs</string>
     <string name="nav_profile">Profile</string>
+    <string name="notification_channel_description">Job, application, and account updates</string>
+    <string name="notification_channel_id">career_updates</string>
+    <string name="notification_channel_name">Career updates</string>
     <string name="profile_title">My Profile</string>
+    <string name="project_id" translatable="false">mrdiycareers-app</string>
     <string name="requirements_label">Requirements</string>
     <string name="responsibilities_label">Responsibilities</string>
     <string name="salary_label">Monthly Salary Range</string>

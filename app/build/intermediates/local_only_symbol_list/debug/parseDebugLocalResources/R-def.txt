@@ -453,6 +453,11 @@ string default_web_client_id
 string edit_profile
 string edit_profile_title
 string filter_label
+string gcm_defaultSenderId
+string google_api_key
+string google_app_id
+string google_crash_reporting_api_key
+string google_storage_bucket
 string helper_skills
 string hint_about_me
 string hint_desired_position
@@ -467,7 +472,11 @@ string nav_alerts
 string nav_home
 string nav_jobs
 string nav_profile
+string notification_channel_description
+string notification_channel_id
+string notification_channel_name
 string profile_title
+string project_id
 string requirements_label
 string responsibilities_label
 string salary_label
