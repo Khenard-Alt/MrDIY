@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "490640195498",
+    "project_id": "mrdiycareers-app",
+    "storage_bucket": "mrdiycareers-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490640195498:android:f04eb83588c490d3fef5d3",
+        "android_client_info": {
+          "package_name": "com.mrdiy.careers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBddb0SadLIwIBtyUE86WbVHvs5iWYZs90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

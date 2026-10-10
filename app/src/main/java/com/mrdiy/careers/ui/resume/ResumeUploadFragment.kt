@@ -17,7 +17,7 @@ import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.FragmentResumeUploadBinding
 
 /**
- * Lets the user pick a PDF or TXT resume, parses it with AI, and shows
+ * Lets the user pick a PDF, DOCX, or TXT resume, parses it with AI, and shows
  * the extracted skills/experience before saving to their profile.
  */
 class ResumeUploadFragment : Fragment() {
@@ -40,13 +40,15 @@ class ResumeUploadFragment : Fragment() {
 
         // Check file extension as backup
         val lowerFileName = fileName.lowercase()
-        val isPdfOrText = mimeType == "application/pdf" ||
+        val isSupportedType = mimeType == "application/pdf" ||
                           mimeType == "text/plain" ||
+                          mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
                           lowerFileName.endsWith(".pdf") ||
+                          lowerFileName.endsWith(".docx") ||
                           lowerFileName.endsWith(".txt")
 
-        if (!isPdfOrText) {
-            binding.tvErrorMessage.text = "Please select a PDF or text file (.txt, .pdf)"
+        if (!isSupportedType) {
+            binding.tvErrorMessage.text = "Please select a PDF, DOCX, or text file (.pdf, .docx, .txt)"
             binding.errorCard.visibility = View.VISIBLE
             binding.resultCard.visibility = View.GONE
             binding.progressGroup.visibility = View.GONE
@@ -83,9 +85,13 @@ class ResumeUploadFragment : Fragment() {
         binding.toolbar.setNavigationOnClickListener { viewModel.cancelUpload(); findNavController().navigateUp() }
 
         binding.btnPickFile.setOnClickListener {
-            // Accept PDF and plain text files only
+            // Accept PDF, DOCX, and plain text files only
             if (viewModel.busy) viewModel.cancelUpload()
-            else pickFileLauncher.launch(arrayOf("application/pdf", "text/plain"))
+            else pickFileLauncher.launch(arrayOf(
+                "application/pdf",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "text/plain"
+            ))
         }
 
         binding.btnViewRecommendations.setOnClickListener {

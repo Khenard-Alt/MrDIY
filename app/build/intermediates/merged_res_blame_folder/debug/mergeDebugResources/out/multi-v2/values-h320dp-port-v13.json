@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.mrdiy.careers.app-mergeDebugResources-68:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
+            "outputFile": "com.mrdiy.careers.app-mergeDebugResources-77:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\My PC\\.gradle\\caches\\9.4.1\\transforms\\cf3e46568b57f64ce48d035990e344fd\\transformed\\material-1.11.0\\res\\values-h320dp-port-v13\\values-h320dp-port-v13.xml",
+                    "source": "C:\\Users\\My PC\\.gradle\\caches\\9.4.1\\transforms\\ff51d828a5ac535fc68ac1a980067089\\transformed\\material-1.11.0\\res\\values-h320dp-port-v13\\values-h320dp-port-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

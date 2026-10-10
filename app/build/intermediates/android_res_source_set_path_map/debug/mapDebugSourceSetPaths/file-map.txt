@@ -1,9 +1,10 @@
 com.mrdiy.careers.app-pngs-0 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\generated\res\pngs\debug
-com.mrdiy.careers.app-resValues-1 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\generated\res\resValues\debug
-com.mrdiy.careers.app-updated_navigation_xml-2 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\generated\updated_navigation_xml\debug
-com.mrdiy.careers.app-packageDebugResources-3 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.mrdiy.careers.app-packageDebugResources-4 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.mrdiy.careers.app-debug-5 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.mrdiy.careers.app-debug-6 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\src\debug\res
-com.mrdiy.careers.app-main-7 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\src\main\res
+com.mrdiy.careers.app-res-1 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\generated\res\processDebugGoogleServices
+com.mrdiy.careers.app-resValues-2 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\generated\res\resValues\debug
+com.mrdiy.careers.app-updated_navigation_xml-3 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\generated\updated_navigation_xml\debug
+com.mrdiy.careers.app-packageDebugResources-4 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.mrdiy.careers.app-packageDebugResources-5 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.mrdiy.careers.app-debug-6 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.mrdiy.careers.app-debug-7 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\src\debug\res
+com.mrdiy.careers.app-main-8 C:\Users\My PC\AndroidStudioProjects\mrdiyreact\app\src\main\res
 gradleHome-0 C:\Users\My PC\.gradle
