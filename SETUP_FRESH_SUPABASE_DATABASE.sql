@@ -11,6 +11,21 @@ BEGIN;
 -- 1. CREATE ALL TABLES
 -- ──────────────────────────────────────────────────────────────────────────
 
+-- Dedicated Admin Users Table (Username-Based Authentication)
+CREATE TABLE IF NOT EXISTS public.admin_users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    full_name TEXT DEFAULT 'HR Administrator',
+    role TEXT DEFAULT 'admin',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Insert Default Admin Account (Username: admin, Password: admin123)
+INSERT INTO public.admin_users (username, password, full_name, role)
+VALUES ('admin', 'admin123', 'MR.D.I.Y. HR Administrator')
+ON CONFLICT (username) DO NOTHING;
+
 -- Profiles Table
 CREATE TABLE IF NOT EXISTS public.profiles (
     user_id TEXT PRIMARY KEY,
@@ -111,6 +126,7 @@ ON CONFLICT (id) DO UPDATE SET public = false;
 -- 3. ENABLE ROW LEVEL SECURITY (RLS)
 -- ──────────────────────────────────────────────────────────────────────────
 
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.applications ENABLE ROW LEVEL SECURITY;
@@ -121,6 +137,10 @@ ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 -- ──────────────────────────────────────────────────────────────────────────
 -- 4. APPLY ROW LEVEL SECURITY POLICIES
 -- ──────────────────────────────────────────────────────────────────────────
+
+-- Admin Users Policies
+DROP POLICY IF EXISTS "Allow read access to admin_users" ON public.admin_users;
+CREATE POLICY "Allow read access to admin_users" ON public.admin_users FOR SELECT USING (true);
 
 -- Profiles Policies
 DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;

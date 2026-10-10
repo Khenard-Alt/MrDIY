@@ -1,7 +1,15 @@
 # Supabase Credentials & System Email Configuration
 
 > [!IMPORTANT]
-> This file contains project database credentials, API keys, and notification SMTP details for the newly created Supabase project and System Gmail.
+> This file contains project database credentials, API keys, Admin login credentials, and notification SMTP details.
+
+---
+
+## Admin Web Panel Credentials (`http://localhost:3000/login`)
+
+* **Username:** `admin`
+* **Password:** `admin123`
+* **Database Table:** `public.admin_users`
 
 ---
 
