@@ -48,10 +48,26 @@ object JobMatchingEngine {
             jobs[i] to computeTFIDF(corpusTokens[i + 1], documentFrequency, totalDocs)
         }
 
+        val profileSkills = ResumeSkills.extractCanonical(profileDoc)
+        val positionTokens = tokenize(buildPositionText(profile)).toSet()
+
         // Calculate similarity scores
-        return jobs.map { job ->
-            val similarity = cosineSimilarity(profileVector, jobVectors[job] ?: emptyMap())
-            val textScore = (similarity * 100).toInt().coerceIn(0, 100)
+        return jobs.mapIndexed { index, job ->
+            val cosine = cosineSimilarity(profileVector, jobVectors[job] ?: emptyMap())
+
+            // Skills the job asks for versus the skills the applicant has.
+            val jobSkills = ResumeSkills.extractCanonical(jobDocs[index]).toList()
+            val matchedJobSkills = jobSkills.filter { it in profileSkills }
+            val missingJobSkills = jobSkills.filter { it !in profileSkills }
+            val skillCoverage = if (jobSkills.isNotEmpty()) matchedJobSkills.size.toDouble() / jobSkills.size else null
+
+            // Do the applicant's position and past roles match the job title?
+            val titleWords = tokenize(job.title).filter { it !in STOP_WORDS }.toSet()
+            val titleFit = if (titleWords.isNotEmpty() && positionTokens.isNotEmpty()) {
+                titleWords.count { it in positionTokens }.toDouble() / titleWords.size
+            } else null
+
+            val textScore = compositeTextScore(cosine, skillCoverage, titleFit)
 
             // Location is part of the score only when both locations are known, so a profile
             // without a location is not penalized.
@@ -63,12 +79,34 @@ object JobMatchingEngine {
                 matchScore = score,
                 matchLabel = getMatchLabel(score),
                 matchReasons = listOfNotNull(locationReason(distanceKm)) + generateMatchReasons(profile, job, textScore),
-                matchedSkills = findMatchedSkills(profile.skills, job.requirements + job.aboutRole),
-                missingSkills = findMissingSkills(profile.skills, job.requirements),
+                matchedSkills = matchedJobSkills.ifEmpty { findMatchedSkills(profile.skills, job.requirements + job.aboutRole) },
+                missingSkills = missingJobSkills.ifEmpty { findMissingSkills(profile.skills, job.requirements) },
                 distanceKm = distanceKm
             )
         }.sortedByDescending { it.matchScore }
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Text score: 60% TF-IDF cosine + 25% skill coverage + 15% title fit
+    // (components that cannot be computed are left out and the rest are re-weighted).
+    // Mirrors lib/matching.ts in the admin; keep the two in sync.
+    // ─────────────────────────────────────────────────────────────────────
+    private const val WEIGHT_COSINE = 0.60
+    private const val WEIGHT_SKILLS = 0.25
+    private const val WEIGHT_TITLE = 0.15
+
+    internal fun compositeTextScore(cosine: Double, skillCoverage: Double?, titleFit: Double?): Int {
+        var total = WEIGHT_COSINE * cosine
+        var weight = WEIGHT_COSINE
+        if (skillCoverage != null) { total += WEIGHT_SKILLS * skillCoverage; weight += WEIGHT_SKILLS }
+        if (titleFit != null) { total += WEIGHT_TITLE * titleFit; weight += WEIGHT_TITLE }
+        return Math.round(total / weight * 100).toInt().coerceIn(0, 100)
+    }
+
+    /** The applicant's desired position, headline and past job titles, for the title-fit part of the score. */
+    private fun buildPositionText(profile: UserProfile): String =
+        (listOf(profile.desiredPosition, profile.headline) + profile.workExperiences.map { it.role })
+            .filter { it.isNotBlank() }.joinToString(" ")
 
     // ─────────────────────────────────────────────────────────────────────
     // Location proximity: 30% of the final score, text similarity is the other 70%
@@ -142,7 +180,45 @@ object JobMatchingEngine {
     // ─────────────────────────────────────────────────────────────────────
     private val TOKEN_SPLIT = Regex("[^\\p{L}\\p{N}+#]+")
 
-    private fun tokenize(document: String): List<String> = document.split(TOKEN_SPLIT)
+    // Very common words never count as the job title's meaning.
+    private val STOP_WORDS = (
+        "the and for with that this from have has had are was were will would can could may might shall " +
+        "you your our their his her its who whom what when where which while into onto over under about " +
+        "after before between through during also any all each other such than then them they these those " +
+        "not but out off per via etc one two new more most very well able including include includes " +
+        "must work works working worked job jobs role roles position positions company companies"
+    ).split(" ").toSet()
+
+    // Different spellings, typos and Tagalog words that mean the same thing.
+    private val SYNONYMS = mapOf(
+        "casher" to "cashier", "cashiering" to "cashier", "kahera" to "cashier", "kahero" to "cashier",
+        "benta" to "sale", "tindera" to "sale", "tindero" to "sale", "selling" to "sale", "seller" to "sale",
+        "bodega" to "warehouse", "imbentaryo" to "inventory",
+        "stockroom" to "stock", "stocking" to "stock", "restocking" to "stock",
+        "guard" to "security", "janitor" to "cleaning", "cleaner" to "cleaning",
+        "manager" to "management", "managing" to "management",
+        "supervising" to "supervision", "supervisor" to "supervision"
+    )
+
+    /** Lower-cases a word and reduces it to a rough stem so related forms match each other. */
+    internal fun normalizeToken(raw: String): String {
+        var word = raw.lowercase()
+        SYNONYMS[word]?.let { return it }
+
+        word = when {
+            word.length > 5 && word.endsWith("ing") -> word.dropLast(3)
+            word.length > 4 && word.endsWith("ies") -> word.dropLast(3) + "y"
+            word.length > 4 && Regex("(ss|x|ch|sh)es$").containsMatchIn(word) -> word.dropLast(2)
+            word.length > 4 && word.endsWith("ed") -> word.dropLast(2)
+            word.length > 3 && word.endsWith("s") && !word.endsWith("ss") -> word.dropLast(1)
+            else -> word
+        }
+        return SYNONYMS[word] ?: word
+    }
+
+    /** Words of at least 3 letters, stemmed. */
+    internal fun tokenize(document: String): List<String> =
+        document.lowercase().split(TOKEN_SPLIT).filter { it.length > 2 }.map { normalizeToken(it) }
 
     private fun computeTFIDF(
         tokens: List<String>,

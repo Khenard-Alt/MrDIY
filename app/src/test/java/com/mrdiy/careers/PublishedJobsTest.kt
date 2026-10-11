@@ -75,7 +75,8 @@ class PublishedJobsTest {
             row(2, "Cashier", "Checkout transactions").toJob())
         val results = JobMatchingEngine.matchJobs(UserProfile(resumeText = "Forklift inventory shipments", skills = listOf("Forklift")), jobs)
         assertEquals("1", results.first().job.id)
-        assertEquals(listOf("Forklift"), results.first().matchedSkills)
+        // The skills the job asks for that the applicant has (lower case, canonical names).
+        assertEquals(setOf("forklift", "inventory"), results.first().matchedSkills.toSet())
     }
 
     @Test fun emptyProfileDoesNotClaimSuitability() {

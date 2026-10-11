@@ -176,7 +176,13 @@ class AuthManager(private val context: Context) {
                 client.auth.signInWith(Google)
                 callback(true, "Opening Google sign-in...")
             } catch (e: Exception) {
-                callback(false, "Google sign-in could not start. Please try again.")
+                val msg = if (e.message?.contains("provider_not_enabled", ignoreCase = true) == true ||
+                    e.message?.contains("validation_failed", ignoreCase = true) == true) {
+                    "Google sign-in is not enabled in Supabase Dashboard. Please use Email login."
+                } else {
+                    e.localizedMessage ?: "Google sign-in could not start. Please use Email login."
+                }
+                callback(false, msg)
             }
         }
     }
@@ -187,8 +193,14 @@ class AuthManager(private val context: Context) {
                 client.auth.signInWith(Phone) { this.phone = phone }
                 withContext(Dispatchers.Main) { callback(true, "Verification code sent.") }
             } catch (e: Exception) {
+                val msg = if (e.message?.contains("provider_not_enabled", ignoreCase = true) == true ||
+                    e.message?.contains("validation_failed", ignoreCase = true) == true) {
+                    "Phone sign-in is not enabled in Supabase Dashboard. Please use Email login."
+                } else {
+                    "Phone sign-in is unavailable. Check your internet connection or use Email login."
+                }
                 withContext(Dispatchers.Main) {
-                    callback(false, "Phone sign-in is unavailable. Check the phone provider settings.")
+                    callback(false, msg)
                 }
             }
         }

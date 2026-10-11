@@ -62,7 +62,7 @@ class RecruitmentRepository(private val context: Context) {
         runCatching {
             SupabaseProvider.client.postgrest["interviews"].update({
                 set("applicant_response", response)
-                set("responded_at", java.time.Instant.now().toString())
+                set("responded_at", com.mrdiy.careers.ui.base.DateText.nowIso())
             }) { filter { eq("id", interviewId) } }
             true
         }.getOrDefault(false)
@@ -104,7 +104,7 @@ class RecruitmentRepository(private val context: Context) {
             SupabaseProvider.client.postgrest["pre_employment_requirements"].update({
                 set("document_url", path)
                 set("status", "Uploaded")
-                set("updated_at", java.time.Instant.now().toString())
+                set("updated_at", com.mrdiy.careers.ui.base.DateText.nowIso())
             }) { filter { eq("id", requirementId) } }
             null
         } catch (e: Exception) {

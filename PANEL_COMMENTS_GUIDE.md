@@ -4,9 +4,9 @@ Capstone: **A Mobile-Based Recruitment System Using Machine Learning For Mr. D.I
 Our Lady of Fatima University, College of Computer Studies, Antipolo City. Petsa ng komento: **25/05/2026**.
 Mga proponent: Antuerpia Ray Miguel R., Conde Sprewell B., Balasta Joshua Allen P., Sultan Salahoden E.
 
-Kopya nito ay nasa `MrDIY/PANEL_COMMENTS_GUIDE.md` at `mrdiyreact-admin/mrdiy-admin/PANEL_COMMENTS_GUIDE.md`. Ito ang listahan na dapat nating balikan bago ang bawat bagong feature at bago ang defense. Ang parehong talaan ay nasa seksyon 0 ng `ADMIN_MAJOR_PLAN.md`.
+Kopya nito ay nasa `MrDIY/PANEL_COMMENTS_GUIDE.md` at `mrdiyreact-admin/mrdiy-admin/PANEL_COMMENTS_GUIDE.md`.
 
-**Huling update ng kalagayan:** 2026-10-12
+**Huling update ng kalagayan:** 2026-10-12. Lahat ng 8 komento ay naitayo na sa code. **Kailangan lang i-run ang 1 SQL** (`MrDIY/supabase/migrations/202610120001_recruitment_pipeline.sql`) para gumana ang interview at checklist ng dokumento.
 
 ---
 
@@ -15,82 +15,70 @@ Kopya nito ay nasa `MrDIY/PANEL_COMMENTS_GUIDE.md` at `mrdiyreact-admin/mrdiy-ad
 | # | Panelist | Komento ng panel | Kalagayan |
 |---|---|---|---|
 | 1 | Engr. Eliseo Francisco, MIT | Notification o status update pagkatapos mag-apply | **Tapos na** (app, tray, email). Push kapag nakasara ang app ay kailangan pa ng Firebase key. |
-| 2 | Engr. Francisco | Mga hakbang mula pag-apply hanggang makapagtrabaho | **Kulang:** timeline, interview, checklist ng dokumento |
-| 3 | Engr. Francisco | Gaano kabilis magsisimula ang applicant | **Kulang:** Hiring Velocity |
-| 4 | Engr. Francisco | Web-based (optional) | **Tapos na:** ang admin web |
-| 5 | Engr. Francisco | Formatted biodata ng client (kung available) | **Kulang**, at wala pa sa anumang plano namin noon |
-| 6 | Michael Angelo Manalo, MIT | Improvements ng machine learning | **Bahagi pa lang** (lapit ng lokasyon, mga tumugmang salita) |
-| 7 | Manalo | Wastong ranking system na may strengths at weaknesses | **Kulang** |
-| 8 | Manalo | Automated AI explanation ng ranking | **Bahagi pa lang** (walang pangungusap na paliwanag) |
+| 2 | Engr. Francisco | Mga hakbang mula pag-apply hanggang makapagtrabaho | **Tapos na sa code**: pipeline, timeline, interview, checklist ng dokumento |
+| 3 | Engr. Francisco | Gaano kabilis magsisimula ang applicant | **Tapos na sa code**: Hiring Velocity (app at admin) |
+| 4 | Engr. Francisco | Web-based (optional) | **Tapos na**: ang admin web |
+| 5 | Engr. Francisco | Formatted biodata ng client (kung available) | **Tapos na**: biodata PDF mula sa admin |
+| 6 | Michael Angelo Manalo, MIT | Improvements ng machine learning | **Tapos na sa code**: bagong pormula ng match (stemming, synonyms, skills, title, lokasyon) |
+| 7 | Manalo | Wastong ranking system na may strengths at weaknesses | **Tapos na sa code**: ranking bawat job sa admin |
+| 8 | Manalo | Automated AI explanation ng ranking | **Tapos na sa code**: awtomatikong paliwanag na pangungusap |
 
 ---
 
-## Bawat komento: ano ang meron, ano ang kulang, paano ipapakita
+## Paano makita ang bawat isa (hakbang-hakbang)
 
-### 1. Notification o status update pagkatapos mag-apply
-- [x] "Application received" kapag nag-apply (awtomatiko mula sa database)
-- [x] Bell sa app na may pulang tuldok, listahan ng notification na may tamang oras
-- [x] Notification sa tray ng phone (lumalabas kapag binuksan ang app at bawat ~15 minuto)
-- [x] Email sa pagpalit ng status (Under review, Accepted, Rejected) na may logo at kulay ng MR.DIY
-- [ ] Push na lumalabas agad kahit nakasara ang app: **kailangan ang Firebase service account key**
-- **Demo:** mag-apply, tapos palitan ang status sa admin; ipakita ang bell, ang tray at ang email.
-- **Sagot kung tatanungin:** "Tatlong paraan: sa loob ng app, sa tray ng phone, at sa email. Naka-save per user ang bawat notification."
+### Bago magsimula (isang beses lang)
+1. I-run ang `202610120001_recruitment_pipeline.sql` sa Supabase SQL Editor (New query, paste, Run).
+2. I-restart ang admin (`npm run dev`).
+3. I-install ang app sa phone (Run sa Android Studio) at isara at buksan ulit.
 
-### 2. Mga hakbang mula pag-apply hanggang makapagtrabaho
-- [x] Status na Pending, Under review, Accepted, Rejected
-- [ ] **Timeline** sa app: Submitted, Under Review, Shortlisted, Interview, Hired
-- [ ] **Interview** (iskedyul, kumpirmasyon ng applicant)
-- [ ] **Checklist ng dokumento** pagkatapos ma-hire (SSS, PhilHealth, Pag-IBIG, NBI, medical, TIN, contract)
-- **Plano:** `ADMIN_MAJOR_PLAN.md` (seksyon 2C, 2D, 2I) at `CAPSTONE_ADVANCED_AI_PLANNING.md` (Section 1)
+### 1. Notification pagkatapos mag-apply
+- Mag-apply sa isang job sa app, tapos tingnan ang **bell** ("Application received").
+- Sa admin, palitan ang status. Dapat lumabas ang notification sa bell, sa tray ng phone, at sa email ng applicant.
+- Sa admin, **Applicant review** → "Emails sent to this applicant" ay nagpapakita ng Sent o Failed.
 
-### 3. Gaano kabilis magsisimula ang applicant
-- [ ] **Hiring Velocity Estimator**: ipakita sa applicant at sa HR ang "Estimated start: 2 - 4 business days"
-- Pormula sa plano: 7 araw na base, -2 kung match 85% pataas, -1 kung kumpleto ang profile at resume, -1 kung kumpleto ang dokumento, +3 kung kulang sa pangunahing skill.
-- **Plano:** `CAPSTONE_ADVANCED_AI_PLANNING.md` (Section 2.1)
+### 2. Mga hakbang hanggang makapagtrabaho
+- **Pipeline:** admin → Applications → View Resume → **Update Application Status**. Mga hakbang: Pending, Under Review, Shortlisted, (Interview Scheduled), Hired, Rejected, On Hold.
+- **Timeline sa app:** app → Home → icon ng Applications → pindutin ang application. Makikita ang "Where is my application?" na may ✓ at "← you are here".
+- **Interview:** admin → sa parehong modal, seksyong **Interview** → petsa, oras, lugar → Schedule. Sa app: lalabas ang **Your interview** na may **Confirm** at **Can't attend**; makikita ng admin ang sagot.
+- **Checklist ng dokumento:** palitan ang status sa **Hired**. Sa app, lalabas ang **Pre-employment documents** (7 dokumento) na may Upload. Sa admin, seksyong **Pre-employment documents** → View, Verify o Send back.
 
-### 4. Web-based (optional)
-- [x] Admin web (`mrdiy-admin`): Dashboard, Jobs, Applications, Messages, may email at notification
-- **Sagot:** "Dinagdag namin ang web para sa HR, na nakakabit sa iisang database ng app."
+### 3. Gaano kabilis magsisimula
+- **App:** sa application detail, kahon na **How soon can I start?** ("Estimated start: 2 - 4 business days") at ang mga dahilan.
+- **Admin:** Applicant review → **How soon could they start**.
+- Pormula: 7 araw na base; match 85% pataas -2; match na mas mababa sa 50% +3; kumpletong profile at resume -1; lahat ng dokumento ay verified -1. Ipinapakita bilang saklaw (±1 araw).
 
-### 5. Formatted biodata ng client
-- [ ] **Biodata na awtomatikong nabubuo** mula sa profile ng applicant (pangalan, contact, address, edukasyon, karanasan, skills, larawan)
-- [ ] **I-download bilang PDF** ng HR para ma-print
-- [ ] Mga field na hinihingi ng MR.DIY (tatanungin natin kung mayroon silang sariling format)
-- **Plano:** `ADMIN_MAJOR_PLAN.md` (seksyon 2K)
-- **Tanong para sa MR.DIY:** may sarili ba silang form ng biodata na dapat sundin?
+### 4. Web-based
+- Ang admin web (`mrdiy-admin`): Dashboard, Jobs, Applications, Messages.
+
+### 5. Formatted biodata
+- Admin → Applications → View Resume → **Download biodata (PDF)**. Isang pahina na may larawan, impormasyon, edukasyon, karanasan, skills, detalye ng application, at linya para sa pirma.
+- Para laman ang biodata, kailangang i-save ng applicant ang profile sa app (Edit Profile → Save). Isinasama na ngayon sa pag-save ang about, headline, skills, experience at education.
 
 ### 6. Improvements ng machine learning
-- [x] TF-IDF at Cosine Similarity (70% ng score)
-- [x] **Lapit ng lokasyon** (30% ng score)
-- [x] Paliwanag ng mga salitang tumugma, na nakahighlight sa resume (admin)
-- [x] Mas mabilis na pagkuwenta (inayos ang mabagal na bahagi)
-- [ ] Mas magandang pagtutugma: mga kasingkahulugan at Tagalog na termino, bigat ng bawat skill, taon ng karanasan at antas
-- [ ] **Pagsukat ng kalidad**: ihambing ang ranking sa pasya ng HR (halimbawa kung ilan sa Accepted ang nasa itaas ng ranking)
-- **Sagot kung tatanungin:** "Pinili namin ang TF-IDF dahil maipapaliwanag nito kung bakit, at dinagdagan namin ng lokasyon. Susunod ang mas magandang pagtutugma ng skills."
+- **Dati:** TF-IDF at Cosine Similarity lang. **Ngayon:** 60% TF-IDF (sa mga stem ng salita) + 25% saklaw ng mga skill na hinihingi ng job + 15% tugma ng posisyon sa title, at 30% ng huling score ay lapit ng lokasyon.
+- **Stemming at synonyms:** "cashiering", "casher" at "kahera" ay iisa na sa kuwenta; "POS" at "point of sale" ay iisang skill.
+- **Subok:** `RecruitmentPipelineTest.kt` (halimbawa, ang applicant na cashier ay mas mataas kaysa sa driver job) at ang 45 na unit test.
+- Ang parehong pormula ay nasa app (`JobMatchingEngine.kt`) at admin (`lib/matching.ts`).
 
-### 7. Ranking system na may strengths at weaknesses
-- [x] Match % ng bawat applicant sa bawat job
-- [ ] **Ranking ng mga applicant bawat job** (#1, #2, #3) sa admin, naka-sort ayon sa match
-- [ ] Para sa bawat applicant: **mga lakas** (tumugmang skills, karanasan, malapit na lugar) at **mga kulang** (hindi nakalistang kinakailangan)
-- **Plano:** `ADMIN_MAJOR_PLAN.md` (seksyon 2L) at `CAPSTONE_ADVANCED_AI_PLANNING.md` (Section 2.2)
+### 7. Ranking na may strengths at weaknesses
+- Admin → Applications → **Rank applicants by job** → pumili ng job. Naka-ayos mula pinakamataas (#1, #2…), may bar at %. Pindutin ang isa para makita ang **Strengths** (+) at **Weaknesses at gaps** (−).
+- Nasa Applicant review din ang "Rank #1 of N for this job".
 
-### 8. Automated AI explanation ng ranking
-- [x] Mga dahilan sa app: "Branch is about 4 km from you", mga tumugmang skill
-- [x] Listahan ng mga salitang nag-ambag at porsyento ng bawat isa (admin)
-- [ ] **Isang pangungusap na paliwanag** na awtomatikong nabubuo, halimbawa: "Si [Pangalan] ay #2 na may 68% na match sa Cashier. Ang ranggo ay dahil sa 3 sa 5 kinakailangang skill (POS, cash handling, customer service) at 3 taong karanasan. Kulang siya sa: …"
-- **Plano:** `CAPSTONE_ADVANCED_AI_PLANNING.md` (Section 3.3)
+### 8. AI explanation
+- Sa ranking at sa Applicant review, kahon na **Why this rank**. Halimbawa: "Joshua Allen P. Balasta is ranked #1 of 1 with a 39% match for Customer Service Representative. The text of the profile and resume is 16% similar to the job, and it covers 1 of 3 required skills (customer service); the branch is about 4 km away. Experience: 3 years. Main gap: does not show these required skills: communication and training."
+- Kasama ang listahan ng mga salitang nag-ambag (na may %) at ang resume na may highlight.
 
 ---
 
-## Mga paalala bago ang defense
-- Ang `CAPSTONE_DEFENSE_GUIDE.md` ay may mga sagot na naglalarawan ng mga feature na **wala pa** (Shortlisted at Hired, pre-employment checklist, Hiring Velocity, "Generate AI Description"). Dapat itong itayo o itama ang sagot, para totoo ang lahat ng ipapakita.
-- Ang "30 unit tests" sa gabay ay **38** na ngayon.
-- Para sa bawat feature na itatayo, isulat dito kung aling komento ang sinasagot, at i-tick ang checkbox.
-- Ang **AI na huli** (mga pagpapahusay ng ML, ranking at paliwanag, mga komento 6 hanggang 8) ay gagawin pagkatapos ng pipeline, interview at checklist, para may datos na ma-rank at maipaliwanag.
+## Mga kailangan pa
+- [ ] **Firebase service account key** para sa push kapag nakasara ang app (komento 1).
+- [ ] I-run ang SQL ng pipeline (komento 2, 3).
+- [ ] **Itama ang `CAPSTONE_DEFENSE_GUIDE.md`**: ang mga sagot nito ay naglalarawan ng mga feature. Ngayon ay totoo na ang karamihan, pero i-update ang bilang ng unit tests (45) at ang pangalan ng mga status (Under Review, Hired).
+- [ ] Hindi pa nasubukan nang buo sa totoong phone: interview at upload ng dokumento. Subukan ito bago ang defense.
 
-## Pagkakasunod-sunod na mungkahi
-1. Komento 2: pipeline, timeline sa app, interview, checklist
-2. Komento 3: Hiring Velocity
-3. Komento 5: formatted biodata (PDF)
-4. Komentos 7, 8, 6: ranking na may strengths at weaknesses, paliwanag na pangungusap, at mga pagpapahusay ng ML
-5. Komento 1: i-activate ang push (Firebase key)
+## Mga limitasyon na dapat alam kapag tinanong
+- Ang **layo** ay tantya mula sa address (hindi GPS), mula gitna ng isang lungsod hanggang gitna ng isa pa.
+- Ang **match %** ay text similarity at lapit ng lokasyon, **hindi** posibilidad na tatanggapin ang applicant. Ang HR ang may huling pasya.
+- Ang bahagi ng **ML** ay TF-IDF at Cosine Similarity na may dagdag na skill at title; hindi ito deep learning. Dahilan: kaya nitong ipaliwanag kung bakit.
+- Ang **Hiring Velocity** ay tantya mula sa pormula, hindi garantiya.

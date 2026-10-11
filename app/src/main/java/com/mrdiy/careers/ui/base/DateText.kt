@@ -16,6 +16,10 @@ object DateText {
         """^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}(?::?\d{2})?)?$"""
     )
 
+    /** The current moment as an ISO-8601 UTC timestamp for the database, e.g. 2026-10-11T14:45:05Z. */
+    fun nowIso(): String =
+        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }.format(Date())
+
     /** "Oct 11, 2026 · 10:45 PM" in the phone's time zone; returns the input unchanged if it can't be parsed. */
     fun dateTime(iso: String): String = format(iso, "MMM d, yyyy · h:mm a")
 

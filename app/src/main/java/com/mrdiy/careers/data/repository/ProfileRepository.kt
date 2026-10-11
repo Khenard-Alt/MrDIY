@@ -170,6 +170,12 @@ class ProfileRepository(private val context: Context) {
                     put("years_experience", JsonPrimitive(profile.yearsOfExperience.toString()))
                     put("email", JsonPrimitive(profile.email))
                     put("phone", JsonPrimitive(profile.phone))
+                    // The rest of the profile, so HR can see it (and print the biodata) in the admin.
+                    put("about", JsonPrimitive(profile.about))
+                    put("headline", JsonPrimitive(profile.headline))
+                    put("skills", JsonPrimitive(profile.skills.joinToString(",")))
+                    put("work_experiences", json.parseToJsonElement(json.encodeToString(profile.workExperiences)))
+                    put("education", json.parseToJsonElement(json.encodeToString(profile.education)))
                     if (uploadedPhoto != null) put("photo_path", JsonPrimitive(uploadedPhoto))
                 }
                 // Do not require a database-level UNIQUE(user_id) constraint here.
