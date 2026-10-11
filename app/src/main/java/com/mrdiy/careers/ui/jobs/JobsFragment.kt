@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.FragmentJobsBinding
 import com.mrdiy.careers.ui.base.BaseFragment
+import com.mrdiy.careers.ui.base.setAdapterWithHeader
 import com.mrdiy.careers.ui.home.JobAdapter
 
 class JobsFragment : BaseFragment() {
@@ -37,7 +38,7 @@ class JobsFragment : BaseFragment() {
         )
         binding.jobsRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = jobAdapter
+            setAdapterWithHeader(binding.listHeader, jobAdapter)
         }
 
         viewModel.filteredJobs.observe(viewLifecycleOwner) { jobs ->

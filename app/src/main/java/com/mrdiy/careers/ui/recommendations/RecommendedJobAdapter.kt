@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mrdiy.careers.R
+import com.mrdiy.careers.data.search.LocationDistance
 import com.mrdiy.careers.databinding.ItemRecommendedJobCardBinding
 import com.mrdiy.careers.model.Job
 import com.mrdiy.careers.model.JobMatchResult
@@ -50,7 +51,10 @@ class RecommendedJobAdapter(
             }
             binding.chipJobType.visibility = if (job.jobType.isNotBlank() && job.jobType != "Not specified") View.VISIBLE else View.GONE
             binding.chipJobType.text = job.jobType
-            binding.chipLocation.text = job.location
+            // Distance goes first so it stays visible when a long branch name is truncated.
+            binding.chipLocation.text = result.distanceKm
+                ?.let { "${LocationDistance.formatDistance(it)} · ${job.location}" }
+                ?: job.location
             binding.chipCategory.visibility = if (job.category.isNotBlank() && job.category != "Not specified") View.VISIBLE else View.GONE
             binding.chipCategory.text = job.category
 

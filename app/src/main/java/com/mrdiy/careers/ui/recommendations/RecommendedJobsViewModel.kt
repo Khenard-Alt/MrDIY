@@ -10,6 +10,8 @@ import com.mrdiy.careers.data.repository.PublishedJobsRepository
 import com.mrdiy.careers.data.repository.SavedJobsRepository
 import com.mrdiy.careers.data.repository.ProfileRepository
 import com.mrdiy.careers.data.ml.HybridMatchingService
+import com.mrdiy.careers.data.search.LocationDistance
+import com.mrdiy.careers.data.search.LocationFilter
 import com.mrdiy.careers.data.search.MetroManilaScope
 import com.mrdiy.careers.model.Job
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +30,15 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
     val hasMatchingProfile = MutableLiveData(false)
     val matchResults = MutableLiveData<List<com.mrdiy.careers.model.JobMatchResult>>()
     private var rankedResults = emptyList<com.mrdiy.careers.model.JobMatchResult>()
+    private var hasApplicantLocation = false
+    private var defaultFilterDone = false
+
+    private val _selectedLocation = MutableLiveData<String?>()
+    /** The active location filter (null = All Jobs), so a recreated screen can restore the right chip. */
+    val selectedLocation: LiveData<String?> get() = _selectedLocation
+
+    /** False when no published jobs exist at all (as opposed to none matching the current filters). */
+    val hasAnyJobs = MutableLiveData(true)
 
     private var allJobs: List<Job> = emptyList()
 
@@ -122,6 +133,7 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
 
     fun onLocationFilter(location: String?) {
         currentLocationFilter = location
+        _selectedLocation.value = location
         applyFilters()
     }
 
@@ -129,6 +141,7 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
         currentSearchQuery = null
         currentJobTypeFilter = null
         currentLocationFilter = null
+        _selectedLocation.value = null
         applyFilters()
     }
 
@@ -159,13 +172,30 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
         val profile = profileRepository.loadFromPrefs()
         hasMatchingProfile.value = profile.skills.isNotEmpty() || profile.desiredPosition.isNotBlank() ||
             profile.about.isNotBlank() || profile.headline.isNotBlank() || profile.workExperiences.isNotEmpty() || profile.resumeText.isNotBlank()
-        description.value = if (hasMatchingProfile.value == true)
-            "Published jobs ranked by similarity to your profile. Scores are text similarity, not hiring probabilities."
-        else "Add your skills or desired position, or upload a resume to personalize these jobs."
+        val applicantPoint = LocationDistance.locate(profile.location)
+        hasApplicantLocation = applicantPoint != null
+        val matchText = if (hasMatchingProfile.value == true)
+            "Scores are text similarity to your profile, not hiring probabilities."
+        else "Add your skills or desired position, or upload a resume to personalize match scores."
+        description.value = if (applicantPoint != null)
+            "Nearest branches to ${profile.location.trim()} first. $matchText"
+        else "Add your location in your profile to see the nearest branches first. $matchText"
 
         // Matching does an expensive text-similarity pass over every job — keep it off the main thread.
         rankedResults = withContext(Dispatchers.Default) {
-            HybridMatchingService.matchJobsToProfile(profile, jobs)
+            val matched = HybridMatchingService.matchJobsToProfile(profile, jobs)
+            if (applicantPoint == null) {
+                matched
+            } else {
+                // Nearest first; same distance keeps the higher match score first. Unknown locations go last.
+                matched.map { result ->
+                    val jobPoint = LocationDistance.locate(result.job.location)
+                    result.copy(distanceKm = jobPoint?.let { LocationDistance.distanceKm(applicantPoint, it) })
+                }.sortedWith(
+                    compareBy<com.mrdiy.careers.model.JobMatchResult> { it.distanceKm ?: Double.MAX_VALUE }
+                        .thenByDescending { it.matchScore }
+                )
+            }
         }
         return rankedResults.map { it.job }
     }
@@ -187,13 +217,27 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
             }
         }
 
-        if (!currentLocationFilter.isNullOrEmpty()) {
-            filtered = filtered.filter { job ->
-                if (currentLocationFilter == "Metro Manila") MetroManilaScope.isMetro(job.location)
-                else job.location.contains(currentLocationFilter!!, ignoreCase = true)
+        val distances = rankedResults.associate { it.job.id to it.distanceKm }
+
+        // First time jobs arrive: if the applicant has a profile location and branches are nearby,
+        // start on "Near Me" so the list is filtered to their area. They can switch to All Jobs.
+        if (!defaultFilterDone && allJobs.isNotEmpty()) {
+            defaultFilterDone = true
+            if (currentLocationFilter.isNullOrEmpty() &&
+                distances.values.any { it != null && it <= LocationFilter.NEAR_ME_RADIUS_KM }
+            ) {
+                currentLocationFilter = LocationFilter.NEAR_ME
+                _selectedLocation.value = LocationFilter.NEAR_ME
             }
         }
 
+        if (!currentLocationFilter.isNullOrEmpty()) {
+            filtered = filtered.filter { job ->
+                LocationFilter.matches(currentLocationFilter, job.location, distances[job.id])
+            }
+        }
+
+        hasAnyJobs.value = allJobs.isNotEmpty()
         _filteredJobs.value = filtered
         val ids = filtered.map { it.id }.toSet()
         matchResults.value = rankedResults.filter { it.job.id in ids }
@@ -204,4 +248,8 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
         autoRefreshJob?.cancel()
         searchJob?.cancel()
     }
+
+    fun currentLocationFilter(): String? = currentLocationFilter
+
+    fun hasApplicantLocation(): Boolean = hasApplicantLocation
 }

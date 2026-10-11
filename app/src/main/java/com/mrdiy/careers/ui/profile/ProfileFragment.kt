@@ -127,14 +127,8 @@ class ProfileFragment : Fragment() {
             val signed = com.mrdiy.careers.data.auth.SupabaseProvider.client.storage
                 .from(if (legacy) "resumes" else com.mrdiy.careers.data.repository.ResumeFiles.BUCKET)
                 .createSignedUrl(path, 5.minutes)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(signed)
-            }
-            if (intent.resolveActivity(requireContext().packageManager) != null) {
-                startActivity(intent)
-            } else {
-                Toast.makeText(requireContext(), "No app available to view PDF", Toast.LENGTH_SHORT).show()
-            }
+            // Shown inside the app, so no PDF/Word app is needed on the phone.
+            ResumeViewerDialog.show(childFragmentManager, signed)
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Could not open resume. Please try again.", Toast.LENGTH_SHORT).show()
         }

@@ -6,6 +6,7 @@ import com.mrdiy.careers.data.auth.AuthManager
 import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.model.UserProfile
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,6 +79,10 @@ data class UserProfileRow(
 )
 
 class ProfileRepository(private val context: Context) {
+
+    private companion object {
+        const val AVATAR_BUCKET = "avatars"
+    }
 
     private val prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
@@ -155,6 +160,8 @@ class ProfileRepository(private val context: Context) {
                 // Resume metadata is optional and is written by the resume flow; sending
                 // obsolete resume columns here made a brand-new profile fail before the
                 // user could finish onboarding.
+                // Upload the profile picture so the admin can see it. A failed upload never blocks saving.
+                val uploadedPhoto = uploadPhoto(uid, profile.photoPath)
                 val payload = kotlinx.serialization.json.buildJsonObject {
                     put("user_id", JsonPrimitive(uid))
                     put("full_name", JsonPrimitive(profile.fullName.ifBlank { "${profile.firstName} ${profile.lastName}".trim() }))
@@ -163,6 +170,7 @@ class ProfileRepository(private val context: Context) {
                     put("years_experience", JsonPrimitive(profile.yearsOfExperience.toString()))
                     put("email", JsonPrimitive(profile.email))
                     put("phone", JsonPrimitive(profile.phone))
+                    if (uploadedPhoto != null) put("photo_path", JsonPrimitive(uploadedPhoto))
                 }
                 // Do not require a database-level UNIQUE(user_id) constraint here.
                 // Some existing installations predate that constraint, and PostgREST
@@ -186,6 +194,36 @@ class ProfileRepository(private val context: Context) {
                     .edit().putBoolean("profile_sync_pending", true).apply()
                 withContext(Dispatchers.Main) { onComplete?.invoke(true) }
             }
+        }
+    }
+
+    /**
+     * Uploads the local profile picture (downscaled JPEG) to the private `avatars` bucket at
+     * `<uid>/avatar.jpg` and returns that storage path, or null if there is no photo or the upload fails.
+     */
+    private suspend fun uploadPhoto(uid: String, localPath: String): String? = withContext(Dispatchers.IO) {
+        try {
+            val file = java.io.File(localPath)
+            if (localPath.isBlank() || !file.isFile) return@withContext null
+            val bounds = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            android.graphics.BitmapFactory.decodeFile(localPath, bounds)
+            var sample = 1
+            while (bounds.outWidth / sample > 1024 || bounds.outHeight / sample > 1024) sample *= 2
+            val bitmap = android.graphics.BitmapFactory.decodeFile(
+                localPath, android.graphics.BitmapFactory.Options().apply { inSampleSize = sample }
+            ) ?: return@withContext null
+            val bytes = java.io.ByteArrayOutputStream().also {
+                bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, it)
+            }.toByteArray()
+            val path = "$uid/avatar.jpg"
+            SupabaseProvider.client.storage.from(AVATAR_BUCKET).upload(path, bytes) {
+                upsert = true
+                contentType = io.ktor.http.ContentType.Image.JPEG
+            }
+            path
+        } catch (e: Exception) {
+            com.mrdiy.careers.data.SafeDiagnostics.record("backend_request", e)
+            null
         }
     }
 

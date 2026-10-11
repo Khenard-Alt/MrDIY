@@ -1,5 +1,6 @@
 package com.mrdiy.careers.ui.applications
 
+import com.mrdiy.careers.ui.base.DateText
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -71,8 +72,8 @@ private class ApplicationsAdapter(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = applications[position]
         holder.title.text = item.job_title
-        holder.status.text = "Status: ${item.status}"
-        holder.date.text = if (item.applied_at.isBlank()) "" else "Applied ${item.applied_at}"
+        holder.status.text = "Status: ${DateText.statusLabel(item.status)}"
+        holder.date.text = if (item.applied_at.isBlank()) "" else "Applied ${DateText.dateTime(item.applied_at)}"
     }
 
     override fun getItemCount() = applications.size

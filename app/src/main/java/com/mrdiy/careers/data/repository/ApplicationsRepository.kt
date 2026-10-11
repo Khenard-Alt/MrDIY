@@ -22,7 +22,7 @@ import java.util.UUID
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.*
 
-class ApplicationsRepository(context: Context) {
+class ApplicationsRepository(private val context: Context) {
     companion object { private val applyLock = Mutex() }
 
     private val authManager = AuthManager(context)
@@ -87,6 +87,22 @@ class ApplicationsRepository(context: Context) {
     }.flowOn(Dispatchers.IO)
 
     suspend fun apply(job: Job): Result<Unit> = applyLock.withLock { applyOnce(job) }
+
+    /**
+     * Match % for this job, computed against all published jobs so it equals the score shown in the
+     * lists. Returns null if it can't be computed; applying must never fail because of scoring.
+     */
+    private suspend fun matchScoreFor(job: Job): Int? = try {
+        val profile = ProfileRepository(context).loadFromPrefs()
+        val jobs = PublishedJobsRepository().fetchOpenJobs().getOrNull().orEmpty()
+            .let { if (it.any { published -> published.id == job.id }) it else it + job }
+        com.mrdiy.careers.data.ml.HybridMatchingService.matchJobsToProfile(profile, jobs)
+            .firstOrNull { it.job.id == job.id }?.matchScore
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (error: Exception) {
+        null
+    }
     private suspend fun applyOnce(job: Job): Result<Unit> = withContext(Dispatchers.IO) {
         val userId = authManager.getCurrentUserId()
             ?: return@withContext Result.failure(IllegalStateException("Please sign in before applying."))
@@ -104,10 +120,13 @@ class ApplicationsRepository(context: Context) {
             if (existing.isNotEmpty()) {
                 Result.failure(IllegalStateException("You have already applied for this job."))
             } else {
+                val matchScore = matchScoreFor(job)
                 SupabaseProvider.client.postgrest[table].insert(buildJsonObject {
                     put("user_id", userId)
                     put("job_id", job.id.toLongOrNull()?.let { JsonPrimitive(it) } ?: JsonPrimitive(job.id))
                     put("status", "Pending")
+                    // Same score the applicant saw (text similarity + location), so the admin sees it too.
+                    if (matchScore != null) put("match_score", matchScore)
                 })
                 Result.success(Unit)
             }

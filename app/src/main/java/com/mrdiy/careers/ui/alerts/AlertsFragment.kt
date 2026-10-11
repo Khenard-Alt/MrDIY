@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrdiy.careers.MainActivity
+import com.mrdiy.careers.R
+import com.mrdiy.careers.model.Alert
+import com.mrdiy.careers.model.AlertType
 import com.mrdiy.careers.databinding.FragmentAlertsBinding
 import com.mrdiy.careers.ui.base.BaseFragment
 import com.mrdiy.careers.data.repository.InboxRepository
@@ -35,14 +38,26 @@ class AlertsFragment : BaseFragment() {
                 binding.tvUnreadCount.text = if (alerts.isEmpty()) "" else "${alerts.count { !it.isRead }} unread"
                 binding.tvEmptyAlerts.visibility = if (alerts.isEmpty()) View.VISIBLE else View.GONE
                 binding.tvEmptyAlerts.text = "No notifications yet."
-                binding.alertsRecycler.adapter = AlertAdapter { alert ->
-                    alert.jobId?.let { id -> androidx.navigation.fragment.NavHostFragment.findNavController(this@AlertsFragment).navigate(com.mrdiy.careers.R.id.jobDetailFragment, android.os.Bundle().apply { putString("jobId", id) }) }
-                }
+                binding.alertsRecycler.adapter = AlertAdapter { alert -> openAlert(alert) }
                 (binding.alertsRecycler.adapter as AlertAdapter).submitList(alerts)
+                // The list above still shows which ones were new; the bell clears for next time.
+                if (alerts.any { !it.isRead }) InboxRepository(requireContext()).markAllAlertsRead()
             }.onFailure { binding.alertsRecycler.visibility = View.GONE
                 binding.tvEmptyAlerts.visibility = View.VISIBLE
                 binding.tvEmptyAlerts.text = "Could not load notifications. Tap to retry."
                 binding.tvEmptyAlerts.setOnClickListener { androidx.navigation.fragment.NavHostFragment.findNavController(this@AlertsFragment).navigate(com.mrdiy.careers.R.id.alertsFragment) } }
+        }
+    }
+
+    /** Opens what the notification is about: the job, the application list, or the messages. */
+    private fun openAlert(alert: Alert) {
+        val nav = androidx.navigation.fragment.NavHostFragment.findNavController(this)
+        when (alert.type) {
+            AlertType.MESSAGE -> nav.navigate(R.id.messagesFragment)
+            AlertType.APPLICATION_UPDATE, AlertType.INTERVIEW_INVITE -> nav.navigate(R.id.applicationsFragment)
+            else -> alert.jobId?.let { id ->
+                nav.navigate(R.id.jobDetailFragment, android.os.Bundle().apply { putString("jobId", id) })
+            }
         }
     }
 

@@ -12,7 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.mrdiy.careers.R
+import com.mrdiy.careers.data.search.LocationDistance
+import com.mrdiy.careers.data.search.LocationFilter
 import com.mrdiy.careers.databinding.FragmentRecommendedJobsBinding
+import com.mrdiy.careers.ui.alerts.refreshNotificationBadge
+import com.mrdiy.careers.ui.base.setAdapterWithHeader
 
 class RecommendedJobsFragment : Fragment() {
 
@@ -39,13 +43,44 @@ class RecommendedJobsFragment : Fragment() {
         setupHeaderActions()
         observeViewModel()
 
-        binding.btnUploadResume.setOnClickListener {
-            findNavController().navigate(R.id.action_recommendations_to_resumeUpload)
+        binding.btnClearFilters.setOnClickListener {
+            binding.chipAll.isChecked = true
+            viewModel.clearFilters()
+            binding.searchInput.text?.clear()
         }
+    }
+
+    private fun updateEmptyState() {
+        val empty = viewModel.matchResults.value.orEmpty().isEmpty() && viewModel.isLoading.value != true
+        if (empty) showEmptyState()
+        binding.emptyGroup.visibility = if (empty) View.VISIBLE else View.GONE
+    }
+
+    /** Picks the empty-state wording for why the list is empty instead of always suggesting a resume. */
+    private fun showEmptyState() {
+        val noJobsAtAll = viewModel.hasAnyJobs.value == false
+        val nearMeWithoutLocation =
+            viewModel.currentLocationFilter() == LocationFilter.NEAR_ME && !viewModel.hasApplicantLocation()
+        when {
+            noJobsAtAll -> {
+                binding.tvEmptyTitle.text = "No jobs are open right now"
+                binding.tvEmptyBody.text = "New branch openings will show up here. Please check back soon."
+            }
+            nearMeWithoutLocation -> {
+                binding.tvEmptyTitle.text = "Add your location"
+                binding.tvEmptyBody.text = "Set your Location in Edit Profile so we can find branches near you."
+            }
+            else -> {
+                binding.tvEmptyTitle.text = "No jobs match your filters"
+                binding.tvEmptyBody.text = "Try another location or clear the filters to see all jobs."
+            }
+        }
+        binding.btnClearFilters.visibility = if (noJobsAtAll) View.GONE else View.VISIBLE
     }
 
     override fun onResume() {
         super.onResume()
+        refreshNotificationBadge(binding.notificationBadge)
         viewModel.loadSavedJobIds()
         viewModel.loadRecommendations()
     }
@@ -60,7 +95,7 @@ class RecommendedJobsFragment : Fragment() {
         )
 
         binding.recommendedJobsRecycler.layoutManager = LinearLayoutManager(requireContext())
-        binding.recommendedJobsRecycler.adapter = jobAdapter
+        binding.recommendedJobsRecycler.setAdapterWithHeader(binding.listHeader, jobAdapter)
     }
 
     private fun setupSearchBar() {
@@ -95,8 +130,17 @@ class RecommendedJobsFragment : Fragment() {
             if (isChecked) viewModel.onJobTypeFilter("Part-time")
         }
 
-        binding.chipManila.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) viewModel.onLocationFilter("Metro Manila")
+        mapOf(
+            binding.chipNearMe to LocationFilter.NEAR_ME,
+            binding.chipManila to LocationDistance.METRO_MANILA,
+            binding.chipRizal to LocationDistance.RIZAL,
+            binding.chipCavite to LocationDistance.CAVITE,
+            binding.chipLaguna to LocationDistance.LAGUNA,
+            binding.chipBulacan to LocationDistance.BULACAN
+        ).forEach { (chip, area) ->
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) viewModel.onLocationFilter(area)
+            }
         }
 
     }
@@ -113,16 +157,28 @@ class RecommendedJobsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.description.observe(viewLifecycleOwner) { binding.tvAiDescription.text = it }
+        viewModel.selectedLocation.observe(viewLifecycleOwner) { filter ->
+            val chip = when (filter) {
+                LocationFilter.NEAR_ME -> binding.chipNearMe
+                LocationDistance.METRO_MANILA -> binding.chipManila
+                LocationDistance.RIZAL -> binding.chipRizal
+                LocationDistance.CAVITE -> binding.chipCavite
+                LocationDistance.LAGUNA -> binding.chipLaguna
+                LocationDistance.BULACAN -> binding.chipBulacan
+                else -> binding.chipAll
+            }
+            if (!chip.isChecked) chip.isChecked = true
+        }
         viewModel.matchResults.observe(viewLifecycleOwner) { jobs ->
             jobAdapter.updateResults(jobs)
-            binding.emptyGroup.visibility = if (jobs.isEmpty() && viewModel.isLoading.value != true) View.VISIBLE else View.GONE
+            updateEmptyState()
         }
 
-
-
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
-            binding.loadingGroup.visibility = if (loading) View.VISIBLE else View.GONE
-            binding.emptyGroup.visibility = if (!loading && viewModel.matchResults.value.orEmpty().isEmpty()) View.VISIBLE else View.GONE
+            // Background refreshes keep the current results on screen instead of the spinner.
+            val hasResults = viewModel.matchResults.value.orEmpty().isNotEmpty()
+            binding.loadingGroup.visibility = if (loading && !hasResults) View.VISIBLE else View.GONE
+            updateEmptyState()
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { message ->

@@ -1,5 +1,6 @@
 package com.mrdiy.careers.data.ml
 
+import com.mrdiy.careers.data.search.LocationFilter
 import com.mrdiy.careers.model.Job
 import com.mrdiy.careers.model.JobMatchResult
 import com.mrdiy.careers.model.UserProfile
@@ -34,26 +35,63 @@ object JobMatchingEngine {
         // Create profile document from all profile info
         val profileDoc = buildProfileDocument(profile)
 
-        // Extract TF-IDF vectors
-        val profileVector = computeTFIDF(profileDoc, listOf(profileDoc) + jobs.map { buildJobDocument(it) })
-        val jobVectors = jobs.associateWith { job ->
-            computeTFIDF(buildJobDocument(job), listOf(profileDoc) + jobs.map { buildJobDocument(it) })
+        // Extract TF-IDF vectors. Each document is tokenized once and document frequencies are
+        // counted once, so the cost grows linearly with the number of jobs.
+        val jobDocs = jobs.map { buildJobDocument(it) }
+        val corpusTokens = (listOf(profileDoc) + jobDocs).map { tokenize(it) }
+        val documentFrequency = HashMap<String, Int>()
+        corpusTokens.forEach { tokens -> tokens.toSet().forEach { documentFrequency.merge(it, 1, Int::plus) } }
+        val totalDocs = corpusTokens.size
+
+        val profileVector = computeTFIDF(corpusTokens[0], documentFrequency, totalDocs)
+        val jobVectors = jobs.indices.associate { i ->
+            jobs[i] to computeTFIDF(corpusTokens[i + 1], documentFrequency, totalDocs)
         }
 
         // Calculate similarity scores
         return jobs.map { job ->
             val similarity = cosineSimilarity(profileVector, jobVectors[job] ?: emptyMap())
-            val score = (similarity * 100).toInt().coerceIn(0, 100)
+            val textScore = (similarity * 100).toInt().coerceIn(0, 100)
+
+            // Location is part of the score only when both locations are known, so a profile
+            // without a location is not penalized.
+            val distanceKm = LocationFilter.distanceKm(profile.location, job.location)
+            val score = if (distanceKm == null) textScore else combine(textScore, distanceKm)
 
             JobMatchResult(
                 job = job,
                 matchScore = score,
                 matchLabel = getMatchLabel(score),
-                matchReasons = generateMatchReasons(profile, job, score),
+                matchReasons = listOfNotNull(locationReason(distanceKm)) + generateMatchReasons(profile, job, textScore),
                 matchedSkills = findMatchedSkills(profile.skills, job.requirements + job.aboutRole),
-                missingSkills = findMissingSkills(profile.skills, job.requirements)
+                missingSkills = findMissingSkills(profile.skills, job.requirements),
+                distanceKm = distanceKm
             )
         }.sortedByDescending { it.matchScore }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Location proximity: 30% of the final score, text similarity is the other 70%
+    // ─────────────────────────────────────────────────────────────────────
+    private const val LOCATION_WEIGHT = 0.30
+    private const val FULL_SCORE_KM = 1.5     // same city
+    private const val ZERO_SCORE_KM = 40.0    // too far to commute daily
+
+    private fun proximityScore(distanceKm: Double): Int {
+        if (distanceKm <= FULL_SCORE_KM) return 100
+        val remaining = 1 - (distanceKm - FULL_SCORE_KM) / (ZERO_SCORE_KM - FULL_SCORE_KM)
+        return (remaining * 100).toInt().coerceIn(0, 100)
+    }
+
+    private fun combine(textScore: Int, distanceKm: Double): Int =
+        (textScore * (1 - LOCATION_WEIGHT) + proximityScore(distanceKm) * LOCATION_WEIGHT)
+            .toInt().coerceIn(0, 100)
+
+    private fun locationReason(distanceKm: Double?): String? = when {
+        distanceKm == null -> null
+        distanceKm <= FULL_SCORE_KM -> "Branch is in your area"
+        distanceKm <= 15.0 -> "Branch is about ${distanceKm.toInt()} km from you"
+        else -> null
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -102,21 +140,24 @@ object JobMatchingEngine {
     // ─────────────────────────────────────────────────────────────────────
     // Step 2: TF-IDF Feature Extraction
     // ─────────────────────────────────────────────────────────────────────
-    private fun computeTFIDF(document: String, corpus: List<String>): Map<String, Double> {
-        val words = document.split(Regex("[^\\p{L}\\p{N}+#]+")).filter { it.length > 2 }
+    private val TOKEN_SPLIT = Regex("[^\\p{L}\\p{N}+#]+")
+
+    private fun tokenize(document: String): List<String> = document.split(TOKEN_SPLIT)
+
+    private fun computeTFIDF(
+        tokens: List<String>,
+        documentFrequency: Map<String, Int>,
+        totalDocs: Int
+    ): Map<String, Double> {
+        val words = tokens.filter { it.length > 2 }
         val termFreq = words.groupingBy { it }.eachCount()
-        val totalDocs = corpus.size
 
-        // Calculate IDF for each term
-        val idf = words.distinct().associateWith { term ->
-            val docsWithTerm = corpus.count { term in it.split(Regex("[^\\p{L}\\p{N}+#]+")) }
-            if (docsWithTerm > 0) kotlin.math.ln((totalDocs.toDouble() / docsWithTerm)) + 1 else 0.0
-        }
-
-        // TF-IDF = TF * IDF
+        // TF-IDF = TF * IDF, where IDF = ln(totalDocs / docsWithTerm) + 1
         return termFreq.mapValues { (term, freq) ->
+            val docsWithTerm = documentFrequency[term] ?: 0
+            val idf = if (docsWithTerm > 0) kotlin.math.ln(totalDocs.toDouble() / docsWithTerm) + 1 else 0.0
             val tf = freq.toDouble() / words.size
-            tf * (idf[term] ?: 0.0)
+            tf * idf
         }
     }
 

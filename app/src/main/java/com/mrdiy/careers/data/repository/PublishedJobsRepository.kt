@@ -95,8 +95,15 @@ data class PublishedJobRow(
     val created_at: String? = null,
     val job_type: String? = null,
     val category: String? = null,
-    val level: String? = null
+    val level: String? = null,
+    // One item per line, written by the admin Jobs page. Absent until the job_details migration is applied.
+    val responsibilities: String? = null,
+    val requirements: String? = null,
+    val benefits: String? = null
 ) {
+    private fun lines(text: String?): List<String> =
+        text.orEmpty().lines().map { it.trim().trimStart('•', '-', '*').trim() }.filter { it.isNotEmpty() }
+
     fun toJob(): Job {
         val amounts = Regex("\\d+(?:\\.\\d+)?").findAll(salary.orEmpty().replace(",", ""))
             .take(2).mapNotNull { it.value.toDoubleOrNull()?.toInt() }.toList()
@@ -108,8 +115,8 @@ data class PublishedJobRow(
             jobType = job_type ?: "Not specified", category = category ?: "Not specified", level = level ?: "Not specified",
             salaryMin = minimum, salaryMax = maximum,
             salaryType = salary_type?.lowercase()?.takeIf { it.isNotBlank() } ?: "monthly",
-            postedAgo = created_at?.take(10).orEmpty(), aboutRole = description.orEmpty(),
-            responsibilities = emptyList(), requirements = emptyList(), benefits = emptyList()
+            postedAgo = created_at?.let { com.mrdiy.careers.ui.base.DateText.relative(it) }.orEmpty(), aboutRole = description.orEmpty(),
+            responsibilities = lines(responsibilities), requirements = lines(requirements), benefits = lines(benefits)
         )
     }
 }

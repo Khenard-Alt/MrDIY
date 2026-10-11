@@ -13,5 +13,9 @@ data class Alert(
 enum class AlertType {
     INTERVIEW_INVITE,
     APPLICATION_UPDATE,
-    JOB_MATCH
+    JOB_MATCH,
+    NEW_JOB,
+    NEARBY_JOB,
+    MESSAGE,
+    SYSTEM
 }

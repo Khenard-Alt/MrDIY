@@ -15,7 +15,8 @@ object PushTokenRegistrar {
             val client = SupabaseProvider.client
             client.auth.awaitInitialization()
             val userId = client.auth.currentUserOrNull()?.id ?: return
-            val token = suppliedToken ?: storedToken(context) ?: return
+            // The stored token only exists if onNewToken already ran; otherwise ask Firebase for it.
+            val token = suppliedToken ?: storedToken(context) ?: fetchToken() ?: return
             client.postgrest["push_tokens"].upsert(
                 buildJsonObject {
                     put("token", token)
@@ -45,6 +46,11 @@ object PushTokenRegistrar {
         } catch (error: Exception) {
             SafeDiagnostics.record("push_token_unregister", error)
         }
+    }
+
+    private suspend fun fetchToken(): String? = kotlin.coroutines.suspendCoroutine { continuation ->
+        com.google.firebase.messaging.FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task -> continuation.resumeWith(Result.success(task.result.takeIf { task.isSuccessful })) }
     }
 
     private fun storedToken(context: Context): String? =

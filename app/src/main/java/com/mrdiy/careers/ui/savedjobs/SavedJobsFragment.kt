@@ -58,17 +58,19 @@ class SavedJobsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
-            binding.loadingGroup.visibility = View.GONE
+            // The layout root is a LinearLayout, where ConstraintLayout Groups do nothing, so the
+            // loading views and the list are toggled directly.
+            setLoading(false)
+            binding.savedJobsRecycler.visibility = View.GONE
             binding.emptyGroup.visibility = View.GONE
             binding.errorGroup.visibility = View.GONE
-            binding.contentGroup.visibility = View.GONE
 
             when (state) {
                 is SavedJobsUiState.Loading -> {
-                    binding.loadingGroup.visibility = View.VISIBLE
+                    setLoading(true)
                 }
                 is SavedJobsUiState.Success -> {
-                    binding.contentGroup.visibility = View.VISIBLE
+                    binding.savedJobsRecycler.visibility = View.VISIBLE
                     val adapter = SavedJobAdapter(
                         jobs = state.jobs,
                         onJobClick = { job ->
@@ -90,6 +92,12 @@ class SavedJobsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setLoading(loading: Boolean) {
+        val visibility = if (loading) View.VISIBLE else View.GONE
+        binding.progressBar.visibility = visibility
+        binding.tvLoadingMessage.visibility = visibility
     }
 
     override fun onResume() {

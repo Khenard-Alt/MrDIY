@@ -189,18 +189,20 @@
     <ImageView android:layout_width="match_parent" android:layout_height="20dp" android:scaleType="fitXY" android:src="@drawable/yellow_wave" android:importantForAccessibility="no"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Scrollable Content -->
-    <androidx.core.widget.NestedScrollView
+    <!-- Scrollable Content. The job list scrolls by itself and list_header is shown as its first
+         row (see HeaderViewAdapter); a RecyclerView inside a NestedScrollView inflates every card
+         at once and freezes the UI once there are many jobs. -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/list_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="12dp"
-            android:paddingBottom="16dp">
+            android:paddingTop="12dp">
 
     <!-- Welcome Banner -->
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -307,10 +309,45 @@
                             style="@style/DiyFilterChip" />
 
                         <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_near_me"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Near Me"
+                            style="@style/DiyFilterChip" />
+
+                        <com.google.android.material.chip.Chip
                             android:id="@+id/chip_manila"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Metro Manila"
+                            style="@style/DiyFilterChip" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_rizal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rizal"
+                            style="@style/DiyFilterChip" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_cavite"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cavite"
+                            style="@style/DiyFilterChip" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_laguna"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Laguna"
+                            style="@style/DiyFilterChip" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_bulacan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bulacan"
                             style="@style/DiyFilterChip" />
 
                     </com.google.android.material.chip.ChipGroup>
@@ -331,19 +368,18 @@
                 android:textColor="@color/text_muted"
                 android:letterSpacing="0.08" />
 
-            <!-- Job Cards RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/jobs_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:nestedScrollingEnabled="false"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        <!-- Job Cards RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/jobs_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"

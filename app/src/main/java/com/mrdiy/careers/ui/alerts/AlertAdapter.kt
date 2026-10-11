@@ -39,6 +39,10 @@ class AlertAdapter(
                 AlertType.INTERVIEW_INVITE -> "📅" to R.color.orange_light
                 AlertType.APPLICATION_UPDATE -> "📄" to R.color.blue_light
                 AlertType.JOB_MATCH -> "🎯" to R.color.green_success_light
+                AlertType.NEW_JOB -> "🆕" to R.color.orange_light
+                AlertType.NEARBY_JOB -> "📍" to R.color.green_success_light
+                AlertType.MESSAGE -> "💬" to R.color.blue_light
+                AlertType.SYSTEM -> "🔔" to R.color.orange_light
             }
             binding.tvAlertIcon.text = icon
             binding.tvAlertIcon.setBackgroundResource(bgColor)

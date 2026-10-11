@@ -19,6 +19,8 @@ class MrDiyFirebaseMessagingService : FirebaseMessagingService() {
             ?: return
 
         AppNotificationManager.show(this, title, body)
+        // Remember it so AlertNotifier does not show the same alert a second time from its own check.
+        message.data["alert_id"]?.let { AlertNotifier.markPushShown(this, it) }
     }
 
     override fun onNewToken(token: String) {

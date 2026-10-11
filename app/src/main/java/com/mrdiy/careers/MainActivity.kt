@@ -24,6 +24,22 @@ import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 import com.mrdiy.careers.notifications.AppNotificationManager
+import com.mrdiy.careers.notifications.AlertCheckWorker
+import com.mrdiy.careers.notifications.AlertNotifier
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import io.github.jan.supabase.realtime.PostgresAction
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.realtime.channel
+import io.github.jan.supabase.realtime.postgresChangeFlow
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 import com.mrdiy.careers.notifications.PushTokenRegistrar
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         AppNotificationManager.createChannel(this)
         requestNotificationPermissionIfNeeded()
+        scheduleAlertChecks()
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainContainer) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -85,6 +102,13 @@ class MainActivity : AppCompatActivity() {
             PushTokenRegistrar.registerCurrentUser(this@MainActivity)
             SupabaseProvider.client.auth.sessionStatus.collect { status ->
                 PushTokenRegistrar.registerCurrentUser(this@MainActivity)
+                if (status is io.github.jan.supabase.auth.status.SessionStatus.Authenticated) {
+                    startAlertRealtime()
+                    runCatching { AlertNotifier.checkAndNotify(this@MainActivity) }
+                } else {
+                    alertRealtimeJob?.cancel()
+                    alertRealtimeJob = null
+                }
                 val publicScreens = setOf(R.id.loginFragment, R.id.registerFragment,
                     R.id.phoneLoginFragment, R.id.emailVerificationFragment)
                 if (status is io.github.jan.supabase.auth.status.SessionStatus.NotAuthenticated &&
@@ -155,4 +179,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun markAlertsRead() { }
+
+    private var alertRealtimeJob: kotlinx.coroutines.Job? = null
+
+    /** Checks for new notifications about every 15 minutes, even when the app is closed. */
+    private fun scheduleAlertChecks() {
+        val request = PeriodicWorkRequestBuilder<AlertCheckWorker>(15, TimeUnit.MINUTES)
+            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+            .build()
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork("alert_checks", ExistingPeriodicWorkPolicy.KEEP, request)
+    }
+
+    /** While the app is running, a new row in `alerts` shows up in the phone's tray immediately. */
+    private fun startAlertRealtime() {
+        if (alertRealtimeJob?.isActive == true) return
+        alertRealtimeJob = lifecycleScope.launch {
+            try {
+                val realtime = SupabaseProvider.client.pluginManager.getPlugin(Realtime)
+                val channel = realtime.channel("alerts_${UUID.randomUUID()}")
+                val inserts = channel.postgresChangeFlow<PostgresAction.Insert>(schema = "public") {
+                    table = "alerts"
+                }
+                channel.subscribe()
+                try {
+                    inserts.collect { AlertNotifier.checkAndNotify(this@MainActivity) }
+                } finally {
+                    withContext(NonCancellable) { runCatching { channel.unsubscribe() } }
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (e: Exception) {
+                com.mrdiy.careers.data.SafeDiagnostics.record("alerts_realtime", e)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (AuthManager(this).isLoggedIn) {
+            lifecycleScope.launch { runCatching { AlertNotifier.checkAndNotify(this@MainActivity) } }
+        }
+    }
 }

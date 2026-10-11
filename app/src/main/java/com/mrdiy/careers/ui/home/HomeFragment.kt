@@ -10,10 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mrdiy.careers.ui.alerts.refreshNotificationBadge
+import com.mrdiy.careers.ui.base.setAdapterWithHeader
 import com.google.android.material.snackbar.Snackbar
 import com.mrdiy.careers.R
 import com.mrdiy.careers.data.auth.AuthManager
 import com.mrdiy.careers.data.repository.ProfileRepository
+import com.mrdiy.careers.data.search.LocationDistance
+import com.mrdiy.careers.data.search.LocationFilter
 import com.mrdiy.careers.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -62,6 +66,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupUserGreeting()
+        refreshNotificationBadge(binding.notificationBadge)
 
         viewModel.loadSavedJobIds()
         viewModel.fetchJobsFromApi()
@@ -117,8 +122,10 @@ class HomeFragment : Fragment() {
                 requireContext()
             )
 
-        binding.jobsRecycler.adapter =
+        binding.jobsRecycler.setAdapterWithHeader(
+            binding.listHeader,
             jobAdapter
+        )
     }
 
     // ───────────────── Search ─────────────────
@@ -206,16 +213,18 @@ class HomeFragment : Fragment() {
                 }
             }
 
-        binding.chipManila
-            .setOnCheckedChangeListener {
-                    _, isChecked ->
-
-                if (isChecked) {
-                    viewModel.onLocationFilter(
-                        "Metro Manila"
-                    )
-                }
+        mapOf(
+            binding.chipNearMe to LocationFilter.NEAR_ME,
+            binding.chipManila to LocationDistance.METRO_MANILA,
+            binding.chipRizal to LocationDistance.RIZAL,
+            binding.chipCavite to LocationDistance.CAVITE,
+            binding.chipLaguna to LocationDistance.LAGUNA,
+            binding.chipBulacan to LocationDistance.BULACAN
+        ).forEach { (chip, area) ->
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) viewModel.onLocationFilter(area)
             }
+        }
 
     }
 
@@ -245,6 +254,18 @@ class HomeFragment : Fragment() {
     // ───────────────── Observers ─────────────────
 
     private fun observeViewModel() {
+        viewModel.selectedLocation.observe(viewLifecycleOwner) { filter ->
+            val chip = when (filter) {
+                LocationFilter.NEAR_ME -> binding.chipNearMe
+                LocationDistance.METRO_MANILA -> binding.chipManila
+                LocationDistance.RIZAL -> binding.chipRizal
+                LocationDistance.CAVITE -> binding.chipCavite
+                LocationDistance.LAGUNA -> binding.chipLaguna
+                LocationDistance.BULACAN -> binding.chipBulacan
+                else -> binding.chipAll
+            }
+            if (!chip.isChecked) chip.isChecked = true
+        }
         viewModel.appliedCount.observe(viewLifecycleOwner) { binding.tvStatApplied.text = it.toString() }
         binding.tvStatApplied.setOnClickListener { findNavController().navigate(R.id.applicationsFragment) }
         binding.tvStatSaved.setOnClickListener { findNavController().navigate(R.id.savedJobsFragment) }
@@ -253,6 +274,7 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner
         ) { jobs ->
             android.util.Log.d("HomeFragment", "filteredJobs changed: ${jobs.size} jobs")
+            jobAdapter.setDistances(viewModel.distances)
             jobAdapter.updateList(jobs)
 
             binding.tvEmptyState.visibility =

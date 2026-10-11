@@ -28,6 +28,14 @@ class JobAdapter(
     private var savedJobIds: Set<String> = emptySet()
     private var profile: com.mrdiy.careers.model.UserProfile? = null
     private var scores: Map<String, Int> = emptyMap()
+    private var distances: Map<String, Double> = emptyMap()
+
+    /** Distance in km from the applicant to each job (by id); shown next to the location. */
+    fun setDistances(value: Map<String, Double>) {
+        if (value == distances) return
+        distances = value
+        notifyDataSetChanged()
+    }
 
     // Match scoring does an O(n^2)-ish TF-IDF pass over the whole job list,
     // so it runs off the main thread; the last-dispatched job is cancelled
@@ -184,8 +192,9 @@ class JobAdapter(
             binding.chipJobType.text =
                 job.jobType
 
-            binding.chipLocation.text =
-                job.location
+            binding.chipLocation.text = distances[job.id]
+                ?.let { "${com.mrdiy.careers.data.search.LocationDistance.formatDistance(it)} · ${job.location}" }
+                ?: job.location
 
             binding.chipCategory.text =
                 job.category

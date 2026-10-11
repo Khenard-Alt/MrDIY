@@ -22,7 +22,8 @@ class InboxRepository(private val context: Context) {
         val message: String? = null,
         val time_ago: String? = null,
         val is_read: Boolean = false,
-        val job_id: String? = null
+        val job_id: String? = null,
+        val created_at: String? = null
     )
 
     @kotlinx.serialization.Serializable
@@ -41,13 +42,16 @@ class InboxRepository(private val context: Context) {
     suspend fun alerts(): Result<List<Alert>> = withContext(Dispatchers.IO) { runCatching {
         if (userId.isNullOrBlank()) return@runCatching emptyList()
         SupabaseProvider.client.postgrest["alerts"].select { filter { eq("user_id", userId!!) } }
-            .decodeList<AlertRow>().map {
+            .decodeList<AlertRow>()
+            // Newest first; rows without a time (created before the column existed) go last.
+            .sortedByDescending { it.created_at.orEmpty() }
+            .map {
                 Alert(
                     id = it.id ?: java.util.UUID.randomUUID().toString(),
-                    type = runCatching { AlertType.valueOf(it.type ?: "JOB_MATCH") }.getOrDefault(AlertType.JOB_MATCH),
+                    type = runCatching { AlertType.valueOf(it.type ?: "JOB_MATCH") }.getOrDefault(AlertType.SYSTEM),
                     title = it.title ?: "Notification",
                     message = it.message ?: "",
-                    timeAgo = it.time_ago ?: "Just now",
+                    timeAgo = it.created_at?.let { time -> com.mrdiy.careers.ui.base.DateText.relative(time) } ?: it.time_ago ?: "Just now",
                     isRead = it.is_read,
                     jobId = it.job_id
                 )
@@ -59,6 +63,36 @@ class InboxRepository(private val context: Context) {
             .map { Alert("application-${it.id}-${it.status}", AlertType.APPLICATION_UPDATE,
                 "Application ${it.status}", it.job_title, it.applied_at, jobId = it.job_id) }
     } }
+
+    /** The signed-in user's unread notification rows (empty on any error). */
+    suspend fun unreadAlertRows(): List<AlertRow> = withContext(Dispatchers.IO) {
+        runCatching {
+            if (userId.isNullOrBlank()) return@runCatching emptyList()
+            SupabaseProvider.client.postgrest["alerts"].select {
+                filter {
+                    eq("user_id", userId!!)
+                    eq("is_read", false)
+                }
+            }.decodeList<AlertRow>()
+        }.getOrDefault(emptyList())
+    }
+
+    /** Number of unread notifications for the signed-in user (0 on any error). */
+    suspend fun unreadAlertCount(): Int = unreadAlertRows().size
+
+    /** Marks all of the signed-in user's notifications as read (the user may only change is_read). */
+    suspend fun markAllAlertsRead(): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            if (userId.isNullOrBlank()) return@runCatching false
+            SupabaseProvider.client.postgrest["alerts"].update({ set("is_read", true) }) {
+                filter {
+                    eq("user_id", userId!!)
+                    eq("is_read", false)
+                }
+            }
+            true
+        }.getOrDefault(false)
+    }
 
     suspend fun messages(): Result<List<Message>> = withContext(Dispatchers.IO) { runCatching {
         if (userId.isNullOrBlank()) return@runCatching emptyList()

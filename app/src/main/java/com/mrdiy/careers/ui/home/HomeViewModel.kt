@@ -10,6 +10,7 @@ import com.mrdiy.careers.data.repository.PublishedJobsRepository
 import com.mrdiy.careers.data.repository.SavedJobsRepository
 import com.mrdiy.careers.model.Job
 import com.mrdiy.careers.data.search.UniversalJobSearchEngine
+import com.mrdiy.careers.data.search.LocationFilter
 import com.mrdiy.careers.data.search.MetroManilaScope
 import kotlinx.coroutines.Job as KJob
 import kotlinx.coroutines.delay
@@ -22,7 +23,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val savedJobsRepository = SavedJobsRepository(application)
     private val publishedJobsRepository = PublishedJobsRepository()
 
+    private val profileRepository = com.mrdiy.careers.data.repository.ProfileRepository(application)
+
     private var allJobs: List<Job> = emptyList()
+
+    private var defaultFilterDone = false
+    private val _selectedLocation = MutableLiveData<String?>()
+    /** The active location filter (null = All Jobs), so a recreated screen can restore the right chip. */
+    val selectedLocation: LiveData<String?> get() = _selectedLocation
+
+    /** Distance in km from the applicant to each currently shown job, keyed by job id. */
+    var distances: Map<String, Double> = emptyMap()
+        private set
 
     private val _filteredJobs = MutableLiveData<List<Job>>()
     val filteredJobs: LiveData<List<Job>> get() = _filteredJobs
@@ -112,6 +124,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onLocationFilter(location: String?) {
         currentLocationFilter = location
+        _selectedLocation.value = location
         applyFilters()
     }
 
@@ -119,6 +132,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         currentSearchQuery = null
         currentJobTypeFilter = null
         currentLocationFilter = null
+        _selectedLocation.value = null
         applyFilters()
     }
 
@@ -160,13 +174,36 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        if (!currentLocationFilter.isNullOrEmpty()) {
-            filtered = filtered.filter { job ->
-                if (currentLocationFilter == "Metro Manila") MetroManilaScope.isMetro(job.location)
-                else job.location.contains(currentLocationFilter!!, ignoreCase = true)
+        // Distance from the applicant's profile location (same rule as the Jobs tab).
+        val applicantLocation = profileRepository.loadFromPrefs().location
+        val jobDistances = filtered.mapNotNull { job ->
+            LocationFilter.distanceKm(applicantLocation, job.location)?.let { job.id to it }
+        }.toMap()
+
+        // First time jobs arrive: if the applicant has a profile location and branches are nearby,
+        // start on "Near Me" so the list is filtered to their area. They can switch to All Jobs.
+        if (!defaultFilterDone && allJobs.isNotEmpty()) {
+            defaultFilterDone = true
+            if (currentLocationFilter.isNullOrEmpty() &&
+                jobDistances.values.any { it <= LocationFilter.NEAR_ME_RADIUS_KM }
+            ) {
+                currentLocationFilter = LocationFilter.NEAR_ME
+                _selectedLocation.value = LocationFilter.NEAR_ME
             }
         }
 
+        if (!currentLocationFilter.isNullOrEmpty()) {
+            filtered = filtered.filter { job ->
+                LocationFilter.matches(currentLocationFilter, job.location, jobDistances[job.id])
+            }
+        }
+
+        // Nearest first; a search keeps its relevance order. Jobs with an unknown distance go last.
+        if (jobDistances.isNotEmpty() && currentSearchQuery.isNullOrEmpty()) {
+            filtered = filtered.sortedBy { jobDistances[it.id] ?: Double.MAX_VALUE }
+        }
+
+        distances = jobDistances
         _filteredJobs.value = filtered
     }
 
