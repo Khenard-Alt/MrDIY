@@ -120,6 +120,12 @@ SELECT id, name, public FROM storage.buckets WHERE id = 'resumes';
 -- ========================================================================
 -- 6. JOB APPLICATIONS
 -- ========================================================================
+-- DEPRECATED: this table was a duplicate of public.applications (the one
+-- SETUP_FRESH_SUPABASE_DATABASE.sql creates and the admin dashboard reads).
+-- The app now writes to public.applications instead; see migration
+-- 202610110003_unify_applications_table.sql, which drops this table and
+-- migrates any existing rows. Do not re-run this block against a project
+-- that has already applied that migration.
 
 CREATE TABLE IF NOT EXISTS public.job_applications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

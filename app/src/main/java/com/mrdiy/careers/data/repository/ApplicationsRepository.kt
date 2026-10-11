@@ -26,7 +26,7 @@ class ApplicationsRepository(context: Context) {
     companion object { private val applyLock = Mutex() }
 
     private val authManager = AuthManager(context)
-    private val table = "job_applications"
+    private val table = "applications"
 
     data class ApplicationRow(
         val id: String,

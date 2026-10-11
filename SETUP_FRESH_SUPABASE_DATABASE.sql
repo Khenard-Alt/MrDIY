@@ -71,6 +71,9 @@ CREATE TABLE IF NOT EXISTS public.applications (
     status TEXT NOT NULL DEFAULT 'Pending',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     applied_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    match_score NUMERIC,
+    resume_url TEXT,
     UNIQUE (user_id, job_id)
 );
 
@@ -180,7 +183,13 @@ DROP POLICY IF EXISTS "Users can read own alerts" ON public.alerts;
 CREATE POLICY "Users can read own alerts" ON public.alerts FOR SELECT USING (auth.uid()::text = user_id);
 
 DROP POLICY IF EXISTS "Users can read own messages" ON public.messages;
-CREATE POLICY "Users can read own messages" ON public.messages FOR SELECT USING (auth.uid()::text = user_id);
+CREATE POLICY "Users can read own messages" ON public.messages FOR SELECT USING (auth.uid()::text IN (sender_id, receiver_id));
+
+DROP POLICY IF EXISTS "Users can send messages" ON public.messages;
+CREATE POLICY "Users can send messages" ON public.messages FOR INSERT WITH CHECK (auth.uid()::text = sender_id);
+
+DROP POLICY IF EXISTS "Participants can mark messages read" ON public.messages;
+CREATE POLICY "Participants can mark messages read" ON public.messages FOR UPDATE USING (auth.uid()::text = receiver_id) WITH CHECK (auth.uid()::text = receiver_id);
 
 -- Storage Objects Policies
 DROP POLICY IF EXISTS "Users can upload own resume" ON storage.objects;

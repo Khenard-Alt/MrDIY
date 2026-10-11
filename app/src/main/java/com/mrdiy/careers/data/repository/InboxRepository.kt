@@ -14,14 +14,44 @@ class InboxRepository(private val context: Context) {
     private val userId = AuthManager(context).getCurrentUserId()
 
     @kotlinx.serialization.Serializable
-    data class AlertRow(val id: String = "", val user_id: String = "", val type: String = "JOB_MATCH", val title: String = "", val message: String = "", val time_ago: String = "", val is_read: Boolean = false, val job_id: String? = null)
+    data class AlertRow(
+        val id: String? = null,
+        val user_id: String? = null,
+        val type: String? = "JOB_MATCH",
+        val title: String? = null,
+        val message: String? = null,
+        val time_ago: String? = null,
+        val is_read: Boolean = false,
+        val job_id: String? = null
+    )
+
     @kotlinx.serialization.Serializable
-    data class MessageRow(val id: String = "", val user_id: String = "", val sender_name: String = "", val sender_avatar: String = "", val last_message: String = "", val time_ago: String = "", val is_read: Boolean = false, val unread_count: Int = 0, val job_id: String? = null)
+    data class MessageRow(
+        val id: String? = null,
+        val user_id: String? = null,
+        val sender_name: String? = null,
+        val sender_avatar: String? = null,
+        val last_message: String? = null,
+        val time_ago: String? = null,
+        val is_read: Boolean = false,
+        val unread_count: Int = 0,
+        val job_id: String? = null
+    )
 
     suspend fun alerts(): Result<List<Alert>> = withContext(Dispatchers.IO) { runCatching {
         if (userId.isNullOrBlank()) return@runCatching emptyList()
         SupabaseProvider.client.postgrest["alerts"].select { filter { eq("user_id", userId!!) } }
-            .decodeList<AlertRow>().map { Alert(it.id, runCatching { AlertType.valueOf(it.type) }.getOrDefault(AlertType.JOB_MATCH), it.title, it.message, it.time_ago, it.is_read, it.job_id) }
+            .decodeList<AlertRow>().map {
+                Alert(
+                    id = it.id ?: java.util.UUID.randomUUID().toString(),
+                    type = runCatching { AlertType.valueOf(it.type ?: "JOB_MATCH") }.getOrDefault(AlertType.JOB_MATCH),
+                    title = it.title ?: "Notification",
+                    message = it.message ?: "",
+                    timeAgo = it.time_ago ?: "Just now",
+                    isRead = it.is_read,
+                    jobId = it.job_id
+                )
+            }
     }.recoverCatching { error ->
         if (!error.message.orEmpty().contains("PGRST205") && !error.message.orEmpty().contains("Could not find the table")) throw error
         ApplicationsRepository(context).getApplications().getOrThrow()
@@ -33,16 +63,19 @@ class InboxRepository(private val context: Context) {
     suspend fun messages(): Result<List<Message>> = withContext(Dispatchers.IO) { runCatching {
         if (userId.isNullOrBlank()) return@runCatching emptyList()
         SupabaseProvider.client.postgrest["messages"].select { filter { eq("user_id", userId!!) } }
-            .decodeList<MessageRow>().map { Message(it.id, it.sender_name, it.sender_avatar, it.last_message, it.time_ago, it.is_read, it.unread_count, it.job_id) }
-    }.recoverCatching { error ->
-        // Messages are optional in older Supabase projects. An absent table or
-        // pre-migration schema means there are simply no messages to display;
-        // it should not make the Messages screen unusable.
-        val message = error.message.orEmpty()
-        if (message.contains("PGRST205") || message.contains("Could not find the table")) {
-            emptyList()
-        } else {
-            throw error
-        }
+            .decodeList<MessageRow>().map {
+                Message(
+                    id = it.id ?: java.util.UUID.randomUUID().toString(),
+                    senderName = it.sender_name ?: "MR.D.I.Y. HR",
+                    senderAvatar = it.sender_avatar ?: "HR",
+                    lastMessage = it.last_message ?: "Your application status has been updated.",
+                    timeAgo = it.time_ago ?: "Just now",
+                    isRead = it.is_read,
+                    unreadCount = it.unread_count,
+                    jobId = it.job_id
+                )
+            }
+    }.recoverCatching {
+        emptyList()
     } }
 }
