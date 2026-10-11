@@ -95,17 +95,15 @@ CREATE TABLE IF NOT EXISTS public.alerts (
     job_id TEXT
 );
 
--- Messages Table
+-- Messages Table (1-to-1 thread between an admin and an applicant)
 CREATE TABLE IF NOT EXISTS public.messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id TEXT NOT NULL,
-    sender_name TEXT NOT NULL,
-    sender_avatar TEXT NOT NULL DEFAULT 'HR',
-    last_message TEXT NOT NULL,
-    time_ago TEXT NOT NULL DEFAULT 'Just now',
+    sender_id TEXT NOT NULL,
+    receiver_id TEXT NOT NULL,
+    job_id TEXT,
+    body TEXT NOT NULL,
     is_read BOOLEAN NOT NULL DEFAULT FALSE,
-    unread_count INTEGER NOT NULL DEFAULT 0,
-    job_id TEXT
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- ──────────────────────────────────────────────────────────────────────────
@@ -118,9 +116,10 @@ VALUES (
     'resumes',
     false,
     10485760, -- 10 MB limit
-    '{application/pdf,text/plain}'
+    '{application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain}'
 )
-ON CONFLICT (id) DO UPDATE SET public = false;
+ON CONFLICT (id) DO UPDATE SET public = false,
+    allowed_mime_types = '{application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain}';
 
 -- ──────────────────────────────────────────────────────────────────────────
 -- 3. ENABLE ROW LEVEL SECURITY (RLS)

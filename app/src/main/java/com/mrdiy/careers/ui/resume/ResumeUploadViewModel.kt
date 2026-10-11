@@ -113,4 +113,5 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
                 }
             }
         }
-   
+    }
+}

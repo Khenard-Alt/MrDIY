@@ -96,9 +96,10 @@ VALUES (
     'resumes',
     false,
     10485760,
-    '{application/pdf,text/plain}'
+    '{application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain}'
 )
-ON CONFLICT (id) DO UPDATE SET public = false;
+ON CONFLICT (id) DO UPDATE SET public = false,
+    allowed_mime_types = '{application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain}';
 
 
 -- ──────────────────────────────────────────────────────────────────────────

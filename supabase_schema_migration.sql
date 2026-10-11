@@ -116,9 +116,10 @@ VALUES (
     'resumes',
     false,
     10485760, -- 10 MB, consistent with the app
-    '{application/pdf,text/plain}'
+    '{application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain}'
 )
-ON CONFLICT (id) DO UPDATE SET public = false, file_size_limit = 10485760;
+ON CONFLICT (id) DO UPDATE SET public = false, file_size_limit = 10485760,
+    allowed_mime_types = '{application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain}';
 
 
 -- ──────────────────────────────────────────────────────────────────────────

@@ -1,8 +1,8 @@
 begin;
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('private-resumes', 'private-resumes', false, 10485760, array['application/pdf', 'text/plain'])
+values ('private-resumes', 'private-resumes', false, 10485760, array['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'])
 on conflict (id) do update set public = false, file_size_limit = 10485760,
-    allowed_mime_types = array['application/pdf', 'text/plain'];
+    allowed_mime_types = array['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
 -- Restrictive guard protects this bucket even when old permissive policies exist.
 drop policy if exists "private_resumes_owner_guard" on storage.objects;
 create policy "private_resumes_owner_guard" on storage.objects as restrictive for all to public
