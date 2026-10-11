@@ -94,22 +94,117 @@ class InboxRepository(private val context: Context) {
         }.getOrDefault(false)
     }
 
+    /** One row of public.messages: a message from one person to another. */
+    @kotlinx.serialization.Serializable
+    data class MessageDbRow(
+        val id: String? = null,
+        val sender_id: String = "",
+        val receiver_id: String = "",
+        val job_id: String? = null,
+        val body: String = "",
+        val is_read: Boolean = false,
+        val created_at: String? = null
+    )
+
+    /** A message shown as a chat bubble. */
+    data class ChatMessage(
+        val id: String,
+        val body: String,
+        val mine: Boolean,
+        val time: String
+    )
+
+    private suspend fun myMessageRows(): List<MessageDbRow> {
+        val me = userId ?: return emptyList()
+        return SupabaseProvider.client.postgrest["messages"].select {
+            filter {
+                or {
+                    eq("sender_id", me)
+                    eq("receiver_id", me)
+                }
+            }
+        }.decodeList<MessageDbRow>().sortedBy { it.created_at.orEmpty() }
+    }
+
+    /** The conversation list: one entry per person the user has messaged with (usually MR.D.I.Y. HR). */
     suspend fun messages(): Result<List<Message>> = withContext(Dispatchers.IO) { runCatching {
-        if (userId.isNullOrBlank()) return@runCatching emptyList()
-        SupabaseProvider.client.postgrest["messages"].select { filter { eq("user_id", userId!!) } }
-            .decodeList<MessageRow>().map {
+        val me = userId
+        if (me.isNullOrBlank()) return@runCatching emptyList()
+        myMessageRows()
+            .groupBy { if (it.sender_id == me) it.receiver_id else it.sender_id }
+            .entries
+            .sortedByDescending { (_, rows) -> rows.last().created_at.orEmpty() } // newest conversation first
+            .map { (otherId, rows) ->
+                val last = rows.last()
+                val unread = rows.count { it.receiver_id == me && !it.is_read }
                 Message(
-                    id = it.id ?: java.util.UUID.randomUUID().toString(),
-                    senderName = it.sender_name ?: "MR.D.I.Y. HR",
-                    senderAvatar = it.sender_avatar ?: "HR",
-                    lastMessage = it.last_message ?: "Your application status has been updated.",
-                    timeAgo = it.time_ago ?: "Just now",
-                    isRead = it.is_read,
-                    unreadCount = it.unread_count,
-                    jobId = it.job_id
+                    id = otherId,
+                    senderName = "MR.D.I.Y. HR",
+                    senderAvatar = "HR",
+                    lastMessage = (if (last.sender_id == me) "You: " else "") + last.body.replace(Regex("\\s+"), " ").trim(),
+                    timeAgo = last.created_at?.let { com.mrdiy.careers.ui.base.DateText.relative(it) } ?: "",
+                    isRead = unread == 0,
+                    unreadCount = unread,
+                    jobId = last.job_id
                 )
             }
-    }.recoverCatching {
-        emptyList()
+    }.recoverCatching { emptyList() } }
+
+    /** All messages between the user and [otherId], oldest first. */
+    suspend fun thread(otherId: String): Result<List<ChatMessage>> = withContext(Dispatchers.IO) { runCatching {
+        val me = userId
+        if (me.isNullOrBlank()) return@runCatching emptyList()
+        myMessageRows()
+            .filter { it.sender_id == otherId || it.receiver_id == otherId }
+            .map {
+                ChatMessage(
+                    id = it.id ?: java.util.UUID.randomUUID().toString(),
+                    body = it.body,
+                    mine = it.sender_id == me,
+                    time = it.created_at?.let { time -> com.mrdiy.careers.ui.base.DateText.dateTime(time) }.orEmpty()
+                )
+            }
     } }
+
+    /** Sends a reply to [otherId]. Returns false if it could not be sent. */
+    suspend fun sendMessage(otherId: String, jobId: String?, text: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val me = userId
+            if (me.isNullOrBlank() || text.isBlank()) return@runCatching false
+            SupabaseProvider.client.postgrest["messages"].insert(
+                kotlinx.serialization.json.buildJsonObject {
+                    put("sender_id", kotlinx.serialization.json.JsonPrimitive(me))
+                    put("receiver_id", kotlinx.serialization.json.JsonPrimitive(otherId))
+                    if (jobId != null) put("job_id", kotlinx.serialization.json.JsonPrimitive(jobId))
+                    put("body", kotlinx.serialization.json.JsonPrimitive(text.trim()))
+                    put("is_read", kotlinx.serialization.json.JsonPrimitive(false))
+                }
+            )
+            true
+        }.getOrDefault(false)
+    }
+
+    /** Marks the messages [otherId] sent to the user as read. */
+    suspend fun markThreadRead(otherId: String): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            val me = userId
+            if (me.isNullOrBlank()) return@runCatching false
+            SupabaseProvider.client.postgrest["messages"].update({ set("is_read", true) }) {
+                filter {
+                    eq("receiver_id", me)
+                    eq("sender_id", otherId)
+                    eq("is_read", false)
+                }
+            }
+            true
+        }.getOrDefault(false)
+    }
+
+    /** The job the latest message in this thread is about, for the reply. */
+    suspend fun lastJobId(otherId: String): String? = withContext(Dispatchers.IO) {
+        runCatching {
+            myMessageRows().filter { it.sender_id == otherId || it.receiver_id == otherId }
+                .lastOrNull { it.job_id != null }?.job_id
+        }.getOrNull()
+    }
 }

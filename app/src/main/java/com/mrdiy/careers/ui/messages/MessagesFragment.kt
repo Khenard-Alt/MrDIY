@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.FragmentMessagesBinding
 import com.mrdiy.careers.model.Message
 import com.mrdiy.careers.data.repository.InboxRepository
@@ -29,6 +30,16 @@ class MessagesFragment : Fragment() {
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
         binding.messagesRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.tvUnreadCount.text = "Loading messages..."
+        loadMessages()
+    }
+
+    // Reload when coming back from a conversation so unread counts update.
+    override fun onResume() {
+        super.onResume()
+        if (_binding != null) loadMessages()
+    }
+
+    private fun loadMessages() {
         viewLifecycleOwner.lifecycleScope.launch {
             InboxRepository(requireContext()).messages().onSuccess { messages ->
                 if (_binding != null) renderMessages(messages)
@@ -40,10 +51,11 @@ class MessagesFragment : Fragment() {
 
     private fun renderMessages(messages: List<Message>) {
         val adapter = MessageAdapter(messages) { message ->
-            message.jobId?.let { jobId ->
-                val action = MessagesFragmentDirections.actionMessagesToJobDetail(jobId)
-                findNavController().navigate(action)
-            }
+            // message.id is the other person's user id; open the conversation with them.
+            findNavController().navigate(
+                R.id.chatFragment,
+                Bundle().apply { putString(ChatFragment.ARG_OTHER_ID, message.id) }
+            )
         }
 
         binding.messagesRecycler.adapter = adapter

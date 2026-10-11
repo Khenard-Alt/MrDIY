@@ -90,7 +90,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.registerFragment,
                 R.id.phoneLoginFragment,
                 R.id.welcomeFragment,
-                R.id.emailVerificationFragment -> false
+                R.id.emailVerificationFragment,
+                R.id.chatFragment -> false
                 else                           -> true
             }
         }

@@ -1,99 +1,300 @@
 # MR.D.I.Y. Careers — Overall System Architecture & Data Flow
 
-This document details the complete end-to-end system workflow connecting the **Admin Web Dashboard**, **Android Mobile App**, **Machine Learning Engine**, and **Supabase Backend**.
+This document details the complete end-to-end system architecture, entity relationships, and operational data flows connecting the **Admin Web Dashboard**, **Android Mobile App**, **Machine Learning Engine**, and **Supabase Backend**.
 
 ---
 
-## System Architecture Diagram
+## 1. System Architecture Diagram
 
-```
-                             ┌──────────────────────────────────────────┐
-                             │           SUPABASE CLOUD DB              │
-                             │ - PostgreSQL (jobs, profiles, apps)      │
-                             │ - Supabase Auth & RLS Policies           │
-                             │ - Private Storage Bucket (resumes)       │
-                             │ - WebSockets Realtime CDC Engine         │
-                             └────────────────────┬─────────────────────┘
-                                                  │
-                      ┌───────────────────────────┴───────────────────────────┐
-                      ▼                                                       ▼
-┌──────────────────────────────────────────┐             ┌──────────────────────────────────────────┐
-│      APPLICANT MOBILE APP (Android)      │             │          ADMIN WEB DASHBOARD             │
-│ - Native Kotlin / ViewBinding / LiveData │             │ - Next.js / React / Supabase Web SDK     │
-│ - Universal Auth (Email/Phone/Deep Link) │             │ - Job Posting & Publishing (`public.jobs`)│
-│ - Multi-Factor ML Resume Validator       │             │ - Applicant Review (`applications`)      │
-│ - TF-IDF + Cosine Job Matching Engine    │             │ - Candidate Resume Inspection            │
-│ - Universal Search Engine (Metro Manila) │             │ - Application Status Management          │
-│ - Realtime WebSockets Status Stream      │             │ - HR Analytics & Reporting               │
-└──────────────────────────────────────────┘             └──────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "FRONTEND CLIENTS"
+        MOBILE["📱 Applicant Mobile App (Android)<br/>• Native Kotlin / ViewBinding / Coroutines<br/>• TF-IDF + Cosine Matching Engine<br/>• Multi-Factor ML Resume Validator<br/>• Universal Search (Metro Manila Scope)<br/>• Realtime WebSocket Channels"]
+        ADMIN["💻 HR Admin Web Dashboard (Next.js)<br/>• React / Tailwind CSS / Supabase JS SDK<br/>• Job Publishing & Application Review<br/>• AI Job Description Generator<br/>• Candidate Diagnostic & Velocity Analytics"]
+    end
+
+    subgraph "SUPABASE CLOUD INFRASTRUCTURE"
+        AUTH["🔑 Supabase Auth<br/>• Email / Password / Deep Links<br/>• Phone OTP Verification"]
+        DB[( PostgreSQL Database )]
+        STORAGE["🗄️ Supabase Storage<br/>• Resumes Bucket (Private RLS)<br/>• Avatars Bucket (Public/Owner RLS)"]
+        REALTIME["⚡ Realtime Engine (CDC WebSockets)<br/>• Jobs broadcast<br/>• Applications live stream<br/>• Alerts realtime channel"]
+    end
+
+    subgraph "NOTIFICATION & BACKGROUND SERVICES"
+        FCM["🔔 Firebase Cloud Messaging (FCM)<br/>• Push Notifications"]
+        SMTP["✉️ Gmail SMTP / Nodemailer<br/>• HR Notification Emails"]
+    end
+
+    MOBILE -->|Auth Requests| AUTH
+    ADMIN -->|Admin Auth| AUTH
+    MOBILE -->|PostgREST Queries / RLS| DB
+    ADMIN -->|Service Role / RLS Queries| DB
+    MOBILE -->|Upload Resume / Avatar| STORAGE
+    MOBILE <-->|WebSockets Listener| REALTIME
+    ADMIN <-->|WebSockets Broadcast| REALTIME
+    DB -->|CDC Events| REALTIME
+    ADMIN -->|Send Email| SMTP
+    DB -->|Push Tokens| FCM
 ```
 
 ---
 
-## Complete End-to-End System Journeys
+## 2. Complete End-to-End System Journeys
 
 ### Journey 1: HR Admin Posts & Publishes a Job
-1. **Admin Login:** HR administrator logs into the Admin Web Dashboard (`NEXT_PUBLIC_SUPABASE_URL`).
-2. **Job Creation:** HR fills in Job Title, Location, Branch, Salary Range, Salary Period, Job Type (Full-time/Part-time), Category, Level, Role Description, Responsibilities, Requirements, and Benefits.
-3. **Publishing:** HR sets job status to `published`.
-4. **Database Insertion:** Row is inserted/updated in `public.jobs` in Supabase PostgreSQL.
-5. **Realtime Broadcast:** Supabase Realtime WebSocket emits a Postgres CDC (Change Data Capture) event to subscribed mobile apps.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor HR as HR Administrator
+    participant Admin as Admin Web Portal (Next.js)
+    participant SB as Supabase Database (PostgreSQL)
+    participant RT as Supabase Realtime WebSocket
+    participant App as Android Mobile App
+
+    HR->>Admin: Fills Job Posting Form & Clicks "Publish"
+    Note over Admin: Optionally uses "✨ Generate AI Description"
+    Admin->>SB: INSERT / UPDATE into public.jobs (status = 'published')
+    SB-->>Admin: Returns Success (Job ID)
+    SB->>RT: CDC Trigger (INSERT/UPDATE event on public.jobs)
+    RT-->>App: Emits Realtime Event
+    App->>App: Updates Job Catalog UI automatically
+```
 
 ---
 
 ### Journey 2: Candidate Registration & Universal Email Verification
-1. **Account Registration:** Applicant opens the Android App $\rightarrow$ Clicks Register on `RegisterFragment`.
-2. **Terms Acceptance Guard:** Mandatory agreement to Terms of Service & Privacy Policy.
-3. **Universal Email Validation:** Input validated via `AccountRules.email()` accepting `.edu`, `.edu.ph` (`@student.dlsu.edu.ph`, `@ust.edu.ph`, `@up.edu.ph`), personal emails (`@gmail.com`), and corporate domains.
-4. **Supabase Auth Request:** App sends `signUpWith(Email)` request with metadata (`full_name`, `phone`, `terms_accepted_at`).
-5. **Verification Callback:** Emailed link contains `mrdiy://login-callback`. Clicking the link opens `MainActivity`, exchanges code for session, restores profile, and redirects candidate to Onboarding/Dashboard.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Applicant
+    participant App as Android App (RegisterFragment)
+    participant Auth as Supabase Auth Engine
+    participant Email as Candidate Email Inbox
+    participant App2 as MainActivity (mrdiy://login-callback)
+
+    User->>App: Inputs Full Name, Email, Password & Accepts T&C
+    Note over App: Validates email format (.edu, @gmail.com, corporate)
+    App->>Auth: signUpWith(Email, Metadata)
+    Auth-->>Email: Sends Verification Link containing token
+    User->>Email: Taps Verification Link
+    Email->>App2: Deep-link redirect to mrdiy://login-callback
+    App2->>Auth: Exchange Auth Code for Active Session
+    Auth-->>App2: Returns Session & JWT
+    App2->>App2: Saves current user session & Navigates to Home
+```
 
 ---
 
-### Journey 3: Candidate Uploads Resume & ML Content Validation
-1. **File Picker:** Applicant selects a PDF or TXT file on `ResumeUploadFragment`.
-2. **Text Extraction:** Extracted using `PdfBox-Android` (bounded to 10MB max, $\le 100$ pages, non-encrypted).
-3. **Multi-Factor ML Resume Validation (`ResumeRepository.kt`):**
-   - **Signal 1:** Section Headers (Experience, Education, Skills, Summary, Projects, CV, etc. in English and Tagalog).
-   - **Signal 2:** Contact Info (email patterns, phone numbers `09xx` / `+639`).
-   - **Signal 3:** Timeline & Date Patterns (e.g. `2020 - 2024`, `2019-Present`, `2 years`).
-   - **Signal 4:** Skill Density (`ResumeSkills` vocabulary across retail, logistics, store ops, office, IT).
-   - *If invalid (recipe, invoice, random story, blank text):* System rejects the file with an explicit error message and aborts cloud storage upload.
-4. **Private Storage Upload:** Valid resume uploaded to Supabase Storage bucket `resumes` under private path `{user_id}/{filename}`.
-5. **Profile Auto-Merge:** Detected skills merged with candidate profile in `public.profiles`.
+### Journey 3: Candidate Uploads Resume & Multi-Factor ML Content Validation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Applicant
+    participant App as ResumeUploadFragment
+    participant PDF as PdfBox-Android Text Extractor
+    participant ML as ResumeValidator / ResumeSkills
+    participant Storage as Supabase Storage (resumes)
+    participant DB as Supabase public.profiles
+
+    User->>App: Selects Resume Document (PDF / DOCX / TXT)
+    App->>PDF: Extract raw text content (Max 10MB, <=100 pages)
+    PDF-->>App: Raw Extracted Text
+    App->>ML: Run Multi-Factor Validation
+    Note over ML: Checks Section Headers, Contact Details,<br/>Timeline Patterns & Skill Vocabulary
+    alt Invalid Document (Recipe, Invoice, Story)
+        ML-->>App: Validation Failed (Missing resume signals)
+        App-->>User: Show Error: "File does not appear to be a valid resume"
+    else Valid Resume Document
+        ML-->>App: Validation Passed (Extracted Skills & Years)
+        App->>Storage: Upload to private path: {user_id}/{filename}
+        Storage-->>App: Return File Path
+        App->>DB: Merge parsed skills, experience & resume path into profiles
+        DB-->>App: Profile Updated
+        App-->>User: Show Success & Trigger Recommendation Refresh
+    end
+```
 
 ---
 
-### Journey 4: Intelligent Job Matching & Search Engine
-1. **TF-IDF + Cosine Matching (`JobMatchingEngine.kt`):**
-   - Constructs candidate profile text vector vs. published job document vectors.
-   - Computes Cosine Similarity metric ($0-100\%$).
-   - Generates **Explainable AI (XAI)** outputs: match score labels (*Excellent Match*, *Good Match*), matched skill chips, missing skill suggestions, and human-readable match reasons.
-2. **Universal Search Engine (`UniversalJobSearchEngine.kt`):**
-   - Typo-tolerant query parsing (`casher` $\rightarrow$ `cashier`).
-   - Occupation family mapping (Cashier, Cleaning, Warehouse, Driver, Sales, Accounting, Technology, Management, Healthcare, Education).
-   - Regional scope filtering (`MetroManilaScope.kt`).
-   - Hybrid ranking ($75\%$ relevance + $25\%$ profile fit).
+### Journey 4: Intelligent Job Matching & Universal Search Engine
+
+```mermaid
+flowchart TD
+    A[Candidate Profile / Extracted Resume] --> B[Construct Candidate Text Vector]
+    C[Published Job Catalog] --> D[Construct Document Term Vectors]
+    
+    B & D --> E[TF-IDF Term Weighting Engine]
+    E --> F[Cosine Similarity Metric Calculation]
+    F --> G["Match Score Percentage (0 - 100%)"]
+    
+    G --> H{Score Category}
+    H -->|">= 75%"| I["🌟 Excellent Match"]
+    H -->|"50% - 74%"| J["👍 Good Match"]
+    H -->|"< 50%"| K["📄 Fair / Low Match"]
+    
+    G --> L[Explainable AI XAI Engine]
+    L --> M[Matched Skill Chips + Missing Skill Suggestions]
+    
+    N[User Search Query e.g. 'casher'] --> O[Typo-Tolerant Intent Parser -> 'cashier']
+    O --> P[Metro Manila Regional Scope Filter]
+    P --> Q[Hybrid Search Ranker: 75% Term Relevance + 25% Profile Fit]
+    Q --> R[Display Search Results to Applicant]
+```
 
 ---
 
 ### Journey 5: Application Submission & Live WebSocket Status Tracker
-1. **Application Submission:** Applicant taps "Apply Now" on `JobDetailFragment`.
-2. **Mutex Double-Tap Guard:** `applyLock` ensures single submission per job.
-3. **Database Insertion:** Inserts row in `public.applications` (`user_id`, `job_id`, `status = "Pending"`).
-4. **Admin Review & Status Update:** HR Admin sees application in Web Dashboard $\rightarrow$ HR updates status (`Pending` $\rightarrow$ `Shortlisted` $\rightarrow$ `Interview Scheduled` $\rightarrow$ `Hired` $\rightarrow$ `Rejected`).
-5. **Realtime WebSocket Stream (`ApplicationsRepository.kt` & `ApplicationsFragment.kt`):**
-   - Candidate's phone listens to live Supabase Realtime WebSocket channel on `public.applications`.
-   - Status badge updates live on candidate's screen in real-time without requiring manual page refresh!
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Candidate as Applicant
+    participant App as Android JobDetailFragment
+    participant DB as Supabase public.applications
+    participant Admin as Admin Web Portal
+    participant RT as Realtime WebSocket Listener
+
+    Candidate->>App: Taps "Apply Now"
+    Note over App: Mutex lock prevents double-submission
+    App->>DB: INSERT into public.applications (user_id, job_id, status='Pending')
+    DB-->>App: Success
+    
+    Note over DB,RT: Realtime WebSocket Channel active
+    Admin->>DB: HR Updates Status ('Pending' -> 'Shortlisted' / 'Hired')
+    DB->>RT: CDC Broadcast Event
+    RT-->>App: Realtime Applications Channel Payload
+    App->>App: Live Update Badge on Applications UI without refresh!
+```
 
 ---
 
-## Table of Database Entities & Security Policies
+## 3. Entity-Relationship Diagram (Database Schema ERD)
+
+```mermaid
+erDiagram
+    ADMIN_USERS {
+        uuid id PK
+        text username
+        text password_hash
+        timestamptz created_at
+    }
+
+    PROFILES {
+        text user_id PK
+        text email
+        text full_name
+        text phone
+        text headline
+        text about
+        text location
+        text skills
+        jsonb education
+        jsonb work_experience
+        text resume_url
+        text avatar_url
+        timestamptz updated_at
+    }
+
+    JOBS {
+        bigint id PK
+        text title
+        text description
+        text location
+        text branch
+        text salary_range
+        text salary_period
+        text job_type
+        text category
+        text experience_level
+        text status
+        timestamptz created_at
+    }
+
+    APPLICATIONS {
+        uuid id PK
+        text user_id FK
+        text job_id FK
+        text status
+        text candidate_name
+        text candidate_email
+        text candidate_phone
+        text resume_url
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    SAVED_JOBS {
+        uuid id PK
+        text user_id FK
+        text job_id FK
+        timestamptz created_at
+    }
+
+    ALERTS {
+        uuid id PK
+        text user_id FK
+        text type
+        text title
+        text message
+        boolean is_read
+        text job_id
+        timestamptz created_at
+    }
+
+    PRE_EMPLOYMENT_REQUIREMENTS {
+        uuid id PK
+        text user_id FK
+        uuid application_id FK
+        text requirement_name
+        text status
+        text document_url
+        timestamptz updated_at
+    }
+
+    NOTIFICATION_EMAILS {
+        uuid id PK
+        text user_id
+        text application_id
+        text to_email
+        text subject
+        text status
+        text error
+        timestamptz created_at
+    }
+
+    PUSH_TOKENS {
+        text token PK
+        text user_id
+        text platform
+        timestamptz updated_at
+    }
+
+    PROFILES ||--o{ APPLICATIONS : "submits"
+    JOBS ||--o{ APPLICATIONS : "receives"
+    PROFILES ||--o{ SAVED_JOBS : "bookmarks"
+    JOBS ||--o{ SAVED_JOBS : "saved_in"
+    PROFILES ||--o{ ALERTS : "receives"
+    PROFILES ||--o{ PRE_EMPLOYMENT_REQUIREMENTS : "submits_docs"
+    APPLICATIONS ||--o{ PRE_EMPLOYMENT_REQUIREMENTS : "tracks_docs"
+    PROFILES ||--o{ PUSH_TOKENS : "registers"
+```
+
+---
+
+## 4. Table of Database Entities & Security Policies
 
 | Table / Bucket | Primary Key / Path | RLS Access Policy | Purpose |
 | :--- | :--- | :--- | :--- |
-| `public.jobs` | `id` (Text / BigInt) | Read: Public / Applicant<br>Write: Admin only | Published job postings catalog |
-| `public.profiles` | `user_id` (UUID) | Read/Write: Owner (`user_id = auth.uid()`) | Candidate profile info, skills, education, experience |
-| `public.applications` | `id` (UUID) | Read/Write: Owner (`user_id = auth.uid()`) & Admin | Submitted job applications & live status tracking |
-| `public.saved_jobs` | `id` (UUID) | Read/Write: Owner (`user_id = auth.uid()`) | Bookmarked jobs per applicant |
-| Storage: `resumes` | `{user_id}/{filename}` | Read/Write: Owner (`{user_id} = auth.uid()`) | Private uploaded PDF/TXT resume files |
+| `public.jobs` | `id` (BigInt/Text) | Read: Public / Applicant<br/>Write: Service Role (Admin) | Published job postings catalog |
+| `public.profiles` | `user_id` (Text) | Read/Write: Owner (`auth.uid()::text = user_id`) | Candidate profile info, skills, education, experience, avatar |
+| `public.applications` | `id` (UUID) | Read/Write: Owner (`auth.uid()::text = user_id`) & Service Role | Submitted job applications & live status tracking |
+| `public.saved_jobs` | `id` (UUID) | Read/Write: Owner (`auth.uid()::text = user_id`) | Bookmarked jobs per applicant |
+| `public.alerts` | `id` (UUID) | Read/Write: Owner (`auth.uid()::text = user_id`) & Service Role | Notifications and application status alerts |
+| `public.pre_employment_requirements` | `id` (UUID) | Read/Write: Owner (`auth.uid()::text = user_id`) & Service Role | Government compliance documents onboarding checklist |
+| `public.notification_emails` | `id` (UUID) | Service Role Only | Email delivery logs for HR notification tracking |
+| `public.push_tokens` | `token` (Text) | Read/Write: Owner (`auth.uid()::text = user_id`) & Service Role | Firebase Cloud Messaging (FCM) device push tokens |
+| Storage: `resumes` | `{user_id}/{filename}` | Read/Write: Owner (`auth.uid()::text = user_id`) | Private uploaded PDF/DOCX/TXT resume files |
+| Storage: `avatars` | `{user_id}/{filename}` | Read: Public / Write: Owner | Candidate profile picture uploads |

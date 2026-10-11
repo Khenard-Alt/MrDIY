@@ -1,87 +1,52 @@
-# Admin and Android integration
+# Admin (`mrdiy-admin`) and Android (`mrdiy-careers`) Integration Blueprint
 
-The admin repository writes `public.jobs` in Supabase. Android now reads that
-same table using its existing authenticated Supabase client. The old PHP API
-and sample jobs are no longer used by applicant job screens.
+This document details the shared database structure, API contracts, real-time WebSocket channels, and cross-platform synchronization between the **Admin Web Dashboard (Next.js)** and the **Applicant Mobile App (Android Native Kotlin)**.
 
-## Shared project
+---
 
-Android currently uses `https://sfjpiyevasnmvddgtofz.supabase.co`, configured in
-`app/src/main/java/com/mrdiy/careers/data/auth/AuthManager.kt`.
-The admin's `NEXT_PUBLIC_SUPABASE_URL` must point to this same project (or change
-the Android URL and public key together to match the admin project).
-Never put a service-role key in Android.
+## Shared Supabase Backend & Credentials
 
-The admin deployment's environment variables were not available in its Git
-repository, so project identity has not been verified. A read-only public query
-against the Android project's jobs endpoint returned HTTP 200 and an empty
-published-job list. That does not prove the table is empty: RLS can hide rows.
+* **Supabase Project URL:** `https://xbsrnnuhepljpvzewvsp.supabase.co`
+* **Anon Key (Android App & Web Public):** Configured in `SupabaseProvider.kt` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+* **Service Role Key (Admin Server Only):** Used by Next.js server actions / API routes for admin queries and sending notifications. Never exposed to Android client.
 
-## Job publishing
+---
 
-- Set the admin job status to exactly `published`.
-- Home, Jobs, Recommendations, Saved Jobs and job details use those published
-  rows. A successful empty result remains empty; sample jobs are not substituted.
-- Lists refresh on opening and every 60 seconds while their ViewModels remain
-  alive. This is polling, not a Realtime subscription.
-- All pages are loaded, including catalogs with more than 200 jobs.
-- The admin currently supplies title, description, location, salary, salary
-  period, status and creation date. It does not supply category, employment type,
-  experience level or separate requirements. Android does not invent these.
-  Filters for unspecified categories/types will have no matches.
-- If RLS blocks applicant reads, review and run `supabase_published_jobs.sql`
-  in the shared project's SQL editor. The script has not been applied remotely.
+## Recent Integration Commits & Updates
 
-## Recommendations
+### 1. Admin Navigation & Fast Routing
+* **Next.js Link Component (`cb3b3dc`):** Updated all admin sidebar/navbar navigation buttons from traditional page reloads to Next.js `Link` components (`next/link`), enabling client-side single-page transition for HR administrators.
 
-The existing TF-IDF/cosine algorithm ranks published jobs using skills, desired
-position, headline, about text, resume text and available experience/education.
-Cards display similarity scores and matching skills mentioned in job descriptions.
-Scores are text similarity, not validated hiring probabilities.
-An empty profile receives zero scores and a prompt to add profile information.
+### 2. Unified Applications Table & Status Synchronization
+* **Schema Unification (`202610110003_unify_applications_table.sql`):**
+  * Android and Admin now use a single `public.applications` table.
+  * Captures `user_id`, `job_id`, `status` (`Pending`, `Shortlisted`, `Interview Scheduled`, `Hired`, `Rejected`), `candidate_name`, `candidate_email`, `candidate_phone`, and `resume_url`.
+  * RLS Policy: Applicants can insert and read their own applications; Service Role (Admin) has full read/write access.
 
-Resume upload now persists extracted text and merges parsed skills and experience
-years with the applicant's profile, preserving their personal information.
-Previously uploaded resumes need to be uploaded again if their extracted content
-was never saved. Profile edits and resume uploads are used when recommendations
-reload.
+### 3. Email Notification Logging (`public.notification_emails`)
+* **Email Log Migration (`202610110008_push_tokens_and_email_log.sql`):**
+  * Admin backend logs every HR status email sent via Gmail SMTP (`nodemailer`) into `public.notification_emails`.
+  * Keeps audit logs of recipient `to_email`, `subject`, `status` (`sent` / `failed`), and `error` messages for HR inspection.
 
-## Applications and saved jobs
+### 4. Push Token Registration (`public.push_tokens`)
+* **Firebase Cloud Messaging (FCM) Sync:**
+  * Android client registers its FCM token upon sign-in via `PushTokenRegistrar.kt` into `public.push_tokens` (`token`, `user_id`, `platform`, `updated_at`).
+  * Enables background push notifications to applicant device trays even when the app is closed.
 
-Android now submits to the admin's `applications` table, with the original job ID,
-authenticated user ID and `Pending` status. IDs are no longer hashed into a
-different UUID. The table must generate its own primary key, accept these status
-values and have user IDs compatible with Supabase Auth IDs. Applicant RLS must
-permit inserting and reading only their own applications; admin policies must
-permit review. A unique constraint on `(user_id, job_id)` is needed to prevent
-duplicates across concurrent devices. Client-side duplicate checks alone cannot
-guarantee this. Those existing table definitions and policies were not available
-in the admin repository and have not been changed remotely.
+### 5. Real-Time Application & Alert Streaming
+* **Postgres CDC WebSockets:**
+  * Android listens to live Realtime channels on `public.applications` and `public.alerts`.
+  * Status updates made by HR in Next.js Admin reflect immediately on candidate phone UI with color-coded badges without page refresh.
 
-Saved jobs resolve against the published catalog, retain original job IDs, and
-cache saved IDs separately for each account. Existing `saved_jobs` columns and
-RLS must allow the signed-in user to manage their own records.
+---
 
-## Validation
+## Summary of Integration Contracts
 
-Build and unit tests:
-
-```powershell
-$env:JAVA_HOME = 'C:\Program Files\Android\Android Studio\jbr'
-.\gradlew.bat :app:assembleDebug :app:testDebugUnitTest --offline
-```
-
-Complete the live acceptance check with an admin and an applicant account:
-
-1. Publish a job in admin. Open Android Home and Jobs, and confirm its ID/details.
-2. Edit its description/salary; reopen a list or wait up to 60 seconds.
-3. Set the applicant's desired position/skills or upload a text-based resume.
-   Confirm matching roles rank above unrelated jobs with visible scores.
-4. Save the job; open Saved Jobs and then its details.
-5. Apply and confirm the record appears in admin Applications with the same job ID.
-6. Change its status in admin; reopen Android Applications to see the update.
-7. Unpublish/delete the job; verify it disappears from published lists and its
-   details no longer allow a new application.
-
-Live publishing, authenticated reads and application submission have not yet been
-verified. No admin records were created or changed during development.
+| Operation | Admin Action (Next.js) | Mobile Action (Android) | DB Table / Realtime Event |
+|---|---|---|---|
+| **Publish Job** | Creates/updates job with status=`published` | Listens to catalog polling / realtime | `public.jobs` |
+| **Apply for Job** | Receives application in `/applications` | Submits application via `ApplicationsRepository.kt` | `public.applications` |
+| **Update Status** | HR changes status to `Shortlisted`/`Hired` | Realtime WebSocket updates UI badge | `public.applications` |
+| **Send Message** | HR sends message in candidate drawer | App fetches/receives in `MessagesFragment.kt` | `public.messages` |
+| **Create Alert** | Triggers alert record on status change | Bell icon badge updates live | `public.alerts` |
+| **Push Token** | Admin server reads tokens to trigger push | App registers FCM token on login | `public.push_tokens` |

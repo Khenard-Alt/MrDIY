@@ -144,6 +144,12 @@
             app:destination="@id/jobDetailFragment" />
     </fragment>
 
+    <!-- Chat with HR (opened from Messages; argument: otherId) -->
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.mrdiy.careers.ui.messages.ChatFragment"
+        android:label="Chat" />
+
     <!-- Saved Jobs Fragment -->
     <fragment
         android:id="@+id/savedJobsFragment"
