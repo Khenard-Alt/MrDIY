@@ -42,7 +42,12 @@ class ApplicationsFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 result.onSuccess { applications ->
                     binding.tvEmpty.visibility = if (applications.isEmpty()) View.VISIBLE else View.GONE
-                    binding.applicationsList.adapter = ApplicationsAdapter(applications)
+                    binding.applicationsList.adapter = ApplicationsAdapter(applications) { application ->
+                        findNavController().navigate(
+                            R.id.applicationDetailFragment,
+                            Bundle().apply { putString(ApplicationDetailFragment.ARG_APPLICATION_ID, application.id) }
+                        )
+                    }
                 }.onFailure { error ->
                     Toast.makeText(requireContext(), "Could not load applications. Please try again.", Toast.LENGTH_LONG).show()
                 }
@@ -57,7 +62,8 @@ class ApplicationsFragment : Fragment() {
 }
 
 private class ApplicationsAdapter(
-    private val applications: List<ApplicationsRepository.ApplicationRow>
+    private val applications: List<ApplicationsRepository.ApplicationRow>,
+    private val onClick: (ApplicationsRepository.ApplicationRow) -> Unit
 ) : androidx.recyclerview.widget.RecyclerView.Adapter<ApplicationsAdapter.Holder>() {
     class Holder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val title = view.findViewById<android.widget.TextView>(R.id.tv_title)
@@ -74,6 +80,7 @@ private class ApplicationsAdapter(
         holder.title.text = item.job_title
         holder.status.text = "Status: ${DateText.statusLabel(item.status)}"
         holder.date.text = if (item.applied_at.isBlank()) "" else "Applied ${DateText.dateTime(item.applied_at)}"
+        holder.itemView.setOnClickListener { onClick(item) }
     }
 
     override fun getItemCount() = applications.size

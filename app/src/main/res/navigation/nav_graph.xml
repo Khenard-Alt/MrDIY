@@ -144,6 +144,12 @@
             app:destination="@id/jobDetailFragment" />
     </fragment>
 
+    <!-- One application: timeline, interview, documents (argument: applicationId) -->
+    <fragment
+        android:id="@+id/applicationDetailFragment"
+        android:name="com.mrdiy.careers.ui.applications.ApplicationDetailFragment"
+        android:label="Application" />
+
     <!-- Chat with HR (opened from Messages; argument: otherId) -->
     <fragment
         android:id="@+id/chatFragment"

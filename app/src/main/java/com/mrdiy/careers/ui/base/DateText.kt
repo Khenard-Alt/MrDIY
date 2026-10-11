@@ -22,6 +22,9 @@ object DateText {
     /** "Oct 11, 2026" in the phone's time zone. */
     fun date(iso: String): String = format(iso, "MMM d, yyyy")
 
+    /** "Wed, Oct 14, 2026 · 2:00 PM", for interview schedules. */
+    fun dayAndTime(iso: String): String = format(iso, "EEE, MMM d, yyyy · h:mm a")
+
     /** "Just now", "5m ago", "3h ago", "2d ago", otherwise the date ("Oct 11, 2026"). */
     fun relative(iso: String): String {
         val millis = parseMillis(iso) ?: return iso
@@ -59,11 +62,20 @@ object DateText {
         return calendar.timeInMillis - offsetMinutes * 60_000L
     }
 
-    /** The status names applicants see; the admin buttons use Reviewed/Approved. */
-    fun statusLabel(status: String): String = when (status.trim().lowercase()) {
-        "reviewed" -> "Under review"
-        "approved" -> "Accepted"
-        "submitted" -> "Pending"
-        else -> status.trim().replaceFirstChar { it.uppercase() }
+    /** The pipeline step a stored status means; old names are mapped, unknown values count as Pending. */
+    fun normalizeStatus(status: String): String = when (status.trim().lowercase()) {
+        "reviewed", "under review" -> "Reviewed"
+        "shortlisted" -> "Shortlisted"
+        "interview scheduled", "interview" -> "Interview Scheduled"
+        "hired", "approved", "accepted" -> "Hired"
+        "rejected" -> "Rejected"
+        "on hold", "on-hold", "onhold" -> "On Hold"
+        else -> "Pending"
+    }
+
+    /** The status names applicants see. */
+    fun statusLabel(status: String): String = when (normalizeStatus(status)) {
+        "Reviewed" -> "Under review"
+        else -> normalizeStatus(status)
     }
 }

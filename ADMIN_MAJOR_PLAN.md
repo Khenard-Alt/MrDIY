@@ -8,6 +8,28 @@ Layunin: gawing buong HR system ang admin (hindi lang listahan ng applicants), a
 
 ---
 
+## 0. Mga komento ng Panel (HUWAG KALIMUTAN)
+
+Mula sa "Comments / Suggestions of the Panelist" (25/05/2026) para sa **"A Mobile-Based Recruitment System Using Machine Learning For Mr. D.I.Y."** (OLFU, College of Computer Studies, Antipolo City). Ang bawat feature sa ibaba ay dapat sumagot sa isa sa mga ito.
+
+| # | Panelist | Komento | Kalagayan | Saan sa plano |
+|---|---|---|---|---|
+| 1 | Engr. Eliseo Francisco, MIT | Notification o status update pagkatapos mag-apply | **Tapos na:** bell sa app, notification sa tray, email (kailangan ng restart ng admin; push kapag nakasara ang app ay kailangan ng Firebase key) | NOTIFICATIONS_PLAN.md |
+| 2 | Engr. Francisco | Mga hakbang na kailangan habang nag-a-apply hanggang makapagtrabaho | **Kulang:** pipeline na may timeline, interview, at checklist ng dokumento pagkatapos ma-hire | Seksyon 2C, 2D, 2I |
+| 3 | Engr. Francisco | Notification o impormasyon kung gaano kabilis magsisimula ang applicant | **Kulang:** Hiring Velocity Estimator ("Estimated start: 2 - 4 business days") | CAPSTONE_ADVANCED_AI_PLANNING.md §2.1 |
+| 4 | Engr. Francisco | Web-based (optional) | **Tapos na:** ang admin web (`mrdiy-admin`); lalawak pa sa plano | Buong dokumentong ito |
+| 5 | Engr. Francisco | Humingi ng **formatted biodata** ng client kung available | **Kulang at wala pa sa anumang plano:** idinagdag sa 2K sa ibaba | Seksyon 2K (bago) |
+| 6 | Michael Angelo Manalo, MIT | Improvements ng machine learning | **Bahagi pa lang:** naidagdag ang lapit ng lokasyon sa match score at ang paliwanag ng mga tumugmang salita. Kulang pa ang mga ito sa 2E. | Seksyon 2E |
+| 7 | Manalo | Wastong **ranking system na may strengths at weaknesses** | **Kulang:** ang ranking ng mga applicant bawat job, na may listahan ng lakas at kulang na skills | Seksyon 2E at 2L (bago) |
+| 8 | Manalo | **Automated AI explanation** ng resulta ng ranking | **Bahagi pa lang:** may mga salitang tumugma, pero walang pangungusap na paliwanag | AI plan §3, Seksyon 2E |
+
+**Bagong dagdag na hindi pa nasa dating plano (mula sa komento 5, 7 at 8):**
+
+- **2K. Formatted biodata:** isang pahina ng biodata ng applicant (pangalan, contact, address, edad kung ibibigay, edukasyon, karanasan, skills, larawan) na awtomatikong nabubuo mula sa profile, na maaaring i-**download bilang PDF** ng HR at i-print. Kasama ang opsyon na magdagdag ng mga field na hinihingi ng MR.DIY.
+- **2L. Ranking ng mga applicant bawat job:** listahan na naka-rank mula pinakamataas ang match, na may ranggo (#1, #2…), **match %**, **mga lakas** at **mga kulang** bawat isa, at ang **paliwanag na pangungusap** (halimbawa: "Si [Pangalan] ay #2 na may 68% na match sa Cashier. Ang ranggong ito ay dahil sa 3 sa 5 kinakailangang skill (POS, cash handling, customer service) at 3 taong karanasan. Kulang siya sa: …").
+
+---
+
 ## 1. Kalagayan ngayon (ano ang meron at ano ang kulang)
 
 | Gawain | Sa app (applicant) | Sa admin (HR) ngayon | Kulang |
@@ -89,6 +111,12 @@ Ang tinutukoy mong "magpapasahan." Ito ay mangyayari sa admin, at makikita rin n
 ### I. Pre-employment checklist (mula sa AI plan)
 Pagkatapos ma-Hire: listahan ng dokumento (SSS, PhilHealth, Pag-IBIG, NBI, medical, TIN, contract) na maa-upload ng applicant at ma-verify ng HR.
 
+### K. Formatted biodata (komento 5 ng panel)
+Tingnan ang seksyon 0: biodata na awtomatikong nabubuo mula sa profile, na maaaring i-download bilang PDF.
+
+### L. Ranking na may strengths at weaknesses (komento 6 hanggang 8 ng panel)
+Tingnan ang seksyon 0: ranking ng mga applicant bawat job, na may lakas, kulang, at awtomatikong paliwanag na pangungusap.
+
 ### J. Seguridad at audit
 - Password hashing, limit sa maling login, session na mapapawalang-bisa.
 - **Audit log:** lahat ng mahalagang aksyon (status, hand-off, delete, account).
@@ -134,12 +162,12 @@ Pagkatapos ma-Hire: listahan ng dokumento (SSS, PhilHealth, Pag-IBIG, NBI, medic
 | 2 | **Hand-off / assignment** na may queue at kasaysayan, audit log | L |
 | 3 | **Pipeline (status) + board view**, timeline sa app | M |
 | 4 | **Interview** (admin + app + notification + email) | L |
-| 5 | **Applicant 360** (buong profile, notes, XAI, paghahambing) | M |
+| 5 | **Applicant 360**, **ranking na may strengths at weaknesses at paliwanag** (2L), at **formatted biodata na PDF** (2K) | L |
 | 6 | **Jobs** (bakante, deadline, branch, duplicate), AI description | M |
 | 7 | **Analytics** at CSV, admin notifications | M |
 | 8 | Pre-employment checklist, hiring velocity | M |
 
-Mungkahing **minimum para sa defense:** Yugto 1 hanggang 4, dahil ito ang nagpapakita ng buong daloy: maraming HR, hand-off sa branch, pipeline at interview, na may katapat sa app.
+Mungkahing **minimum para sa defense:** Yugto 1 hanggang 4 **at ang bahagi ng Yugto 5 na sumasagot sa panel (2K at 2L, komento 5 hanggang 8)**; ang timeline at checklist ng dokumento ay sumasagot sa komento 2, at ang hiring velocity sa komento 3. Ang Yugto 1 hanggang 4, dahil ito ang nagpapakita ng buong daloy: maraming HR, hand-off sa branch, pipeline at interview, na may katapat sa app.
 
 ---
 

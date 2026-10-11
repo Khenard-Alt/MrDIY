@@ -53,7 +53,7 @@ class DateAndDistanceTest {
 
     @Test fun statusNamesMatchWhatApplicantsSee() {
         assertEquals("Under review", DateText.statusLabel("Reviewed"))
-        assertEquals("Accepted", DateText.statusLabel("Approved"))
+        assertEquals("Hired", DateText.statusLabel("Approved"))
         assertEquals("Rejected", DateText.statusLabel("rejected"))
         assertEquals("Pending", DateText.statusLabel("submitted"))
     }

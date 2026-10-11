@@ -34,7 +34,9 @@ class ApplicationsRepository(private val context: Context) {
         val job_id: String,
         val job_title: String,
         val status: String = "submitted",
-        val applied_at: String
+        val applied_at: String,
+        /** The match % saved when the applicant applied, if it was computed. */
+        val match_score: Int? = null
     )
 
     suspend fun getApplications(): Result<List<ApplicationRow>> = withContext(Dispatchers.IO) {
@@ -56,7 +58,8 @@ class ApplicationsRepository(private val context: Context) {
                     job_title = titles[jobId]?.takeIf { it.isNotBlank() } ?: "Job #$jobId",
                     status = row["status"]?.jsonPrimitive?.contentOrNull ?: "Pending",
                     applied_at = row["created_at"]?.jsonPrimitive?.contentOrNull
-                        ?: row["applied_at"]?.jsonPrimitive?.contentOrNull.orEmpty()
+                        ?: row["applied_at"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+                    match_score = row["match_score"]?.jsonPrimitive?.contentOrNull?.toDoubleOrNull()?.toInt()
                 )
             })
         } catch (cancelled: CancellationException) {
