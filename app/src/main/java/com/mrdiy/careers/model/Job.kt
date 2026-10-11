@@ -17,8 +17,17 @@ data class Job(
     val responsibilities: List<String>,
     val requirements: List<String>,
     val benefits: List<String>,
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    /** Total headcount for this job, or null when not set (unlimited). */
+    val openings: Int? = null,
+    /** How many applicants have already been Hired for this job. */
+    val hiredCount: Int = 0
 ) {
+    /** How many slots are left, or null when openings isn't set. Never negative. */
+    fun openingsRemaining(): Int? = openings?.let { (it - hiredCount).coerceAtLeast(0) }
+
+    fun isFull(): Boolean = openingsRemaining() == 0
+
     fun getMonthlySalary(): Int {
         return when (salaryType.lowercase()) {
             "daily" -> salaryMin * 26

@@ -36,7 +36,10 @@ class ApplicationsRepository(private val context: Context) {
         val status: String = "submitted",
         val applied_at: String,
         /** The match % saved when the applicant applied, if it was computed. */
-        val match_score: Int? = null
+        val match_score: Int? = null,
+        /** 'none' | 'pending' | 'accepted' | 'declined' — HR offering to move this application to another branch. */
+        val transfer_status: String = "none",
+        val transfer_offer_branch_name: String? = null
     )
 
     suspend fun getApplications(): Result<List<ApplicationRow>> = withContext(Dispatchers.IO) {
@@ -50,8 +53,19 @@ class ApplicationsRepository(private val context: Context) {
             val titles = if (ids.isEmpty()) emptyMap() else SupabaseProvider.client.postgrest["jobs"].select {
                 filter { isIn("id", ids) }
             }.decodeList<PublishedJobRow>().associate { it.id.content to it.title.orEmpty() }
+
+            val branchIds = rows.mapNotNull { it["transfer_offer_branch_id"]?.jsonPrimitive?.contentOrNull }.distinct()
+            val branchNames = if (branchIds.isEmpty()) emptyMap() else runCatching {
+                SupabaseProvider.client.postgrest["branches"].select {
+                    filter { isIn("id", branchIds) }
+                }.decodeList<JsonObject>().associate {
+                    it["id"]!!.jsonPrimitive.content to (it["name"]?.jsonPrimitive?.contentOrNull ?: "")
+                }
+            }.getOrDefault(emptyMap())
+
             Result.success(rows.map { row ->
                 val jobId = row["job_id"]?.jsonPrimitive?.contentOrNull.orEmpty()
+                val offerBranchId = row["transfer_offer_branch_id"]?.jsonPrimitive?.contentOrNull
                 ApplicationRow(
                     id = row["id"]!!.jsonPrimitive.content,
                     user_id = userId, job_id = jobId,
@@ -59,7 +73,9 @@ class ApplicationsRepository(private val context: Context) {
                     status = row["status"]?.jsonPrimitive?.contentOrNull ?: "Pending",
                     applied_at = row["created_at"]?.jsonPrimitive?.contentOrNull
                         ?: row["applied_at"]?.jsonPrimitive?.contentOrNull.orEmpty(),
-                    match_score = row["match_score"]?.jsonPrimitive?.contentOrNull?.toDoubleOrNull()?.toInt()
+                    match_score = row["match_score"]?.jsonPrimitive?.contentOrNull?.toDoubleOrNull()?.toInt(),
+                    transfer_status = row["transfer_status"]?.jsonPrimitive?.contentOrNull ?: "none",
+                    transfer_offer_branch_name = offerBranchId?.let { branchNames[it] }
                 )
             })
         } catch (cancelled: CancellationException) {
@@ -88,6 +104,17 @@ class ApplicationsRepository(private val context: Context) {
             com.mrdiy.careers.data.SafeDiagnostics.record("applications_realtime", e)
         }
     }.flowOn(Dispatchers.IO)
+
+    /** Accepts or declines HR's offer to move this application to another branch. */
+    suspend fun respondToTransfer(applicationId: String, accept: Boolean): Boolean = withContext(Dispatchers.IO) {
+        runCatching {
+            SupabaseProvider.client.postgrest[table].update({
+                set("transfer_status", if (accept) "accepted" else "declined")
+                set("transfer_responded_at", com.mrdiy.careers.ui.base.DateText.nowIso())
+            }) { filter { eq("id", applicationId) } }
+            true
+        }.getOrDefault(false)
+    }
 
     suspend fun apply(job: Job): Result<Unit> = applyLock.withLock { applyOnce(job) }
 

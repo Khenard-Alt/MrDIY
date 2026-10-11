@@ -176,10 +176,23 @@ class JobDetailFragment : BaseFragment() {
             binding.tvJdCompanyLoc.text = "${job.company} - ${job.location}"
 
             binding.jdTags.removeAllViews()
-            listOf(job.jobType, job.category, job.level).filter { it.isNotBlank() && it != "Not specified" }.forEach { tag ->
+            val tags = listOf(job.jobType, job.category, job.level).filter { it.isNotBlank() && it != "Not specified" }
+            tags.forEach { tag ->
                 binding.jdTags.addView(com.google.android.material.chip.Chip(requireContext()).apply { text = tag; isClickable = false })
             }
+            job.openingsRemaining()?.let { remaining ->
+                binding.jdTags.addView(com.google.android.material.chip.Chip(requireContext()).apply {
+                    text = if (remaining > 0) "$remaining opening${if (remaining == 1) "" else "s"} left" else "Fully booked"
+                    isClickable = false
+                })
+            }
             binding.jdTags.isVisible = binding.jdTags.childCount > 0
+
+            // Don't let applicants apply once the position is filled.
+            if (job.isFull()) {
+                binding.btnApply.isEnabled = false
+                binding.btnApply.text = "Fully booked"
+            }
             val monthlyMin = job.getMonthlySalary()
             val monthlyMax = job.getMonthlySalaryMax()
             binding.tvSalaryRange.text = if (job.salaryMin == 0 && job.salaryMax == 0) {

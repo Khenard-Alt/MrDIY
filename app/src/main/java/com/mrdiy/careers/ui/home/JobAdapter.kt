@@ -190,6 +190,14 @@ class JobAdapter(
             binding.chipJobType.text =
                 job.jobType
 
+            val remaining = job.openingsRemaining()
+            if (remaining != null) {
+                binding.chipOpenings.visibility = View.VISIBLE
+                binding.chipOpenings.text = if (remaining > 0) "$remaining opening${if (remaining == 1) "" else "s"} left" else "Fully booked"
+            } else {
+                binding.chipOpenings.visibility = View.GONE
+            }
+
             binding.chipLocation.text = distances[job.id]
                 ?.let { "${com.mrdiy.careers.data.search.LocationDistance.formatDistance(it)} · ${job.location}" }
                 ?: job.location

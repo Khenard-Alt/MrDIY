@@ -125,6 +125,10 @@ class ApplicationDetailFragment : Fragment() {
             )
         }
 
+        if (application.transfer_status == "pending") {
+            content.addView(transferOfferCard(application))
+        }
+
         content.addView(timelineCard(status))
 
         if (interview != null) content.addView(interviewCard(interview))
@@ -232,6 +236,36 @@ class ApplicationDetailFragment : Fragment() {
         })
         card.addView(buttons)
         return card
+    }
+
+    private fun transferOfferCard(application: ApplicationsRepository.ApplicationRow): View {
+        val card = cardContainer()
+        card.addView(heading("Branch transfer offer"))
+        val branchName = application.transfer_offer_branch_name?.takeIf { it.isNotBlank() } ?: "another branch"
+        card.addView(body("MR.DIY $branchName would like to consider you for this job. Do you want to proceed?"))
+
+        val buttons = LinearLayout(requireContext()).apply { orientation = LinearLayout.HORIZONTAL }
+        buttons.addView(actionButton("Accept", filled = true) { respondToTransfer(application.id, true) }.apply {
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(8) }
+        })
+        buttons.addView(actionButton("Decline", filled = false) { respondToTransfer(application.id, false) }.apply {
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        })
+        card.addView(buttons)
+        return card
+    }
+
+    private fun respondToTransfer(applicationId: String, accept: Boolean) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val ok = ApplicationsRepository(requireContext()).respondToTransfer(applicationId, accept)
+            if (_binding == null) return@launch
+            Toast.makeText(
+                requireContext(),
+                if (ok) "Thank you. HR was told." else "Could not send your answer. Please try again.",
+                Toast.LENGTH_SHORT
+            ).show()
+            load()
+        }
     }
 
     private fun documentsCard(requirements: List<RecruitmentRepository.RequirementRow>): View {

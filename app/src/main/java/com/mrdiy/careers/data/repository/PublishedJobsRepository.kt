@@ -99,7 +99,10 @@ data class PublishedJobRow(
     // One item per line, written by the admin Jobs page. Absent until the job_details migration is applied.
     val responsibilities: String? = null,
     val requirements: String? = null,
-    val benefits: String? = null
+    val benefits: String? = null,
+    // Absent until the branch_transfer_and_vacancies migration is applied.
+    val openings: Int? = null,
+    val hired_count: Int? = null
 ) {
     private fun lines(text: String?): List<String> =
         text.orEmpty().lines().map { it.trim().trimStart('•', '-', '*').trim() }.filter { it.isNotEmpty() }
@@ -116,7 +119,8 @@ data class PublishedJobRow(
             salaryMin = minimum, salaryMax = maximum,
             salaryType = salary_type?.lowercase()?.takeIf { it.isNotBlank() } ?: "monthly",
             postedAgo = created_at?.let { com.mrdiy.careers.ui.base.DateText.relative(it) }.orEmpty(), aboutRole = description.orEmpty(),
-            responsibilities = lines(responsibilities), requirements = lines(requirements), benefits = lines(benefits)
+            responsibilities = lines(responsibilities), requirements = lines(requirements), benefits = lines(benefits),
+            openings = openings, hiredCount = hired_count ?: 0
         )
     }
 }

@@ -141,6 +141,14 @@
                     android:text="Retail"
                     style="@style/DiyTagChipGray" />
 
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_openings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 openings left"
+                    android:visibility="gone"
+                    style="@style/DiyTagChipGray" />
+
             </com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>
