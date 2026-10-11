@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job as CoroutineJob
@@ -30,8 +31,11 @@ class JobAdapter(
 
     // Match scoring does an O(n^2)-ish TF-IDF pass over the whole job list,
     // so it runs off the main thread; the last-dispatched job is cancelled
-    // whenever a newer profile/job-list update supersedes it.
-    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    // whenever a newer profile/job-list update supersedes it. The scope is
+    // recreated on each attach since a RecyclerView (e.g. inside a
+    // ViewPager2 page) can be detached and reattached, and a cancelled
+    // CoroutineScope never resumes launching work.
+    private var scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var scoringJob: CoroutineJob? = null
 
     fun updateProfile(value: com.mrdiy.careers.model.UserProfile?) {
@@ -62,6 +66,13 @@ class JobAdapter(
             }
             scores = result
             notifyDataSetChanged()
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        if (!scope.isActive) {
+            scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
         }
     }
 
