@@ -12,9 +12,11 @@ import com.mrdiy.careers.data.repository.ProfileRepository
 import com.mrdiy.careers.data.ml.HybridMatchingService
 import com.mrdiy.careers.data.search.MetroManilaScope
 import com.mrdiy.careers.model.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job as KJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RecommendedJobsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -153,14 +155,18 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
 
     fun getSavedCount(): Int = _savedCount.value ?: 0
 
-    private fun rankJobs(jobs: List<Job>): List<Job> {
+    private suspend fun rankJobs(jobs: List<Job>): List<Job> {
         val profile = profileRepository.loadFromPrefs()
         hasMatchingProfile.value = profile.skills.isNotEmpty() || profile.desiredPosition.isNotBlank() ||
             profile.about.isNotBlank() || profile.headline.isNotBlank() || profile.workExperiences.isNotEmpty() || profile.resumeText.isNotBlank()
         description.value = if (hasMatchingProfile.value == true)
             "Published jobs ranked by similarity to your profile. Scores are text similarity, not hiring probabilities."
         else "Add your skills or desired position, or upload a resume to personalize these jobs."
-        rankedResults = HybridMatchingService.matchJobsToProfile(profile, jobs)
+
+        // Matching does an expensive text-similarity pass over every job — keep it off the main thread.
+        rankedResults = withContext(Dispatchers.Default) {
+            HybridMatchingService.matchJobsToProfile(profile, jobs)
+        }
         return rankedResults.map { it.job }
     }
 

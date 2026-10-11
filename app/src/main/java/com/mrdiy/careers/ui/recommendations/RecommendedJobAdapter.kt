@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.ItemRecommendedJobCardBinding
@@ -18,8 +19,16 @@ class RecommendedJobAdapter(
 ) : RecyclerView.Adapter<RecommendedJobAdapter.ViewHolder>() {
 
     fun updateResults(items: List<JobMatchResult>) {
+        val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = results.size
+            override fun getNewListSize() = items.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                results[oldItemPosition].job.id == items[newItemPosition].job.id
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                results[oldItemPosition] == items[newItemPosition]
+        })
         results = items
-        notifyDataSetChanged()
+        diff.dispatchUpdatesTo(this)
     }
 
     inner class ViewHolder(private val binding: ItemRecommendedJobCardBinding) :

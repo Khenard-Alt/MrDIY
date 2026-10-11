@@ -42,12 +42,16 @@ class PublishedJobsRepository(
     }
 
     suspend fun getJobById(id: String): Result<Job> = request {
-        SupabaseProvider.client.postgrest["jobs"].select {
-            filter {
-                eq("id", id)
-                eq("status", "published")
-            }
-        }.decodeList<PublishedJobRow>().firstOrNull()?.toJob()
+        val single = runCatching {
+            SupabaseProvider.client.postgrest["jobs"].select {
+                filter {
+                    eq("id", id)
+                    eq("status", "published")
+                }
+            }.decodeList<PublishedJobRow>().firstOrNull()?.toJob()
+        }.getOrNull()
+
+        (single ?: fetchOpenJobs().getOrNull()?.find { it.id == id })
             ?.takeIf { com.mrdiy.careers.data.search.MetroManilaScope.matches(it.location, allowedLocations) }
             ?: error("This job is no longer available.")
     }

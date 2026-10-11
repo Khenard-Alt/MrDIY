@@ -4,6 +4,7 @@ import androidx.core.view.isVisible
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mrdiy.careers.databinding.ItemSavedJobCardBinding
 import com.mrdiy.careers.model.Job
@@ -17,8 +18,16 @@ class SavedJobAdapter(
     private var jobsList = jobs.toMutableList()
 
     fun updateList(newJobs: List<Job>) {
+        val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = jobsList.size
+            override fun getNewListSize() = newJobs.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                jobsList[oldItemPosition].id == newJobs[newItemPosition].id
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                jobsList[oldItemPosition] == newJobs[newItemPosition]
+        })
         jobsList = newJobs.toMutableList()
-        notifyDataSetChanged()
+        diff.dispatchUpdatesTo(this)
     }
 
     inner class SavedJobViewHolder(private val binding: ItemSavedJobCardBinding) :
@@ -44,8 +53,11 @@ class SavedJobAdapter(
 
             binding.btnRemove.setOnClickListener {
                 onRemoveClick?.invoke(job)
-                jobsList.remove(job)
-                notifyDataSetChanged()
+                val index = jobsList.indexOf(job)
+                if (index != -1) {
+                    jobsList.removeAt(index)
+                    notifyItemRemoved(index)
+                }
             }
         }
     }

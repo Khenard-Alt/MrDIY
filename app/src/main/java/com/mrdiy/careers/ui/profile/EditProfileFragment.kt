@@ -1,6 +1,7 @@
 package com.mrdiy.careers.ui.profile
 
 import android.content.ContentResolver
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.util.PatternsCompat
+import androidx.lifecycle.lifecycleScope
 import com.mrdiy.careers.data.auth.AccountRules
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,6 +25,9 @@ import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.FragmentEditProfileBinding
 import com.mrdiy.careers.model.UserProfile
 import com.mrdiy.careers.model.WorkExperience
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -115,37 +120,78 @@ class EditProfileFragment : Fragment() {
     private fun loadAvatarPhoto() {
         val file = if (currentPhotoPath.isNotEmpty()) File(currentPhotoPath) else null
         if (file != null && file.exists()) {
-            val bmp = BitmapFactory.decodeFile(file.absolutePath)
-            if (bmp != null) {
-                binding.tvAvatarInitialsEdit.visibility = View.INVISIBLE
-                binding.ivProfilePhotoEdit.setImageBitmap(bmp)
-                binding.ivProfilePhotoEdit.visibility = View.VISIBLE
-                return
+            val path = file.absolutePath
+            viewLifecycleOwner.lifecycleScope.launch {
+                val bmp = withContext(Dispatchers.IO) { decodeSampledBitmap(path, AVATAR_MAX_PX, AVATAR_MAX_PX) }
+                if (_binding == null) return@launch
+                if (bmp != null) {
+                    binding.tvAvatarInitialsEdit.visibility = View.INVISIBLE
+                    binding.ivProfilePhotoEdit.setImageBitmap(bmp)
+                    binding.ivProfilePhotoEdit.visibility = View.VISIBLE
+                } else {
+                    showAvatarInitialsFallback()
+                }
             }
+            return
         }
+        showAvatarInitialsFallback()
+    }
+
+    private fun showAvatarInitialsFallback() {
         binding.ivProfilePhotoEdit.visibility   = View.GONE
         binding.tvAvatarInitialsEdit.visibility = View.VISIBLE
         binding.tvAvatarInitialsEdit.text       = viewModel.currentProfile().initials
     }
 
     private fun copyPhotoToInternal(uri: Uri) {
-        try {
-            val resolver: ContentResolver = requireContext().contentResolver
-            val dest = File(requireContext().filesDir, "profile_photo.jpg")
-            resolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(dest).use { output -> input.copyTo(output) }
-            }
-            currentPhotoPath = dest.absolutePath
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val dest = withContext(Dispatchers.IO) {
+                    val resolver: ContentResolver = requireContext().contentResolver
+                    val file = File(requireContext().filesDir, "profile_photo.jpg")
+                    resolver.openInputStream(uri)?.use { input ->
+                        FileOutputStream(file).use { output -> input.copyTo(output) }
+                    }
+                    file
+                }
+                currentPhotoPath = dest.absolutePath
 
-            val bmp = BitmapFactory.decodeFile(dest.absolutePath)
-            if (bmp != null) {
-                binding.tvAvatarInitialsEdit.visibility = View.INVISIBLE
-                binding.ivProfilePhotoEdit.setImageBitmap(bmp)
-                binding.ivProfilePhotoEdit.visibility = View.VISIBLE
+                val bmp = withContext(Dispatchers.IO) {
+                    decodeSampledBitmap(dest.absolutePath, AVATAR_MAX_PX, AVATAR_MAX_PX)
+                }
+
+                if (_binding == null) return@launch
+                if (bmp != null) {
+                    binding.tvAvatarInitialsEdit.visibility = View.INVISIBLE
+                    binding.ivProfilePhotoEdit.setImageBitmap(bmp)
+                    binding.ivProfilePhotoEdit.visibility = View.VISIBLE
+                }
+            } catch (e: Exception) {
+                if (isAdded) Toast.makeText(requireContext(), "Could not load photo", Toast.LENGTH_SHORT).show()
             }
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Could not load photo", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    // Decodes at the smallest resolution that still covers the avatar's
+    // display size, instead of loading the full camera/gallery resolution.
+    private fun decodeSampledBitmap(path: String, reqWidth: Int, reqHeight: Int): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(path, bounds)
+
+        var inSampleSize = 1
+        if (bounds.outHeight > reqHeight || bounds.outWidth > reqWidth) {
+            val halfHeight = bounds.outHeight / 2
+            val halfWidth = bounds.outWidth / 2
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        val options = BitmapFactory.Options().apply {
+            inJustDecodeBounds = false
+            this.inSampleSize = inSampleSize
+        }
+        return BitmapFactory.decodeFile(path, options)
     }
 
     // ── Skills ────────────────────────────────────────────────────────────────
@@ -300,5 +346,9 @@ class EditProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val AVATAR_MAX_PX = 512
     }
 }

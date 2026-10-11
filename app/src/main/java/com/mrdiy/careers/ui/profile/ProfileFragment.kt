@@ -64,9 +64,12 @@ class ProfileFragment : Fragment() {
         updateSavedJobsCount()
         viewLifecycleOwner.lifecycleScope.launch {
             com.mrdiy.careers.data.repository.PublishedJobsRepository().fetchOpenJobs().onSuccess { jobs ->
-                val top = com.mrdiy.careers.data.ml.JobMatchingEngine.matchJobs(viewModel.currentProfile(), jobs).maxOfOrNull { it.matchScore }
-                binding.tvStatProfile.text = top?.let { "$it%" } ?: "—"
-            }.onFailure { binding.tvStatProfile.text = "—" }
+                val profileSnapshot = viewModel.currentProfile()
+                val top = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                    com.mrdiy.careers.data.ml.JobMatchingEngine.matchJobs(profileSnapshot, jobs).maxOfOrNull { it.matchScore }
+                }
+                if (_binding != null) binding.tvStatProfile.text = top?.let { "$it%" } ?: "—"
+            }.onFailure { if (_binding != null) binding.tvStatProfile.text = "—" }
         }
     }
 

@@ -10,6 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.ItemJobCardBinding
 import com.mrdiy.careers.model.Job
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Job as CoroutineJob
 
 class JobAdapter(
     private var jobs: List<Job>,
@@ -20,15 +27,47 @@ class JobAdapter(
     private var savedJobIds: Set<String> = emptySet()
     private var profile: com.mrdiy.careers.model.UserProfile? = null
     private var scores: Map<String, Int> = emptyMap()
+
+    // Match scoring does an O(n^2)-ish TF-IDF pass over the whole job list,
+    // so it runs off the main thread; the last-dispatched job is cancelled
+    // whenever a newer profile/job-list update supersedes it.
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private var scoringJob: CoroutineJob? = null
+
     fun updateProfile(value: com.mrdiy.careers.model.UserProfile?) {
         profile = value
-        updateScores()
-        notifyDataSetChanged()
+        recomputeScoresAsync()
     }
-    private fun updateScores() {
-        scores = profile?.takeIf { it.skills.isNotEmpty() || it.desiredPosition.isNotBlank() || it.resumeText.isNotBlank() }
-            ?.let { com.mrdiy.careers.data.ml.JobMatchingEngine.matchJobs(it, jobs).associate { result -> result.job.id to result.matchScore } }
-            ?: emptyMap()
+
+    private fun recomputeScoresAsync() {
+        scoringJob?.cancel()
+
+        val profileSnapshot = profile
+        val jobsSnapshot = jobs
+
+        val matchable = profileSnapshot?.takeIf {
+            it.skills.isNotEmpty() || it.desiredPosition.isNotBlank() || it.resumeText.isNotBlank()
+        }
+
+        if (matchable == null) {
+            scores = emptyMap()
+            notifyDataSetChanged()
+            return
+        }
+
+        scoringJob = scope.launch {
+            val result = withContext(Dispatchers.Default) {
+                com.mrdiy.careers.data.ml.JobMatchingEngine.matchJobs(matchable, jobsSnapshot)
+                    .associate { it.job.id to it.matchScore }
+            }
+            scores = result
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        scope.cancel()
     }
 
     // ───────── Update Jobs ─────────
@@ -73,7 +112,7 @@ class JobAdapter(
         )
 
         jobs = newJobs
-        updateScores()
+        recomputeScoresAsync()
 
         diff.dispatchUpdatesTo(this)
     }
