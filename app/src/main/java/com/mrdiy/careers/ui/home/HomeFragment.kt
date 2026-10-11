@@ -67,9 +67,17 @@ class HomeFragment : Fragment() {
         super.onResume()
         setupUserGreeting()
         refreshNotificationBadge(binding.notificationBadge)
+        updateResumeBanner()
 
         viewModel.loadSavedJobIds()
         viewModel.fetchJobsFromApi()
+    }
+
+    /** The match % needs a resume, so ask for one while there is none. */
+    private fun updateResumeBanner() {
+        val hasResume = ProfileRepository(requireContext()).loadFromPrefs().canShowMatch
+        binding.resumeBanner.visibility = if (hasResume) View.GONE else View.VISIBLE
+        binding.btnUploadResumeBanner.setOnClickListener { findNavController().navigate(R.id.resumeUploadFragment) }
     }
 
     // ───────────────── Greeting ─────────────────

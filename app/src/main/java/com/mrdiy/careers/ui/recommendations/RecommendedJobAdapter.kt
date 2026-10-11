@@ -19,6 +19,15 @@ class RecommendedJobAdapter(
     private val onJobClick: (Job) -> Unit
 ) : RecyclerView.Adapter<RecommendedJobAdapter.ViewHolder>() {
 
+    /** The match % needs a resume; without one the badge asks for it instead. */
+    var showScores: Boolean = true
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
     fun updateResults(items: List<JobMatchResult>) {
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = results.size
@@ -59,9 +68,15 @@ class RecommendedJobAdapter(
             binding.chipCategory.text = job.category
 
             // ── Match score badge ─────────────────────────────────────────────
-            binding.tvMatchScore.text = "${result.matchScore}%"
-            binding.tvMatchLabel.text = "Match"
-            binding.matchBadge.contentDescription = "${result.matchScore}% match: ${result.matchLabel}"
+            if (showScores) {
+                binding.tvMatchScore.text = "${result.matchScore}%"
+                binding.tvMatchLabel.text = "Match"
+                binding.matchBadge.contentDescription = "${result.matchScore}% match: ${result.matchLabel}"
+            } else {
+                binding.tvMatchScore.text = "—"
+                binding.tvMatchLabel.text = "No resume"
+                binding.matchBadge.contentDescription = "Upload your resume to see how well you match this job"
+            }
 
             val (badgeColor, labelColor) = Pair(R.color.brand_yellow, R.color.brand_black)
             binding.matchBadge.setCardBackgroundColor(

@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:hint="Full Name"
+            app:helperText="Use your real full name, as written on your resume and IDs"
               app:boxStrokeColor="@color/text_input_stroke_selector"
               app:hintTextColor="@color/text_input_hint_selector"
             app:layout_constraintEnd_toEndOf="parent"

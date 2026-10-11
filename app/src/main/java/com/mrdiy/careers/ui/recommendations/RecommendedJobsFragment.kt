@@ -169,6 +169,7 @@ class RecommendedJobsFragment : Fragment() {
             }
             if (!chip.isChecked) chip.isChecked = true
         }
+        viewModel.hasMatchingProfile.observe(viewLifecycleOwner) { hasResume -> jobAdapter.showScores = hasResume }
         viewModel.matchResults.observe(viewLifecycleOwner) { jobs ->
             jobAdapter.updateResults(jobs)
             updateEmptyState()

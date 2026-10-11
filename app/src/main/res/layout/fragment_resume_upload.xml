@@ -60,7 +60,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PDF, DOCX, or TXT file supported. We will automatically match you to the best MR.D.I.Y. jobs!"
+                        android:text="PDF, DOCX, or TXT file supported. Upload your own resume: the name on it must match your account name. We will automatically match you to the best MR.D.I.Y. jobs!"
                         android:textSize="13sp"
                         android:gravity="center"
                         android:layout_marginTop="6dp"

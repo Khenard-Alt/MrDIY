@@ -55,6 +55,15 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
                 extractedText = text
                 ensureActive()
                 parsed = resumeRepo.parseResume(text)
+
+                // The resume must be the applicant's own: compare the name on it with the account name.
+                val accountName = profileRepo.loadFromPrefs(uid).fullName
+                    .ifBlank { com.mrdiy.careers.data.auth.AuthManager(context).getCurrentUserName() }
+                val identity = com.mrdiy.careers.data.repository.ResumeIdentity.check(accountName, text)
+                if (identity.result == com.mrdiy.careers.data.repository.ResumeIdentity.Result.MISMATCH) {
+                    throw IllegalArgumentException(identity.message)
+                }
+                val identityNotice = identity.message
                 check(uid == profileRepo.getCurrentUserId())
                 val path = "$uid/resume-${java.util.UUID.randomUUID()}.$extension"
                 _state.value = ResumeUploadState.UploadingFile
@@ -77,8 +86,9 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
                 _state.value = ResumeUploadState.ParseSuccess(
                     profileRepo.loadFromPrefs(uid),
                     ResumeParseResult(success = true, skills = parsed!!.skills,
-                        summary = if (text.isBlank()) "Resume uploaded. Add your skills in your profile to improve matches."
-                        else "Resume uploaded. Review the detected skills in your profile.")
+                        summary = (if (text.isBlank()) "Resume uploaded. Add your skills in your profile to improve matches."
+                        else "Resume uploaded. Review the detected skills in your profile.") +
+                            (if (identityNotice.isNotBlank()) "\n\n$identityNotice" else ""))
                 )
             } catch (cancelled: CancellationException) {
                 _state.value = ResumeUploadState.Idle

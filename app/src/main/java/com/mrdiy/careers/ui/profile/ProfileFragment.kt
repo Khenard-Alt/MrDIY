@@ -65,6 +65,11 @@ class ProfileFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             com.mrdiy.careers.data.repository.PublishedJobsRepository().fetchOpenJobs().onSuccess { jobs ->
                 val profileSnapshot = viewModel.currentProfile()
+                if (!profileSnapshot.canShowMatch) {
+                    // No resume yet, so there is nothing to compare the jobs with.
+                    if (_binding != null) binding.tvStatProfile.text = "—"
+                    return@onSuccess
+                }
                 val top = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
                     com.mrdiy.careers.data.ml.JobMatchingEngine.matchJobs(profileSnapshot, jobs).maxOfOrNull { it.matchScore }
                 }

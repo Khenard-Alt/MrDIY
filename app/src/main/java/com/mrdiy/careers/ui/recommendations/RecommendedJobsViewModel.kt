@@ -170,13 +170,12 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
 
     private suspend fun rankJobs(jobs: List<Job>): List<Job> {
         val profile = profileRepository.loadFromPrefs()
-        hasMatchingProfile.value = profile.skills.isNotEmpty() || profile.desiredPosition.isNotBlank() ||
-            profile.about.isNotBlank() || profile.headline.isNotBlank() || profile.workExperiences.isNotEmpty() || profile.resumeText.isNotBlank()
+        hasMatchingProfile.value = profile.canShowMatch
         val applicantPoint = LocationDistance.locate(profile.location)
         hasApplicantLocation = applicantPoint != null
         val matchText = if (hasMatchingProfile.value == true)
             "Scores are text similarity to your profile, not hiring probabilities."
-        else "Add your skills or desired position, or upload a resume to personalize match scores."
+        else "Upload your resume to see how well you match each job."
         description.value = if (applicantPoint != null)
             "Nearest branches to ${profile.location.trim()} first. $matchText"
         else "Add your location in your profile to see the nearest branches first. $matchText"

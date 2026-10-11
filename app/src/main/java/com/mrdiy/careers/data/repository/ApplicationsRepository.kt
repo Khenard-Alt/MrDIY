@@ -97,10 +97,15 @@ class ApplicationsRepository(private val context: Context) {
      */
     private suspend fun matchScoreFor(job: Job): Int? = try {
         val profile = ProfileRepository(context).loadFromPrefs()
-        val jobs = PublishedJobsRepository().fetchOpenJobs().getOrNull().orEmpty()
-            .let { if (it.any { published -> published.id == job.id }) it else it + job }
-        com.mrdiy.careers.data.ml.HybridMatchingService.matchJobsToProfile(profile, jobs)
-            .firstOrNull { it.job.id == job.id }?.matchScore
+        // No resume means no real comparison, so no score is saved (HR sees "no score" instead of a location-only number).
+        if (!profile.canShowMatch) {
+            null
+        } else {
+            val jobs = PublishedJobsRepository().fetchOpenJobs().getOrNull().orEmpty()
+                .let { if (it.any { published -> published.id == job.id }) it else it + job }
+            com.mrdiy.careers.data.ml.HybridMatchingService.matchJobsToProfile(profile, jobs)
+                .firstOrNull { it.job.id == job.id }?.matchScore
+        }
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (error: Exception) {

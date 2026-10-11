@@ -26,6 +26,12 @@ data class UserProfile(
     val preferredSalaryMin: Int = 0,
     val photoPath: String = ""
 ) {
+    /**
+     * The match % compares the job with the applicant's resume, so it is only shown once a resume has been
+     * read. Without one, only the distance to the branch is known, and that alone is not a match.
+     */
+    val canShowMatch: Boolean get() = resumeText.isNotBlank()
+
     val initials: String get() = buildString {
         if (firstName.isNotEmpty()) append(firstName.first().uppercaseChar())
         if (lastName.isNotEmpty()) append(lastName.first().uppercaseChar())

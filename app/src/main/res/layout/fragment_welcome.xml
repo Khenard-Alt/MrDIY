@@ -44,7 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:boxStrokeColor="@color/orange_primary">
+            app:boxStrokeColor="@color/orange_primary"
+            app:helperText="Use your real full name, as written on your resume and IDs. HR checks it against your resume.">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFullName"

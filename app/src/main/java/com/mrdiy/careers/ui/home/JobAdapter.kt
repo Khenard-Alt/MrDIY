@@ -57,9 +57,7 @@ class JobAdapter(
         val profileSnapshot = profile
         val jobsSnapshot = jobs
 
-        val matchable = profileSnapshot?.takeIf {
-            it.skills.isNotEmpty() || it.desiredPosition.isNotBlank() || it.resumeText.isNotBlank()
-        }
+        val matchable = profileSnapshot?.takeIf { it.canShowMatch }
 
         if (matchable == null) {
             scores = emptyMap()
