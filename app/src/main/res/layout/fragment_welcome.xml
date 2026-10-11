@@ -59,6 +59,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="Mobile Number"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPhone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:boxStrokeColor="@color/orange_primary"
+            app:helperText="HR uses this to contact you about your application">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="09XX XXX XXXX"
+                android:inputType="phone" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Location"
             android:textColor="@color/text_primary"
             android:textSize="14sp" />
@@ -69,14 +95,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:boxStrokeColor="@color/orange_primary">
+            app:boxStrokeColor="@color/orange_primary"
+            app:helperText="We use your city to show the branches nearest to you">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/etLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="City, Province"
-                android:inputType="text" />
+                android:completionThreshold="1"
+                android:hint="Start typing your city, then pick it from the list"
+                android:inputType="text|textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,12 +124,13 @@
             android:layout_marginTop="8dp"
             app:boxStrokeColor="@color/orange_primary">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/etPosition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your desired job position"
-                android:inputType="none" />
+                android:completionThreshold="1"
+                android:hint="For example: Cashier"
+                android:inputType="text|textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,6 +156,32 @@
                 android:layout_height="wrap_content"
                 android:hint="Select years of experience"
                 android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Skills (optional)"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSkills"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:boxStrokeColor="@color/orange_primary"
+            app:helperText="Separate with commas. This makes your job matches more accurate.">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSkills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="customer service, POS, inventory"
+                android:inputType="textCapSentences|textMultiLine" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

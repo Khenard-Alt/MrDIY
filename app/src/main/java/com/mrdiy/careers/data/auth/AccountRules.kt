@@ -15,6 +15,20 @@ object AccountRules {
     }
     fun greeting(name: String): String = name.trim().split(Regex("\\s+")).firstOrNull()
         ?.takeIf { it.isNotBlank() }?.let { "Hello, $it" } ?: "Hello"
+    /**
+     * A Philippine mobile number written as 09171234567, +639171234567 or 639171234567 (spaces and dashes
+     * allowed), returned as 09171234567; null if it is not a valid mobile number.
+     */
+    fun phoneNumber(value: String): String? {
+        val digits = value.replace(Regex("[\\s\\-()]"), "")
+        val local = when {
+            digits.startsWith("+63") -> "0" + digits.removePrefix("+63")
+            digits.startsWith("63") && digits.length == 12 -> "0" + digits.removePrefix("63")
+            else -> digits
+        }
+        return local.takeIf { Regex("09\\d{9}").matches(it) }
+    }
+
     fun experience(value: String): Int? = value.removeSuffix("+").toIntOrNull()?.takeIf { it in 0..10 }
     fun sessionUsable(id: String?, expiresAtSeconds: Long?, nowSeconds: Long): Boolean =
         !id.isNullOrBlank() && expiresAtSeconds != null && expiresAtSeconds > nowSeconds

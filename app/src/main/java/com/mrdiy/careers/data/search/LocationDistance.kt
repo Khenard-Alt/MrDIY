@@ -142,6 +142,26 @@ object LocationDistance {
 
     fun locate(location: String): Point? = place(location)?.point
 
+    // Names that lose their letters when written without accents above.
+    private val displayNames = mapOf(
+        "las pinas" to "Las Piñas", "paranaque" to "Parañaque", "dasmarinas" to "Dasmariñas",
+        "binan" to "Biñan", "los banos" to "Los Baños", "bgc" to "BGC (Taguig)", "ncr" to "NCR"
+    )
+
+    /**
+     * Places an applicant can choose as their address, written as "City, Area" (for example "Taytay, Rizal").
+     * Every entry is recognised by [locate], so the distance to a branch always works.
+     */
+    fun suggestions(): List<String> =
+        cities.filter { it.key != "bgc" }
+            .map { (name, place) ->
+                val title = displayNames[name]
+                    ?: name.split(" ").joinToString(" ") { word -> word.replaceFirstChar { it.uppercase() } }
+                if (place.area == "Metro Manila") "$title, Metro Manila" else "$title, ${place.area}"
+            }
+            .distinct()
+            .sorted()
+
     /** The area ("Metro Manila", "Rizal", "Cavite", …) a location belongs to, or null if unknown. */
     fun areaOf(location: String): String? = place(location)?.area
 
