@@ -67,6 +67,14 @@ class RecommendedJobAdapter(
             binding.chipCategory.visibility = if (job.category.isNotBlank() && job.category != "Not specified") View.VISIBLE else View.GONE
             binding.chipCategory.text = job.category
 
+            val remaining = job.openingsRemaining()
+            if (remaining != null) {
+                binding.chipOpenings.visibility = View.VISIBLE
+                binding.chipOpenings.text = if (remaining > 0) "$remaining opening${if (remaining == 1) "" else "s"} left" else "Fully booked"
+            } else {
+                binding.chipOpenings.visibility = View.GONE
+            }
+
             // ── Match score badge ─────────────────────────────────────────────
             if (showScores) {
                 binding.tvMatchScore.text = "${result.matchScore}%"

@@ -75,7 +75,8 @@ data class UserProfileRow(
     @SerialName("work_experiences") val workExperiences: JsonElement? = null,
     val headline: String?                                           = null,
     @SerialName("resume_name")       val resumeFileName: String?    = null,
-    @SerialName("resume_url")         val resumeUrl: String?        = null
+    @SerialName("resume_url")         val resumeUrl: String?        = null,
+    @SerialName("resume_text")        val resumeText: String?       = null
 )
 
 class ProfileRepository(private val context: Context) {
@@ -135,6 +136,7 @@ class ProfileRepository(private val context: Context) {
             yearsOfExperience = yearsExperience?.toIntOrNull() ?: 0,
             resumeUrl         = resumeUrl         ?: "",
             resumeName        = resumeFileName    ?: "",
+            resumeText        = resumeText        ?: "",
             resumeUploadedAt  = ""
         )
     }
@@ -354,6 +356,7 @@ class ProfileRepository(private val context: Context) {
         // Send only resume fields; never overwrite the user's personal information.
         client.from("profiles").update(kotlinx.serialization.json.buildJsonObject {
             put("resume_url", JsonPrimitive(path))
+            put("resume_text", JsonPrimitive(text))
             put("skills", JsonPrimitive(mergedSkills.joinToString(",")))
         }) { filter { eq("user_id", uid) } }
         check(uid == getCurrentUserId())

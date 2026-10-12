@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrdiy.careers.ui.alerts.refreshNotificationBadge
@@ -15,10 +16,13 @@ import com.mrdiy.careers.ui.base.setAdapterWithHeader
 import com.google.android.material.snackbar.Snackbar
 import com.mrdiy.careers.R
 import com.mrdiy.careers.data.auth.AuthManager
+import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.data.repository.ProfileRepository
 import com.mrdiy.careers.data.search.LocationDistance
 import com.mrdiy.careers.data.search.LocationFilter
 import com.mrdiy.careers.databinding.FragmentHomeBinding
+import io.github.jan.supabase.auth.auth
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -75,26 +79,40 @@ class HomeFragment : Fragment() {
 
     /** The match % needs a resume, so ask for one while there is none. */
     private fun updateResumeBanner() {
-        val hasResume = ProfileRepository(requireContext()).loadFromPrefs().canShowMatch
-        binding.resumeBanner.visibility = if (hasResume) View.GONE else View.VISIBLE
         binding.btnUploadResumeBanner.setOnClickListener { findNavController().navigate(R.id.resumeUploadFragment) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            // Wait for the Supabase SDK to finish restoring the session before reading the
+            // cached profile — otherwise this can momentarily see no signed-in user right
+            // after an app restart and wrongly show "no resume" even though one was uploaded.
+            SupabaseProvider.client.auth.awaitInitialization()
+            if (_binding == null) return@launch
+            val hasResume = ProfileRepository(requireContext()).loadFromPrefs().canShowMatch
+            binding.resumeBanner.visibility = if (hasResume) View.GONE else View.VISIBLE
+        }
     }
 
     // ───────────────── Greeting ─────────────────
 
     private fun setupUserGreeting() {
-        val uid = authManager.getCurrentUserId() ?: return
-        val repo = ProfileRepository(requireContext())
-        fun display(name: String) {
-            if (_binding == null || authManager.getCurrentUserId() != uid) return
-            binding.tvGreeting.text = com.mrdiy.careers.data.auth.AccountRules.greeting(name)
-            binding.tvUserName.visibility = View.GONE
-        }
-        display(repo.loadFromPrefs(uid).fullName.ifBlank { authManager.getCurrentUserName() })
-        repo.loadProfile(uid) { profile ->
-            if (_binding != null && authManager.getCurrentUserId() == uid) {
-                display(profile?.fullName?.ifBlank { authManager.getCurrentUserName() }.orEmpty())
-                jobAdapter.updateProfile(profile)
+        viewLifecycleOwner.lifecycleScope.launch {
+            // Wait for the Supabase SDK to finish restoring the session before reading the
+            // current user — otherwise this can momentarily see no signed-in user right
+            // after an app restart, skip updateProfile(), and leave match scores blank.
+            SupabaseProvider.client.auth.awaitInitialization()
+            if (_binding == null) return@launch
+            val uid = authManager.getCurrentUserId() ?: return@launch
+            val repo = ProfileRepository(requireContext())
+            fun display(name: String) {
+                if (_binding == null || authManager.getCurrentUserId() != uid) return
+                binding.tvGreeting.text = com.mrdiy.careers.data.auth.AccountRules.greeting(name)
+                binding.tvUserName.visibility = View.GONE
+            }
+            display(repo.loadFromPrefs(uid).fullName.ifBlank { authManager.getCurrentUserName() })
+            repo.loadProfile(uid) { profile ->
+                if (_binding != null && authManager.getCurrentUserId() == uid) {
+                    display(profile?.fullName?.ifBlank { authManager.getCurrentUserName() }.orEmpty())
+                    jobAdapter.updateProfile(profile)
+                }
             }
         }
     }

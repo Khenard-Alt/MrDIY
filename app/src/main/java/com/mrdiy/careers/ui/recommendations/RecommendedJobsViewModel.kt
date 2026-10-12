@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.mrdiy.careers.data.repository.PublishedJobsRepository
 import com.mrdiy.careers.data.repository.SavedJobsRepository
 import com.mrdiy.careers.data.repository.ProfileRepository
+import com.mrdiy.careers.data.auth.SupabaseProvider
+import io.github.jan.supabase.auth.auth
 import com.mrdiy.careers.data.ml.HybridMatchingService
 import com.mrdiy.careers.data.search.LocationDistance
 import com.mrdiy.careers.data.search.LocationFilter
@@ -169,6 +171,11 @@ class RecommendedJobsViewModel(application: Application) : AndroidViewModel(appl
     fun getSavedCount(): Int = _savedCount.value ?: 0
 
     private suspend fun rankJobs(jobs: List<Job>): List<Job> {
+        // Wait for the Supabase SDK to finish restoring the session before reading the
+        // cached profile — otherwise loadFromPrefs() can momentarily see no signed-in
+        // user right after an app restart and return an empty profile (no resume, no
+        // match scores) even though the real profile and resume are saved.
+        SupabaseProvider.client.auth.awaitInitialization()
         val profile = profileRepository.loadFromPrefs()
         hasMatchingProfile.value = profile.canShowMatch
         val applicantPoint = LocationDistance.locate(profile.location)

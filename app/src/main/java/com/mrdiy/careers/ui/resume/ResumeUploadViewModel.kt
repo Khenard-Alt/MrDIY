@@ -8,6 +8,7 @@ import com.mrdiy.careers.data.auth.SupabaseProvider
 import com.mrdiy.careers.data.repository.*
 import com.mrdiy.careers.model.ResumeParseResult
 import com.mrdiy.careers.model.UserProfile
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.storage.storage
 import io.ktor.http.ContentType
 import kotlinx.coroutines.*
@@ -42,6 +43,10 @@ class ResumeUploadViewModel(application: Application) : AndroidViewModel(applica
             var parsed: UserProfile? = null
             var extractedText = ""
             try {
+                // Wait for the Supabase SDK to finish restoring the session from disk before
+                // reading it — otherwise currentUserOrNull() can briefly return null right
+                // after app start even though the user is genuinely signed in.
+                SupabaseProvider.client.auth.awaitInitialization()
                 uid = profileRepo.getCurrentUserId()
                 if (uid.isBlank()) { _state.value = ResumeUploadState.Error("Please sign in to upload a resume."); return@launch }
                 _state.value = ResumeUploadState.FileSelected(fileName)

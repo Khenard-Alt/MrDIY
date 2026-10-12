@@ -122,6 +122,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Retail" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipOpenings"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="2 openings left" />
         </com.google.android.material.chip.ChipGroup>
 
         <!-- Divider -->
