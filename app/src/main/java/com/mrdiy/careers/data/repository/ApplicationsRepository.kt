@@ -119,6 +119,29 @@ class ApplicationsRepository(private val context: Context) {
     suspend fun apply(job: Job): Result<Unit> = applyLock.withLock { applyOnce(job) }
 
     /**
+     * True if the applicant already has a Hired application — meaning they're currently inside
+     * an employment/contract (no auto-close exists; HR flips the status by hand once it truly
+     * ends, see ADMIN_MAJOR_PLAN.md §N), so applying to a different job at the same time doesn't
+     * make sense and should be blocked in the UI.
+     */
+    suspend fun hasActiveEmployment(): Boolean = withContext(Dispatchers.IO) {
+        val userId = authManager.getCurrentUserId() ?: return@withContext false
+        try {
+            SupabaseProvider.client.postgrest[table].select {
+                filter {
+                    eq("user_id", userId)
+                    eq("status", "Hired")
+                }
+            }.decodeList<JsonObject>().isNotEmpty()
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Exception) {
+            com.mrdiy.careers.data.SafeDiagnostics.record("request", error)
+            false
+        }
+    }
+
+    /**
      * Match % for this job, computed against all published jobs so it equals the score shown in the
      * lists. Returns null if it can't be computed; applying must never fail because of scoring.
      */
@@ -154,6 +177,8 @@ class ApplicationsRepository(private val context: Context) {
 
             if (existing.isNotEmpty()) {
                 Result.failure(IllegalStateException("You have already applied for this job."))
+            } else if (hasActiveEmployment()) {
+                Result.failure(IllegalStateException("You are already employed and cannot apply for another job right now."))
             } else {
                 val matchScore = matchScoreFor(job)
                 SupabaseProvider.client.postgrest[table].insert(buildJsonObject {

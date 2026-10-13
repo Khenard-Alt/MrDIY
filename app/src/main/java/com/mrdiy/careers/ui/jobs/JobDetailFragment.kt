@@ -65,6 +65,7 @@ class JobDetailFragment : BaseFragment() {
                 currentJob = job
                 checkIfJobSaved(job.id)
                 displayJob(job)
+                checkIfAlreadyEmployed()
             }.onFailure {
                 Toast.makeText(requireContext(), "This job is unavailable or could not be loaded.", Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
@@ -98,7 +99,7 @@ class JobDetailFragment : BaseFragment() {
                         }.onFailure { error ->
                             Toast.makeText(
                                 requireContext(),
-                                "Application failed. Please try again.",
+                                error.message?.takeIf { it.isNotBlank() } ?: "Application failed. Please try again.",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -110,6 +111,18 @@ class JobDetailFragment : BaseFragment() {
         binding.btnSave.setOnClickListener {
             currentJob?.let { job ->
                 toggleSaveJob(job)
+            }
+        }
+    }
+
+    /** Disables Apply if the applicant is already Hired elsewhere — see [ApplicationsRepository.hasActiveEmployment]. */
+    private fun checkIfAlreadyEmployed() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val employed = applicationsRepository?.hasActiveEmployment() ?: false
+            withContext(Dispatchers.Main) {
+                if (!isAdded || _binding == null || !employed) return@withContext
+                binding.btnApply.isEnabled = false
+                binding.btnApply.text = "Already employed"
             }
         }
     }
