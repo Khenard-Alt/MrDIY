@@ -40,6 +40,8 @@ class ApplicationDetailFragment : Fragment() {
 
     private val applicationId: String by lazy { requireArguments().getString(ARG_APPLICATION_ID).orEmpty() }
     private var pendingRequirementId: String? = null
+    private var currentJobTitle: String = ""
+    private var currentApplicantName: String = ""
 
     private val pickDocument = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         val requirementId = pendingRequirementId
@@ -80,6 +82,9 @@ class ApplicationDetailFragment : Fragment() {
             val requirements = recruitment.requirementsFor(applicationId).getOrNull().orEmpty()
             val profile = ProfileRepository(context).loadFromPrefs()
             if (_binding == null) return@launch
+
+            currentJobTitle = application.job_title
+            currentApplicantName = profile.fullName
 
             val profileComplete = profile.fullName.isNotBlank() && profile.phone.isNotBlank() &&
                 profile.location.isNotBlank() && profile.desiredPosition.isNotBlank() &&
@@ -304,10 +309,23 @@ class ApplicationDetailFragment : Fragment() {
                 box.addView(caption("HR note: ${requirement.remarks}"))
             }
             if (requirement.status != "Verified") {
+                val isSignature = requirement.requirement_name == "Signed Employment Contract"
                 box.addView(
-                    actionButton(if (requirement.document_url == null) "Upload" else "Replace", filled = false) {
-                        pendingRequirementId = requirement.id
-                        pickDocument.launch(arrayOf("application/pdf", "image/jpeg", "image/png"))
+                    actionButton(
+                        if (isSignature) "Sign" else if (requirement.document_url == null) "Upload" else "Replace",
+                        filled = false
+                    ) {
+                        if (isSignature) {
+                            val args = Bundle().apply {
+                                putString(SignContractFragment.ARG_REQUIREMENT_ID, requirement.id)
+                                putString(SignContractFragment.ARG_JOB_TITLE, currentJobTitle)
+                                putString(SignContractFragment.ARG_APPLICANT_NAME, currentApplicantName)
+                            }
+                            findNavController().navigate(R.id.action_applicationDetail_to_signContract, args)
+                        } else {
+                            pendingRequirementId = requirement.id
+                            pickDocument.launch(arrayOf("application/pdf", "image/jpeg", "image/png"))
+                        }
                     }
                 )
             }

@@ -148,7 +148,17 @@
     <fragment
         android:id="@+id/applicationDetailFragment"
         android:name="com.mrdiy.careers.ui.applications.ApplicationDetailFragment"
-        android:label="Application" />
+        android:label="Application">
+        <action
+            android:id="@+id/action_applicationDetail_to_signContract"
+            app:destination="@id/signContractFragment" />
+    </fragment>
+
+    <!-- In-app signature for the "Signed Employment Contract" requirement -->
+    <fragment
+        android:id="@+id/signContractFragment"
+        android:name="com.mrdiy.careers.ui.applications.SignContractFragment"
+        android:label="Sign Contract" />
 
     <!-- Chat with HR (opened from Messages; argument: otherId) -->
     <fragment
@@ -182,6 +192,11 @@
         android:id="@+id/applicationsFragment"
         android:name="com.mrdiy.careers.ui.applications.ApplicationsFragment"
         android:label="Applications" />
+
+    <fragment
+        android:id="@+id/myDocumentsFragment"
+        android:name="com.mrdiy.careers.ui.profile.MyDocumentsFragment"
+        android:label="My Documents" />
 
     <fragment
         android:id="@+id/jobDetailFragment"

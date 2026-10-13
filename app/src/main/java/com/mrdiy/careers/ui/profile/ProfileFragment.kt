@@ -116,6 +116,10 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.savedJobsFragment)
         }
 
+        binding.btnMyDocuments.setOnClickListener {
+            findNavController().navigate(R.id.myDocumentsFragment)
+        }
+
         binding.btnApplications.setOnClickListener {
             findNavController().navigate(R.id.applicationsFragment)
         }

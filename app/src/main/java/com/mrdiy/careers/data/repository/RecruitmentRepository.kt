@@ -113,6 +113,35 @@ class RecruitmentRepository(private val context: Context) {
         }
     }
 
+    /**
+     * Uploads an in-app-drawn signature (PNG bytes, already captured) for the "Signed
+     * Employment Contract" requirement — same storage/DB path as uploadRequirement(),
+     * just skipping the file-picker/MIME-sniffing step since the bytes are already a PNG.
+     */
+    suspend fun uploadRequirementSignature(requirementId: String, pngBytes: ByteArray): String? =
+        withContext(Dispatchers.IO) {
+            val uid = userId ?: return@withContext "Please sign in first."
+            try {
+                if (pngBytes.isEmpty() || pngBytes.size > MAX_BYTES) {
+                    return@withContext "The signature is too large. Please try again."
+                }
+                val path = "$uid/$requirementId.png"
+                SupabaseProvider.client.storage.from(BUCKET).upload(path, pngBytes) {
+                    upsert = true
+                    this.contentType = ContentType.Image.PNG
+                }
+                SupabaseProvider.client.postgrest["pre_employment_requirements"].update({
+                    set("document_url", path)
+                    set("status", "Uploaded")
+                    set("updated_at", com.mrdiy.careers.ui.base.DateText.nowIso())
+                }) { filter { eq("id", requirementId) } }
+                null
+            } catch (e: Exception) {
+                com.mrdiy.careers.data.SafeDiagnostics.record("requirement_signature_upload", e)
+                "Could not save your signature. Please try again."
+            }
+        }
+
     companion object {
         const val BUCKET = "requirements"
         const val MAX_BYTES = 5 * 1024 * 1024
