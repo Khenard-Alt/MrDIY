@@ -70,6 +70,14 @@ class ResumeRepository(private val context: Context) {
         parseResumeLocally(resumeText)
     }
 
+    /**
+     * Same as [parseResume] but skips the validity check — for backfilling resume_text on a
+     * file that was already accepted at upload time, where re-validating could only reject it.
+     */
+    suspend fun parseResumeUnchecked(resumeText: String): UserProfile = withContext(Dispatchers.Default) {
+        parseResumeLocally(resumeText)
+    }
+
     companion object {
         /** True if the text is a real resume. See [ResumeValidator] for how it decides. */
         fun validateResumeContent(text: String): Boolean = ResumeValidator.check(text).valid

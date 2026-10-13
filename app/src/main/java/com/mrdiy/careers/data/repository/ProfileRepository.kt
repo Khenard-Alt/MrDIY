@@ -252,6 +252,40 @@ class ProfileRepository(private val context: Context) {
         return merged
     }
 
+    /**
+     * Re-extracts and saves resume_text for a profile that has a resume file (resume_url) but
+     * no saved text — happens for accounts whose resume predates the resume-text-sync fix, or
+     * whose row was seeded directly into the database. A harmless no-op once resume_text is set;
+     * any failure (e.g. the file no longer exists) is swallowed and the profile returned as-is.
+     */
+    private suspend fun backfillResumeTextIfMissing(uid: String, profile: UserProfile): UserProfile {
+        if (profile.resumeUrl.isBlank() || profile.resumeText.isNotBlank()) return profile
+        return try {
+            val path = if (profile.resumeUrl.startsWith("http")) {
+                profile.resumeUrl.substringAfterLast("/resumes/")
+            } else {
+                profile.resumeUrl
+            }
+            require(ResumeFiles.ownedPath(path, uid))
+
+            val bytes = SupabaseProvider.client.storage.from(ResumeFiles.BUCKET).downloadAuthenticated(path)
+            val extension = path.substringAfterLast(".", "").lowercase()
+            val resumeRepo = ResumeRepository(context)
+            val text = resumeRepo.extractText(bytes, extension).trim()
+            if (text.isBlank()) return profile
+
+            val parsed = resumeRepo.parseResumeUnchecked(text)
+            persistResume(uid, profile.resumeName, path, parsed, text)
+            profile.copy(
+                resumeText = text,
+                skills = (profile.skills + parsed.skills).distinctBy { it.lowercase() }
+            )
+        } catch (e: Exception) {
+            com.mrdiy.careers.data.SafeDiagnostics.record("backend_request", e)
+            profile
+        }
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // LOAD
     // ─────────────────────────────────────────────────────────────────────────
@@ -268,7 +302,7 @@ class ProfileRepository(private val context: Context) {
                     .decodeSingleOrNull<UserProfileRow>()
 
                 if (profileRow != null) {
-                    val profile = profileRow.toDomain()
+                    val profile = backfillResumeTextIfMissing(uid, profileRow.toDomain())
                     if (profile.fullName.isNotBlank()) {
                         saveLocally(uid, profile)
                         withContext(Dispatchers.Main) { onResult(profile) }
