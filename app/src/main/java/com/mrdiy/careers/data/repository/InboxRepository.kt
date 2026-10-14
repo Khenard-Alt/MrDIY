@@ -23,6 +23,7 @@ class InboxRepository(private val context: Context) {
         val time_ago: String? = null,
         val is_read: Boolean = false,
         val job_id: String? = null,
+        val application_id: String? = null,
         val created_at: String? = null
     )
 
@@ -53,7 +54,8 @@ class InboxRepository(private val context: Context) {
                     message = it.message ?: "",
                     timeAgo = it.created_at?.let { time -> com.mrdiy.careers.ui.base.DateText.relative(time) } ?: it.time_ago ?: "Just now",
                     isRead = it.is_read,
-                    jobId = it.job_id
+                    jobId = it.job_id,
+                    applicationId = it.application_id
                 )
             }
     }.recoverCatching { error ->
@@ -61,7 +63,7 @@ class InboxRepository(private val context: Context) {
         ApplicationsRepository(context).getApplications().getOrThrow()
             .filter { !it.status.equals("Pending", true) && !it.status.equals("submitted", true) }
             .map { Alert("application-${it.id}-${it.status}", AlertType.APPLICATION_UPDATE,
-                "Application ${it.status}", it.job_title, it.applied_at, jobId = it.job_id) }
+                "Application ${it.status}", it.job_title, it.applied_at, jobId = it.job_id, applicationId = it.id) }
     } }
 
     /** The signed-in user's unread notification rows (empty on any error). */

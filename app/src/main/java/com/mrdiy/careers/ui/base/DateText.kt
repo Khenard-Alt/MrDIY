@@ -73,7 +73,13 @@ object DateText {
         return Math.ceil((dueAt - System.currentTimeMillis()) / (24.0 * 60 * 60 * 1000)).toInt()
     }
 
-    /** The pipeline step a stored status means; old names are mapped, unknown values count as Pending. */
+    /**
+     * The pipeline step a stored status means; old names are mapped, unknown values count as
+     * Pending. Must mirror lib/pipeline.ts's STATUS_VALUES/ALIASES on the admin web — missing
+     * Resigned/Terminated/Contract Ended here was a real bug (ADMIN_MAJOR_PLAN.md §R1): those
+     * statuses fell through to "Pending", so an ended employment looked like a brand-new
+     * application everywhere this is used (status chip, timeline, notification taps).
+     */
     fun normalizeStatus(status: String): String = when (status.trim().lowercase()) {
         "reviewed", "under review" -> "Reviewed"
         "shortlisted" -> "Shortlisted"
@@ -81,6 +87,10 @@ object DateText {
         "hired", "approved", "accepted" -> "Hired"
         "rejected" -> "Rejected"
         "on hold", "on-hold", "onhold" -> "On Hold"
+        "withdrawn" -> "Withdrawn"
+        "contract ended" -> "Contract Ended"
+        "resigned" -> "Resigned"
+        "terminated" -> "Terminated"
         else -> "Pending"
     }
 
@@ -89,4 +99,8 @@ object DateText {
         "Reviewed" -> "Under review"
         else -> normalizeStatus(status)
     }
+
+    /** True once employment has ended one way or another — nothing left to track in the hiring timeline. */
+    fun isEndedEmployment(status: String): Boolean =
+        normalizeStatus(status) in setOf("Contract Ended", "Resigned", "Terminated")
 }

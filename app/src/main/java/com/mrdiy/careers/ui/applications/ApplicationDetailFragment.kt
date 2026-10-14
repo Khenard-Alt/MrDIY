@@ -147,6 +147,23 @@ class ApplicationDetailFragment : Fragment() {
             )
         }
 
+        if (DateText.isEndedEmployment(status)) {
+            content.addView(
+                card(
+                    when (status) {
+                        "Resigned" -> "Resignation recorded"
+                        "Terminated" -> "Employment ended"
+                        else -> "Contract ended"
+                    },
+                    when (status) {
+                        "Resigned" -> "Your resignation has been recorded. See HR for your last working day and the exit checklist. Thank you for your service."
+                        "Terminated" -> "Your employment has ended. If you have questions about this decision, please contact MR.DIY Human Resources."
+                        else -> "Your contract has ended. Thank you for your service — you're welcome to apply again for future openings."
+                    }
+                )
+            )
+        }
+
         if (application.transfer_status == "pending") {
             content.addView(transferOfferCard(application))
         }
@@ -155,7 +172,7 @@ class ApplicationDetailFragment : Fragment() {
 
         if (interview != null) content.addView(interviewCard(interview))
 
-        if (status != "Rejected") {
+        if (status != "Rejected" && !DateText.isEndedEmployment(status)) {
             content.addView(
                 card(
                     "How soon can I start?",
@@ -170,13 +187,20 @@ class ApplicationDetailFragment : Fragment() {
     private fun timelineCard(status: String): View {
         val steps = listOf("Submitted", "Under review", "Shortlisted", "Interview", "Hired")
         val keys = listOf("Pending", "Reviewed", "Shortlisted", "Interview Scheduled", "Hired")
-        // For Rejected / On Hold we only know the application was submitted.
-        val current = keys.indexOf(status).takeIf { it >= 0 } ?: 0
+        // Resigned/Terminated/Contract Ended all passed through Hired already — the hiring
+        // timeline is fully done, there's just nothing further to track here (see the status
+        // chip and the card below for what actually happened).
+        val current = if (DateText.isEndedEmployment(status)) {
+            keys.lastIndex
+        } else {
+            // For Rejected / On Hold we only know the application was submitted.
+            keys.indexOf(status).takeIf { it >= 0 } ?: 0
+        }
 
         val card = cardContainer()
         card.addView(heading("Where is my application?"))
         steps.forEachIndexed { index, label ->
-            val done = index < current || (status == "Hired" && index == current)
+            val done = index < current || ((status == "Hired" || DateText.isEndedEmployment(status)) && index == current)
             val isCurrent = index == current && !done && status != "Rejected" && status != "On Hold"
 
             val row = LinearLayout(requireContext()).apply {
@@ -463,6 +487,9 @@ class ApplicationDetailFragment : Fragment() {
             "Shortlisted" -> "#EADCFF" to "#6D28D9"
             "Interview Scheduled" -> "#E0E7FF" to "#3730A3"
             "On Hold" -> "#E5E7EB" to "#374151"
+            "Resigned" -> "#E0F2FE" to "#075985"
+            "Terminated" -> "#FFE4E6" to "#9F1239"
+            "Contract Ended" -> "#FEF3C7" to "#92400E"
             else -> "#FFF3BF" to "#7A5B00"
         }
         setTextColor(Color.parseColor(fg))

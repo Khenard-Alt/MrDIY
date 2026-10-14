@@ -49,12 +49,33 @@ class AlertsFragment : BaseFragment() {
         }
     }
 
-    /** Opens what the notification is about: the job, the application list, or the messages. */
+    /**
+     * Opens what the notification is about: the specific application (if this alert has one —
+     * older alerts, from before application_id was added to public.alerts, won't), the job, or
+     * the messages. Previously APPLICATION_UPDATE/INTERVIEW_INVITE always opened the generic
+     * Applications list, leaving the applicant to hunt for the right one themselves — e.g. tapping
+     * "Clearance complete" or "Resignation recorded" never landed on that specific application.
+     */
     private fun openAlert(alert: Alert) {
         val nav = androidx.navigation.fragment.NavHostFragment.findNavController(this)
         when (alert.type) {
             AlertType.MESSAGE -> nav.navigate(R.id.messagesFragment)
-            AlertType.APPLICATION_UPDATE, AlertType.INTERVIEW_INVITE -> nav.navigate(R.id.applicationsFragment)
+            AlertType.APPLICATION_UPDATE, AlertType.INTERVIEW_INVITE -> {
+                val applicationId = alert.applicationId
+                if (applicationId != null) {
+                    nav.navigate(
+                        R.id.applicationDetailFragment,
+                        android.os.Bundle().apply {
+                            putString(
+                                com.mrdiy.careers.ui.applications.ApplicationDetailFragment.ARG_APPLICATION_ID,
+                                applicationId
+                            )
+                        }
+                    )
+                } else {
+                    nav.navigate(R.id.applicationsFragment)
+                }
+            }
             else -> alert.jobId?.let { id ->
                 nav.navigate(R.id.jobDetailFragment, android.os.Bundle().apply { putString("jobId", id) })
             }

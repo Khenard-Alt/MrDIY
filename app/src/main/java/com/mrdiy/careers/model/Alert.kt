@@ -7,7 +7,8 @@ data class Alert(
     val message: String,
     val timeAgo: String,
     val isRead: Boolean = false,
-    val jobId: String? = null
+    val jobId: String? = null,
+    val applicationId: String? = null
 )
 
 enum class AlertType {
