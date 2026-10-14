@@ -164,8 +164,8 @@ class ProfileFragment : Fragment() {
             .joinToString("")
 
         binding.tvAvatarInitials.text = initials.ifEmpty { "?" }
-        binding.ivProfilePhoto.visibility = if (profile.photoPath.isBlank()) View.GONE else View.VISIBLE
-        if (profile.photoPath.isNotBlank()) com.bumptech.glide.Glide.with(this).load(profile.photoPath).into(binding.ivProfilePhoto)
+        binding.ivProfilePhoto.visibility = View.GONE
+        loadAvatarPhoto(profile.photoPath)
         binding.tvProfileName.text = profile.fullName.ifEmpty { "Your Name" }
 
         binding.tvProfileRoleLoc.text = buildString {
@@ -234,6 +234,31 @@ class ProfileFragment : Fragment() {
         }
 
         updateSavedJobsCount()
+    }
+
+    /**
+     * `photoPath` is a storage path in the private `avatars` bucket (e.g. `{uid}/avatar.jpg`),
+     * not a usable URL — loading it straight into Glide (the previous code) silently failed, since
+     * the bucket requires a signed URL. Resolves one here, same pattern as [viewResumePdf].
+     */
+    private fun loadAvatarPhoto(photoPath: String) {
+        if (photoPath.isBlank()) return
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val url = if (photoPath.startsWith("http")) {
+                    photoPath
+                } else {
+                    com.mrdiy.careers.data.auth.SupabaseProvider.client.storage
+                        .from(com.mrdiy.careers.data.repository.ProfileRepository.AVATAR_BUCKET)
+                        .createSignedUrl(photoPath, 60.minutes)
+                }
+                if (_binding == null) return@launch
+                com.bumptech.glide.Glide.with(this@ProfileFragment).load(url).into(binding.ivProfilePhoto)
+                binding.ivProfilePhoto.visibility = View.VISIBLE
+            } catch (e: Exception) {
+                com.mrdiy.careers.data.SafeDiagnostics.record("request", e)
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -142,3 +142,79 @@ Assist HR Administrators when creating or editing job postings in the Admin Web 
   - Key Responsibilities
   - Requirements
   - Benefits
+
+---
+
+## Section 5: Layered AI Job Description Generator — PLANO PA LANG (2026-10-14)
+
+Pinapalitan nito ang paraan sa Section 4. Ang naunang mungkahi (trained resume classifier sa 24-category Kaggle dataset) ay **tinanggal**: lumabas ito sa scope, dahil karamihan ng categories (Aviation, Advocate, Agriculture...) ay walang kinalaman sa MR.DIY.
+
+### 5.1 Patakaran (capstone constraint)
+
+- **Bawal ang "plain AI API lang."** Ang title ng study ay *"A Mobile-Based Recruitment System Using Machine Learning For Mr. D.I.Y."* Wala ang API sa title; suggestion lang ito. Kaya ang core ay dapat **sariling ML ng sistema**, at ang external AI API (Gemini) ay optional na layer lang sa ibabaw.
+- **Pagsubok:** kung tatanggalin ang Gemini, dapat gumagana pa rin ang generator at may maayos na output.
+- **Walang bagong training na kailangan.** Ginagamit ang ML na nasa scope na: TF-IDF + cosine similarity (fitted sa sariling job corpus ng MR.DIY) at ang skill extraction vocabulary.
+
+### 5.2 Mga layer
+
+```
+HR input: job title, category, level, branch, contract duration
+        │
+Layer 1 — SARILING ML (core, gumagana kahit offline)
+        • TF-IDF + cosine (parehong engine ng matching, lib/matching.ts)
+          → hahanapin ang top-k na pinakakahawig na existing MR.DIY job
+            postings sa `jobs` table
+        • Bubuo ng draft mula sa responsibilities/requirements nila
+          (retrieval-based generation, hindi kopya ng isang posting lang)
+        • Skill extraction (ResumeSkills vocabulary) → mungkahing skills
+        │
+Layer 2 — SARILING RULES (MR.DIY standard + compliance)
+        • Kumpletong sections: About the Role / Key Responsibilities /
+          Requirements / Benefits
+        • Mandatory benefits (SSS, PhilHealth, Pag-IBIG), contract duration
+          kung Contractual, branch/location
+        • I-flag ang bawal na wording (hal. age limit — RA 10911, Anti-Age
+          Discrimination in Employment Act)
+        │
+Layer 3 — Gemini (OPTIONAL, pampakinis lang)
+        • Input: ang draft mula sa Layer 1+2 (grounded), hindi job title lang
+        • Aayusin lang ang grammar at flow; bawal magdagdag ng bagong
+          sweldo, benefits, o requirements
+        • Walang key / walang internet / error → Layer 2 output na ang final
+        │
+Layer 2 ulit — GUARDRAIL sa output ng Gemini
+        • Kumpleto pa ba ang sections? May naimbentong sweldo/benefits?
+          May bawal na wording? Kung bumagsak → ibabalik ang Layer 2 draft
+        │
+Layer 4 — HR review at edit bago i-publish (laging tao ang huling magpapasya)
+```
+
+### 5.3 Ipapakita sa UI (Jobs page, admin)
+
+- Button: **"✨ Generate description"** sa tabi ng Description field.
+- Pagkatapos mag-generate, makikita ng HR:
+  - ang draft (editable),
+  - **"Based on:"** listahan ng mga pinagkunang existing postings + similarity % (explainable, parehong konsepto ng "Why this rank"),
+  - kung ginamit ang Gemini o hindi ("Polished by Gemini" / "Generated offline"),
+  - mga warning ng Layer 2 (hal. "Age requirement detected — remove before publishing").
+
+### 5.4 Paano ipagtatanggol sa panel
+
+| Tanong ng panel | Sagot |
+|---|---|
+| "API lang ba 'yan?" | Hindi. Ang core ay sariling TF-IDF + cosine sa MR.DIY job corpus. Gumagana nang walang Gemini (ipapakita nang naka-offline). |
+| "Saan ang ML?" | Layer 1: TF-IDF (IDF ay natutunan mula sa job corpus) + cosine similarity retrieval + skill extraction. Parehong engine ng matching sa app. |
+| "Paano kung mali ang Gemini?" | May guardrail (Layer 2 ulit) at HR review (Layer 4) bago ma-publish. |
+| "Explainable ba?" | Oo. Ipinapakita kung aling postings ang pinagkunan at gaano kahawig. |
+
+### 5.5 Mga phase
+
+| Phase | Gagawin | Checkpoint |
+|---|---|---|
+| 1 | Layer 1 + 2 (API route sa `mrdiy-admin`, walang Gemini) | Lint + build + `curl` test |
+| 2 | UI button + "Based on" + warnings sa Jobs page | Lint + build + live test |
+| 3 | Layer 3 Gemini + guardrail + offline fallback | Live test na may at walang key |
+
+### 5.6 Hiwalay (kung hahanapin pa rin ng panel ang "training" mismo)
+
+Ang pinakabagay na ite-train ay ang **Resume Validator** (`ResumeRepository.kt`), na nasa scope na: rule-based "resume ba o hindi" ngayon → gawing trained binary classifier. Ang training ay sa notebook (Colab), ie-export ang weights bilang JSON, at patatakbuhin sa Kotlin. Ang dating rules ang fallback. Ikukumpara ang luma at bago sa parehong test set (accuracy, precision, recall, F1). Hiwalay na desisyon ito; hindi pa nasisimulan.

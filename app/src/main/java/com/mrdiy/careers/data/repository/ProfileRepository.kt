@@ -81,7 +81,7 @@ data class UserProfileRow(
 
 class ProfileRepository(private val context: Context) {
 
-    private companion object {
+    companion object {
         const val AVATAR_BUCKET = "avatars"
     }
 

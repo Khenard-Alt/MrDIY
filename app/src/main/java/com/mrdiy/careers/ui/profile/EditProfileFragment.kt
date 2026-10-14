@@ -25,6 +25,8 @@ import com.mrdiy.careers.R
 import com.mrdiy.careers.databinding.FragmentEditProfileBinding
 import com.mrdiy.careers.model.UserProfile
 import com.mrdiy.careers.model.WorkExperience
+import io.github.jan.supabase.storage.storage
+import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -134,6 +136,32 @@ class EditProfileFragment : Fragment() {
             }
             return
         }
+
+        // Not a local file — currentPhotoPath came straight from the database, where it's a
+        // storage path in the private `avatars` bucket (e.g. `{uid}/avatar.jpg`), not a file on
+        // this device. Needs a signed URL, same as ProfileFragment's loadAvatarPhoto.
+        if (currentPhotoPath.isNotEmpty()) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val url = if (currentPhotoPath.startsWith("http")) {
+                        currentPhotoPath
+                    } else {
+                        com.mrdiy.careers.data.auth.SupabaseProvider.client.storage
+                            .from(com.mrdiy.careers.data.repository.ProfileRepository.AVATAR_BUCKET)
+                            .createSignedUrl(currentPhotoPath, 60.minutes)
+                    }
+                    if (_binding == null) return@launch
+                    binding.tvAvatarInitialsEdit.visibility = View.INVISIBLE
+                    com.bumptech.glide.Glide.with(this@EditProfileFragment).load(url).into(binding.ivProfilePhotoEdit)
+                    binding.ivProfilePhotoEdit.visibility = View.VISIBLE
+                } catch (e: Exception) {
+                    com.mrdiy.careers.data.SafeDiagnostics.record("request", e)
+                    if (_binding != null) showAvatarInitialsFallback()
+                }
+            }
+            return
+        }
+
         showAvatarInitialsFallback()
     }
 
