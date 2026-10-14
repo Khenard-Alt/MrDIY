@@ -15,6 +15,11 @@ import com.mrdiy.careers.data.ml.ResumeSkills
  *
  * and it is refused when it looks like a manual or a long document (many product and manual words,
  * or far more text than any resume).
+ *
+ * Superseded as the primary check by [com.mrdiy.careers.data.ml.ResumeMlClassifier] (a trained
+ * logistic-regression model, 99.5% F1 — see AIplanning.md §5.6), which [ResumeRepository.parseResume]
+ * now calls instead. Kept here as the fallback if the trained model's bundled asset fails to load,
+ * and as the baseline for comparison testing against the trained model.
  */
 object ResumeValidator {
 

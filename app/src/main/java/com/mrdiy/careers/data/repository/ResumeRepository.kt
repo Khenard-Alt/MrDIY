@@ -1,9 +1,11 @@
 package com.mrdiy.careers.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
+import com.mrdiy.careers.data.ml.ResumeMlClassifier
 import com.mrdiy.careers.model.UserProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -65,9 +67,33 @@ class ResumeRepository(private val context: Context) {
     }
 
     suspend fun parseResume(resumeText: String): UserProfile = withContext(Dispatchers.Default) {
-        val verdict = ResumeValidator.check(resumeText)
+        val verdict = classify(resumeText)
         if (!verdict.valid) throw IllegalArgumentException(verdict.reason)
+        Log.d(TAG, "Resume accepted — source=${verdict.source}, confidence=${verdict.confidence}")
         parseResumeLocally(resumeText)
+    }
+
+    /**
+     * Runs the trained model ([ResumeMlClassifier], primary) and falls back to the rule-based
+     * [ResumeValidator] only if the bundled model asset fails to load or parse — uploads must
+     * never hard-crash on that. See AIplanning.md §5.6: a live Gemini fallback for low-confidence
+     * results was deliberately deferred (no Android-to-backend bridge exists yet, and the trained
+     * model already scores 99.5% F1), so a low-confidence result here still uses the model's own
+     * verdict, just flagged for manual review in [ResumeMlClassifier.MlVerdict.reason].
+     */
+    private fun classify(resumeText: String): ResumeMlClassifier.MlVerdict {
+        return try {
+            ResumeMlClassifier.classify(context, resumeText)
+        } catch (error: Exception) {
+            Log.w(TAG, "Trained model unavailable, falling back to rule-based validator", error)
+            val fallback = ResumeValidator.check(resumeText)
+            ResumeMlClassifier.MlVerdict(
+                valid = fallback.valid,
+                confidence = 0.0,
+                source = "Rule-based fallback (model unavailable)",
+                reason = fallback.reason,
+            )
+        }
     }
 
     /**
@@ -79,7 +105,14 @@ class ResumeRepository(private val context: Context) {
     }
 
     companion object {
-        /** True if the text is a real resume. See [ResumeValidator] for how it decides. */
+        private const val TAG = "ResumeRepository"
+
+        /**
+         * True if the text is a real resume, per the rule-based [ResumeValidator]. Used by plain
+         * JVM unit tests (no Android [Context] available there to load the trained model's bundled
+         * asset) and as the fallback path inside [classify]. Real uploads go through [parseResume],
+         * which prefers the trained model.
+         */
         fun validateResumeContent(text: String): Boolean = ResumeValidator.check(text).valid
     }
 
