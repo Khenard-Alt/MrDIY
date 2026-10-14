@@ -118,26 +118,56 @@ class ApplicationsRepository(private val context: Context) {
 
     suspend fun apply(job: Job): Result<Unit> = applyLock.withLock { applyOnce(job) }
 
+    data class CurrentEmployment(val jobTitle: String, val branchName: String?)
+
     /**
      * True if the applicant already has a Hired application — meaning they're currently inside
      * an employment/contract (no auto-close exists; HR flips the status by hand once it truly
      * ends, see ADMIN_MAJOR_PLAN.md §N), so applying to a different job at the same time doesn't
      * make sense and should be blocked in the UI.
      */
-    suspend fun hasActiveEmployment(): Boolean = withContext(Dispatchers.IO) {
-        val userId = authManager.getCurrentUserId() ?: return@withContext false
+    suspend fun hasActiveEmployment(): Boolean = currentEmployment() != null
+
+    /**
+     * The applicant's current Hired job and branch, or null if they're not employed. Used to tell
+     * them exactly where they already work when Apply is blocked — moving someone to a different
+     * branch while employed is a transfer, an HR/management decision (see ADMIN_MAJOR_PLAN.md §R7
+     * research: Philippine courts treat branch reassignment as management prerogative, not
+     * something an employee self-serves by submitting a new job application), not something this
+     * screen hands out.
+     */
+    suspend fun currentEmployment(): CurrentEmployment? = withContext(Dispatchers.IO) {
+        val userId = authManager.getCurrentUserId() ?: return@withContext null
         try {
-            SupabaseProvider.client.postgrest[table].select {
+            val rows = SupabaseProvider.client.postgrest[table].select {
                 filter {
                     eq("user_id", userId)
                     eq("status", "Hired")
                 }
-            }.decodeList<JsonObject>().isNotEmpty()
+            }.decodeList<JsonObject>()
+            val row = rows.firstOrNull() ?: return@withContext null
+
+            val jobId = row["job_id"]?.jsonPrimitive?.contentOrNull
+            val branchId = row["branch_id"]?.jsonPrimitive?.contentOrNull
+
+            val jobTitle = jobId?.let {
+                SupabaseProvider.client.postgrest["jobs"].select { filter { eq("id", it) } }
+                    .decodeList<PublishedJobRow>().firstOrNull()?.title
+            } ?: "your current position"
+
+            val branchName = branchId?.let {
+                runCatching {
+                    SupabaseProvider.client.postgrest["branches"].select { filter { eq("id", it) } }
+                        .decodeList<JsonObject>().firstOrNull()?.get("name")?.jsonPrimitive?.contentOrNull
+                }.getOrNull()
+            }
+
+            CurrentEmployment(jobTitle, branchName)
         } catch (cancelled: CancellationException) {
             throw cancelled
         } catch (error: Exception) {
             com.mrdiy.careers.data.SafeDiagnostics.record("request", error)
-            false
+            null
         }
     }
 

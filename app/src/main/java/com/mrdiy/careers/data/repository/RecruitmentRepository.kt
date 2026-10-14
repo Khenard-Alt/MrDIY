@@ -41,7 +41,8 @@ class RecruitmentRepository(private val context: Context) {
         val requirement_name: String,
         val status: String = "Pending",
         val document_url: String? = null,
-        val remarks: String? = null
+        val remarks: String? = null,
+        val created_at: String = ""
     )
 
     private val userId: String? get() = AuthManager(context).getCurrentUserId()

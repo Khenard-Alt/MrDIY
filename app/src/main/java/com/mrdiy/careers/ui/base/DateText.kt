@@ -66,6 +66,13 @@ object DateText {
         return calendar.timeInMillis - offsetMinutes * 60_000L
     }
 
+    /** Days left (negative once overdue) until [iso] plus [dueDays], or null if [iso] can't be parsed. */
+    fun daysUntil(iso: String, dueDays: Int): Int? {
+        val millis = parseMillis(iso) ?: return null
+        val dueAt = millis + dueDays * 24 * 60 * 60 * 1000L
+        return Math.ceil((dueAt - System.currentTimeMillis()) / (24.0 * 60 * 60 * 1000)).toInt()
+    }
+
     /** The pipeline step a stored status means; old names are mapped, unknown values count as Pending. */
     fun normalizeStatus(status: String): String = when (status.trim().lowercase()) {
         "reviewed", "under review" -> "Reviewed"

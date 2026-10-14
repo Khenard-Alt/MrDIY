@@ -33,6 +33,23 @@ import kotlinx.coroutines.launch
  * the interview HR scheduled (with Confirm / Can't attend), how soon they may start, and, once hired,
  * the pre-employment documents to upload.
  */
+/**
+ * Days to follow up each pre-employment document within, counted from when the checklist is created
+ * (the applicant was Hired) — mirrors REQUIREMENT_DUE_DAYS in the admin's lib/pipeline.ts. Common-practice
+ * ranges from research (ADMIN_MAJOR_PLAN.md §T), not a single statute: SSS/PhilHealth/Pag-IBIG are the
+ * employer's own 30-day registration window; BIR Form 1902/TIN has a stricter 10-day deadline; the rest
+ * have no statutory deadline found, so 7 days is used as a reasonable follow-up window.
+ */
+private val REQUIREMENT_DUE_DAYS = mapOf(
+    "SSS Number / E-1 Form" to 30,
+    "PhilHealth Member Data Record (MDR)" to 30,
+    "Pag-IBIG MID Number / Member Data Form" to 30,
+    "NBI Clearance / Police Clearance" to 7,
+    "Pre-Employment Medical Exam / Health Permit" to 7,
+    "BIR Form 1902 / TIN" to 10,
+    "Signed Employment Contract" to 7
+)
+
 class ApplicationDetailFragment : Fragment() {
 
     private var _binding: FragmentApplicationDetailBinding? = null
@@ -307,6 +324,23 @@ class ApplicationDetailFragment : Fragment() {
             })
             if (requirement.status == "Rejected" && !requirement.remarks.isNullOrBlank()) {
                 box.addView(caption("HR note: ${requirement.remarks}"))
+            }
+            if (requirement.status != "Verified") {
+                val dueDays = REQUIREMENT_DUE_DAYS[requirement.requirement_name]
+                val daysLeft = dueDays?.let {
+                    com.mrdiy.careers.ui.base.DateText.daysUntil(requirement.created_at, it)
+                }
+                if (daysLeft != null) {
+                    box.addView(TextView(requireContext()).apply {
+                        text = if (daysLeft < 0) {
+                            "Overdue by ${-daysLeft} day${if (daysLeft == -1) "" else "s"} — please submit as soon as possible"
+                        } else {
+                            "Due in $daysLeft day${if (daysLeft == 1) "" else "s"}"
+                        }
+                        textSize = 11f
+                        setTextColor(Color.parseColor(if (daysLeft < 0) "#B4141B" else "#A15C00"))
+                    })
+                }
             }
             if (requirement.status != "Verified") {
                 val isSignature = requirement.requirement_name == "Signed Employment Contract"

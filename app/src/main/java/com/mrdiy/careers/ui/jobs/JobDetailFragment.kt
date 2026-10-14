@@ -30,6 +30,7 @@ class JobDetailFragment : BaseFragment() {
     private var savedJobsRepository: SavedJobsRepository? = null
     private var currentJob: Job? = null
     private var isJobSaved = false
+    private var currentEmployment: com.mrdiy.careers.data.repository.ApplicationsRepository.CurrentEmployment? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +87,11 @@ class JobDetailFragment : BaseFragment() {
         }
 
         binding.btnApply.setOnClickListener {
+            val employment = currentEmployment
+            if (employment != null) {
+                showAlreadyEmployedDialog(employment)
+                return@setOnClickListener
+            }
             currentJob?.let { job ->
                 binding.btnApply.isEnabled = false
                 viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
@@ -115,16 +121,41 @@ class JobDetailFragment : BaseFragment() {
         }
     }
 
-    /** Disables Apply if the applicant is already Hired elsewhere — see [ApplicationsRepository.hasActiveEmployment]. */
+    /**
+     * Relabels Apply (kept clickable, so tapping it explains why) if the applicant is already
+     * Hired elsewhere — see [ApplicationsRepository.currentEmployment].
+     */
     private fun checkIfAlreadyEmployed() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            val employed = applicationsRepository?.hasActiveEmployment() ?: false
+            val employment = applicationsRepository?.currentEmployment()
             withContext(Dispatchers.Main) {
-                if (!isAdded || _binding == null || !employed) return@withContext
-                binding.btnApply.isEnabled = false
+                if (!isAdded || _binding == null || employment == null) return@withContext
+                currentEmployment = employment
                 binding.btnApply.text = "Already employed"
             }
         }
+    }
+
+    /**
+     * Explains why Apply is blocked, and points to HR instead of a self-service action: moving to
+     * another branch while employed is a transfer, which Philippine courts treat as a management
+     * decision (not something settled by submitting a new job application) — see
+     * [ApplicationsRepository.currentEmployment].
+     */
+    private fun showAlreadyEmployedDialog(employment: com.mrdiy.careers.data.repository.ApplicationsRepository.CurrentEmployment) {
+        val where = employment.branchName?.let { " at $it" } ?: ""
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("You're already employed")
+            .setMessage(
+                "You're currently working as ${employment.jobTitle}$where, so you can't apply for another position " +
+                    "right now.\n\nIf you'd like to request a transfer to a different branch or role, this isn't " +
+                    "done by applying — please message HR directly and they'll help you with it."
+            )
+            .setPositiveButton("Message HR") { _, _ ->
+                findNavController().navigate(R.id.messagesFragment)
+            }
+            .setNegativeButton("Close", null)
+            .show()
     }
 
     private fun checkIfJobSaved(jobId: String) {
