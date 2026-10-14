@@ -129,7 +129,21 @@ Provide transparent, human-readable explanations detailing WHY a candidate was r
 
 ### 3.2 Mathematical Model (TF-IDF & Cosine Similarity)
 
-Term Frequency - Inverse Document Frequency (TF-IDF):
+**Ano talaga ang TF-IDF — hindi lang acronym, kundi ano talaga ang ibig sabihin nito:**
+
+**TF-IDF** ay tatayo sa **Term Frequency – Inverse Document Frequency**. Dalawang bahagi ito, bawat isa may sariling tungkulin:
+
+- **Term Frequency (TF)** — "gaano kadalas lumitaw ang salitang ito SA ISANG dokumento." Halimbawa, kung 10 beses lumitaw ang salitang "cashier" sa isang resume na may 200 salita, mataas ang TF nito doon. **Intuwisyon:** kung madalas banggitin ng isang resume ang isang salita, malamang mahalaga ito sa taong 'yon.
+
+- **Inverse Document Frequency (IDF)** — "gaano kabihira lumitaw ang salitang ito SA LAHAT ng dokumento" (sa buong koleksyon/corpus — lahat ng job postings o resume). Kabaliktaran ito: kung ang isang salita ay lumalabas sa HALOS LAHAT ng dokumento (hal. "the," "and," "experience"), **mababa** ang IDF nito — karaniwang salita lang 'yan, walang saysay bilang "natatanging katangian." Pero kung bihira lang itong lumitaw (hal. "forklift" o "cashiering"), **mataas** ang IDF — ibig sabihin, mahalagang salita ito para makilala kung ano talaga ang pagkakaiba ng dokumentong 'to sa iba. **Intuwisyon:** bihirang salita = mas magandang "fingerprint" para makilala ang isang dokumento.
+
+- **TF-IDF = TF × IDF** — pinagsasama ang dalawa: mataas ang score ng isang salita kung **madalas itong lumitaw sa ISANG dokumento, PERO bihira sa LAHAT ng iba.** Ganito nahahanap ng system kung aling mga salita ang talagang "kumakatawan" sa isang resume o job posting, hindi lang basta binibilang ang salita.
+
+**Halimbawa para maliwanag:** sa isang resume, ang salitang "the" ay maaaring lumabas 20 beses (mataas ang TF) pero lumalabas din ito sa LAHAT ng ibang resume (mababang IDF) — kaya mababa pa rin ang huling TF-IDF score, hindi ito itinuturing na "mahalagang salita." Samantalang ang salitang "forklift" ay baka 2 beses lang lumabas (mas mababang TF kaysa "the") pero IILAN lang na resume ang may salitang ito (mataas na IDF) — mas mataas ang huling TF-IDF, kaya mas "makabuluhan" ito sa pagtukoy kung ano talaga ang espesyalidad ng taong 'yon.
+
+Pagkatapos makuha ang TF-IDF score ng bawat salita, iko-convert ang buong dokumento (resume o job) papuntang isang "vector" (listahan ng mga numero, isang numero kada salita sa vocabulary) — dito papasok ang **Cosine Similarity**, na sumusukat kung gaano "magkahawig ang direksyon" ng dalawang vector (0% = walang pagkakatulad, 100% = magkapareho). Ito ang ginagamit para malaman kung gaano kahawig ang isang resume sa isang job posting, o isang bagong job title sa mga existing na posting (Layer 1 ng JD Generator, §5).
+
+**Mathematical na representasyon:**
 
 $$\text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t' \in d} f_{t',d}}$$
 
@@ -240,9 +254,9 @@ Layer 4 — HR review at edit bago i-publish (laging tao ang huling magpapasya)
 
 | Phase | Gagawin | Checkpoint |
 |---|---|---|
-| 1 | Layer 1 + 2 (API route sa `mrdiy-admin`, walang Gemini) | Lint + build + `curl` test |
-| 2 | UI button + "Based on" + warnings sa Jobs page | Lint + build + live test |
-| 3 | Layer 3 Gemini (cold-start handler) + guardrail | Live test: may kahawig na posting (walang Gemini) vs cold-start (may Gemini) |
+| 1 | Layer 1 + 2 (API route sa `mrdiy-admin`, walang Gemini) | ✅ **Tapos na (2026-10-15)** — lint + build + `curl` test laban sa totoong database. 4 na bug nahanap at na-ayos habang tine-test (detalye sa `CapstoneGuidePaper/jdGenerator.md`) — maling similarity threshold, category/level na naka-overwhelm sa title, dalawang hindi nahuling age-limit phrasing. |
+| 2 | UI button + "Based on" + warnings sa Jobs page | ✅ **Tapos na ang code (2026-10-15)** — lint clean, build successful. Hindi pa na-verify sa browser (walang browser tool sa session), kailangan pang i-click-through mismo. |
+| 3 | Layer 3 Gemini (cold-start handler) + guardrail | ✅ **Tapos na ang code (2026-10-15), totoong key na rin.** May totoong `GEMINI_API_KEY` na ngayon — 3 bug nahanap at na-ayos habang tine-test (luma ang model name, masyadong mahigpit ang prompt, walang timeout). Dagdag na rin: retry-on-503, at variety sa generic fallback (may sariling bug din dito — biased ang pampili, na-ayos). Hindi pa namin nahuli ang isang matagumpay na totoong Gemini generation dahil sa patuloy na "high demand" sa free tier, pero na-verify nang buo ang lahat ng ibang bahagi. Detalye sa `CapstoneGuidePaper/jdGenerator.md`. |
 
 ### 5.6 Resume Validator — TRAINED MODEL bilang primary, Gemini bilang fallback (desisyon 2026-10-14)
 
@@ -274,7 +288,25 @@ Resulta: "Resume" o "Hindi resume," may confidence %, at label kung saan
 
 **Bakit walang live Python sa production:** training lang ang gamit ng Python (offline, Colab/notebook) — hindi ito tumatakbo sa totoong sistema. Pagkatapos ng training, ang simpleng linear model (weights + TF-IDF vocabulary) ay madaling isalin sa TypeScript function — walang kailangang i-deploy, i-host, o i-maintain na hiwalay na Python microservice. Mas kaunting babantayan, mas simple ang arkitektura.
 
-**Ikukumpara:** luma (rules) vs bago (trained model) sa parehong test set — accuracy, precision, recall, F1. Hiwalay na desisyon ito mula sa JD Generator; hindi pa nasisimulan.
+**Ikukumpara:** luma (rules) vs bago (trained model) sa parehong test set — accuracy, precision, recall, F1. Hiwalay na desisyon ito mula sa JD Generator.
+
+**Pagkakasunod-sunod (binago 2026-10-15 — inihanda na ang files/libs, pero ang dataset mismo ay sa dulo pa, kasunod ng research):**
+
+| Hakbang | Gagawin | Status |
+|---|---|---|
+| A | I-ready ang training scaffold: folder, `requirements.txt`, script skeleton na may placeholder para sa data | ✅ Tapos na — `CapstoneGuidePaper/resume-validator-training/` (`requirements.txt`, `train_resume_validator.py`), na-verify: `pip install` + script run nang walang data, gumana ang empty-data guard. **Paliwanag ng bawat Python library** (para saan ang bawat isa, at bakit hindi PyTorch/TensorFlow): `CapstoneGuidePaper/resume-validator-training/README.md`. |
+| B | I-research at i-curate ang dataset (checklist sa ibaba — dedupe, balance, atbp.) | ✅ **Tapos na (2026-10-15).** Positive (resume): mirror ng Kaggle "Resume Dataset" (LiveCareer) sa Hugging Face, `Shawn0069/resume_classification_kaggle` (1,986 totoong resume pagkatapos tanggalin ang duplicates/junk). Negative (hindi resume): `fancyzhx/ag_news` (120,000 balita, maikling snippets, malinaw na hindi resume — parehong papel ng "recipes/invoices/articles" sa orihinal na plano). Dalawang pampublikong dataset, walang account/API key na kinailangan — na-download via Hugging Face's `datasets-server` API (direktang parquet links). |
+| C | I-seed ang aktwal na dataset file (`dataset.csv`) | ✅ **Tapos na.** `prepare_dataset.py` — sumampol ng 500 resume + 500 balita (balanced), inilagay sa `incoming/batch_001.csv`, pumasa sa `check_new_seed_data.py` (walang babala), inilipat (manual) papuntang `approved/dataset.csv`. **1,000 rows, 500/500 na balanse.** |
+| D | Patakbuhin ang script: clean → split → train 3 model → ikumpara → i-export ang pinakamagaling | ✅ **Tapos na, totoong resulta.** F1: Logistic Regression 0.995, Naive Bayes 0.990, Linear SVM 1.000. Ni-export ang Logistic Regression (`resume_validator_weights.json`, 5,000-word vocabulary) — nakuha ito dahil siya lang ang "linear model" na kayang i-export bilang simpleng weights+vocabulary JSON para sa TypeScript inference (§5.6), kahit mas mataas pa ang F1 ng SVM. **Bug nahanap at na-ayos:** `numpy.int64` sa vocabulary dict ay hindi direktang ma-JSON-serialize — na-cast papuntang plain Python `int` bago i-export. |
+
+**Data-poisoning safeguards — tapos na ang code, hindi lang babala (2026-10-15)**
+
+Dagdag sa checklist sa ibaba, **totoong safeguard** na ito sa workflow mismo, hindi lang paalala:
+
+- **`incoming/` vs `approved/` na staging folder** — ang training script ay babasa LANG sa `approved/dataset.csv`, hindi kailanman diretso sa `incoming/`. Walang bagong data ang basta "pinagkakatiwalaan."
+- **`check_new_seed_data.py`** — patakbuhin ito laban sa bawat bagong batch BAGO ilipat papuntang `approved/`. Sinusuri nito: (1) format/missing columns, (2) label na hindi 0/1, (3) masyadong maikling text (<50 chars), (4) duplicate sa loob ng batch, (5) duplicate/near-duplicate laban sa ALREADY-APPROVED na dataset (train/test leakage risk), (6) biglaang paglipat ng class ratio vs existing na dataset. Walang awtomatikong naglilipat papuntang `approved/` — tao pa rin ang huling magpapasya, kahit pumasa sa lahat ng check.
+- **Evaluation gate sa pag-export** — ang `export_logistic_regression()` ay **tatanggi mag-export** kung mas mababa ang F1 ng bagong model kaysa sa huling na-export na bersyon — hindi mapapalitan ang mas magandang model ng mas masama, kahit aksidente lang.
+- **Na-verify:** na-test ang `check_new_seed_data.py` gamit ang sinadyang sirang sample data (mali ang label, duplicate, masyadong maikli) — tamang nahuli ang bawat isa, tamang exit code.
 
 **Checklist — mga dapat iwasan sa training data (desisyon 2026-10-15)**
 
