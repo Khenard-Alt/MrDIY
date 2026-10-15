@@ -14,12 +14,11 @@ import java.util.concurrent.TimeUnit
  * public, unauthenticated `/api/public/faq-chat` endpoint is reachable this way — mrdiy-admin's
  * other routes require an admin session this app never has.
  *
- * TODO: replace with the real deployed mrdiy-admin URL once available (currently a placeholder —
- * requests will fail until this is filled in).
+ * Deployed on Vercel from github.com/Khenard-Alt/mrdiy-admin.
  */
 object AdminRetrofitClient {
 
-    private const val BASE_URL = "https://REPLACE_WITH_DEPLOYED_MRDIY_ADMIN_URL/"
+    private const val BASE_URL = "https://mrdiy-admin-three.vercel.app/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE

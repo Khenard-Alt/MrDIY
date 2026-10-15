@@ -32,6 +32,14 @@
 
 ---
 
+## Gemini AI Configuration
+
+* **Model:** `gemini-3.8-flash`
+* **Associated Account:** `vivienedope@gmail.com`
+* **Environment Variable:** `GEMINI_API_KEY` (Stored locally in `.env` and `.env.local`)
+
+---
+
 ## Firebase Cloud Messaging (FCM) & App Configuration
 
 * **Firebase Project ID:** `mrdiycareers-app`
