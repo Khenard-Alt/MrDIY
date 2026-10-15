@@ -6,12 +6,16 @@ import kotlin.math.exp
 import kotlin.math.sqrt
 
 /**
- * Resume/not-resume classifier. Primary check for [com.mrdiy.careers.data.repository.ResumeRepository].
+ * Resume/not-resume classifier. Advisory only — [com.mrdiy.careers.data.repository.ResumeRepository]
+ * logs its verdict alongside the rule-based [com.mrdiy.careers.data.repository.ResumeValidator],
+ * which remains the actual gate. On the capstone's own hand-labeled test corpus (short, casual,
+ * Taglish-inclusive resumes) this model scored only 72.7% accuracy / 40% recall, well below the
+ * rule-based validator — see [ResumeValidator]'s doc comment and AIplanning.md §5.6.
  *
  * Loads a logistic-regression model trained offline in
  * CapstoneGuidePaper/resume-validator-training/train_resume_validator.py (scikit-learn
- * TfidfVectorizer + LogisticRegression, 99.5% F1 on held-out test data) and reimplements its
- * math here so the same weights work without any Python runtime in production.
+ * TfidfVectorizer + LogisticRegression, 99.5% F1 on its own, easier, held-out test split) and
+ * reimplements its math here so the same weights work without any Python runtime in production.
  *
  * The tokenizer/IDF/normalization steps below must match scikit-learn's
  * TfidfVectorizer(lowercase=True, stop_words="english") defaults exactly, or the dot product

@@ -76,6 +76,13 @@ class JobDetailFragment : BaseFragment() {
 
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
+        binding.btnAskQuestion.setOnClickListener {
+            currentJob?.let { job ->
+                FaqChatBottomSheetFragment.newInstance(job.id, job.title)
+                    .show(childFragmentManager, FaqChatBottomSheetFragment.TAG)
+            }
+        }
+
         binding.btnShare.setOnClickListener {
             currentJob?.let { job ->
                 val share = android.content.Intent(android.content.Intent.ACTION_SEND).apply {

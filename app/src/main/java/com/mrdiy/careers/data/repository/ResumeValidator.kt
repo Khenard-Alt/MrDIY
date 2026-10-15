@@ -16,10 +16,13 @@ import com.mrdiy.careers.data.ml.ResumeSkills
  * and it is refused when it looks like a manual or a long document (many product and manual words,
  * or far more text than any resume).
  *
- * Superseded as the primary check by [com.mrdiy.careers.data.ml.ResumeMlClassifier] (a trained
- * logistic-regression model, 99.5% F1 — see AIplanning.md §5.6), which [ResumeRepository.parseResume]
- * now calls instead. Kept here as the fallback if the trained model's bundled asset fails to load,
- * and as the baseline for comparison testing against the trained model.
+ * Still the primary check in [ResumeRepository.parseResume]. A trained logistic-regression model
+ * ([com.mrdiy.careers.data.ml.ResumeMlClassifier], 99.5% F1 on its own Hugging Face test split) was
+ * built as a candidate replacement, but on this capstone's own hand-labeled test corpus of short,
+ * casual, Taglish-inclusive resumes it only scored 72.7% accuracy / 40% recall — it was trained on
+ * much longer, formal, English-only resumes, a different and easier distribution than real
+ * MR.D.I.Y. applicants write in. The trained model runs alongside this validator as an
+ * advisory-only comparison (logged, never blocking), not as a replacement — see AIplanning.md §5.6.
  */
 object ResumeValidator {
 

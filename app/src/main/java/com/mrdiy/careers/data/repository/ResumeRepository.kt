@@ -67,32 +67,28 @@ class ResumeRepository(private val context: Context) {
     }
 
     suspend fun parseResume(resumeText: String): UserProfile = withContext(Dispatchers.Default) {
-        val verdict = classify(resumeText)
+        val verdict = ResumeValidator.check(resumeText)
+        logModelComparison(resumeText)
         if (!verdict.valid) throw IllegalArgumentException(verdict.reason)
-        Log.d(TAG, "Resume accepted — source=${verdict.source}, confidence=${verdict.confidence}")
         parseResumeLocally(resumeText)
     }
 
     /**
-     * Runs the trained model ([ResumeMlClassifier], primary) and falls back to the rule-based
-     * [ResumeValidator] only if the bundled model asset fails to load or parse — uploads must
-     * never hard-crash on that. See AIplanning.md §5.6: a live Gemini fallback for low-confidence
-     * results was deliberately deferred (no Android-to-backend bridge exists yet, and the trained
-     * model already scores 99.5% F1), so a low-confidence result here still uses the model's own
-     * verdict, just flagged for manual review in [ResumeMlClassifier.MlVerdict.reason].
+     * The rule-based [ResumeValidator] is the real gate — on the capstone's own hand-labeled test
+     * corpus (short, casual, Taglish-inclusive resumes) the trained model (see
+     * [ResumeMlClassifier]) scored only 72.7% accuracy / 40% recall, missing 3 of 5 real resumes.
+     * It was trained on Hugging Face's full-length, formal, English-only resumes, a much easier
+     * and different distribution than real MR.D.I.Y. applicants write in. Promoting it to the
+     * primary gate would reject valid applicants that pass today, so this is advisory-only for
+     * now: it runs alongside the rule-based check and its verdict is logged for comparison, but
+     * never blocks an upload on its own. See AIplanning.md §5.6 for the full writeup.
      */
-    private fun classify(resumeText: String): ResumeMlClassifier.MlVerdict {
-        return try {
-            ResumeMlClassifier.classify(context, resumeText)
+    private fun logModelComparison(resumeText: String) {
+        try {
+            val verdict = ResumeMlClassifier.classify(context, resumeText)
+            Log.d(TAG, "Trained model (advisory only): ${verdict.reason}")
         } catch (error: Exception) {
-            Log.w(TAG, "Trained model unavailable, falling back to rule-based validator", error)
-            val fallback = ResumeValidator.check(resumeText)
-            ResumeMlClassifier.MlVerdict(
-                valid = fallback.valid,
-                confidence = 0.0,
-                source = "Rule-based fallback (model unavailable)",
-                reason = fallback.reason,
-            )
+            Log.w(TAG, "Trained model unavailable — rule-based validator is unaffected", error)
         }
     }
 

@@ -27,6 +27,18 @@
             app:titleTextAppearance="@style/ToolbarTitle">
 
             <ImageButton
+                android:id="@+id/btn_ask_question"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_chat"
+                android:background="@drawable/circle_white_20"
+                app:tint="@color/brand_yellow"
+                android:contentDescription="Ask a question about this job"
+                android:padding="8dp" />
+
+            <ImageButton
                 android:id="@+id/btn_share"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
