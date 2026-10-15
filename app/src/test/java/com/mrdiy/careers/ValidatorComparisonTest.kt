@@ -1,7 +1,7 @@
 package com.mrdiy.careers
 
+import com.google.gson.Gson
 import com.mrdiy.careers.data.repository.ResumeValidator
-import org.json.JSONObject
 import org.junit.Test
 import java.io.File
 import kotlin.math.exp
@@ -143,23 +143,20 @@ class ValidatorComparisonTest {
     }
 
     // ---- trained-model math (mirrors ResumeMlClassifier; see its own parity test) ----
+    // Uses Gson, not org.json, for the same reason as ResumeMlClassifierTest: a plain JVM unit
+    // test gets unmocked android.jar stubs for org.json.JSONObject, which throw "Method ... not
+    // mocked" on any real call.
 
     private val weightsFile = File("src/main/assets/resume_validator_weights.json")
-    private val model: JSONObject by lazy { JSONObject(weightsFile.readText(Charsets.UTF_8)) }
+    private val model: WeightsFile by lazy {
+        Gson().fromJson(weightsFile.readText(Charsets.UTF_8), WeightsFile::class.java)
+    }
 
     private fun classifyWithTrainedModel(text: String): Double {
-        val vocabJson = model.getJSONObject("vocabulary")
-        val vocabulary = HashMap<String, Int>(vocabJson.length())
-        val keys = vocabJson.keys()
-        while (keys.hasNext()) {
-            val term = keys.next()
-            vocabulary[term] = vocabJson.getInt(term)
-        }
-        val idfJson = model.getJSONArray("idf")
-        val idf = DoubleArray(idfJson.length()) { idfJson.getDouble(it) }
-        val weightsJson = model.getJSONArray("weights")
-        val weights = DoubleArray(weightsJson.length()) { weightsJson.getDouble(it) }
-        val bias = model.getDouble("bias")
+        val vocabulary = model.vocabulary
+        val idf = model.idf
+        val weights = model.weights
+        val bias = model.bias
 
         val tokenPattern = Regex("\\b\\w\\w+\\b")
         val termCounts = HashMap<Int, Int>()

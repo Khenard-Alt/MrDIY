@@ -1,12 +1,20 @@
 package com.mrdiy.careers
 
+import com.google.gson.Gson
 import com.mrdiy.careers.data.ml.ResumeMlClassifier
-import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 import kotlin.math.exp
 import kotlin.math.sqrt
+
+/** Shared with [ValidatorComparisonTest], which parses the same weights file the same way. */
+data class WeightsFile(
+    val vocabulary: Map<String, Int>,
+    val idf: List<Double>,
+    val weights: List<Double>,
+    val bias: Double,
+)
 
 /**
  * Parity test: proves the tokenize -> tf-idf -> L2-normalize -> sigmoid math in
@@ -19,6 +27,12 @@ import kotlin.math.sqrt
  * Runs the same math [ResumeMlClassifier.classify] does, but reads the asset from the Android
  * module's resources directly (no Context/AssetManager available in a plain JVM unit test) so the
  * two implementations can drift-check against each other without duplicating the production code.
+ *
+ * Uses Gson, not org.json, to parse the weights file here: in a plain JVM unit test (this file,
+ * under src/test) android.jar's classes — including org.json.JSONObject — are unmocked stubs that
+ * throw "Method ... not mocked" on any real call. That's fine for [ResumeMlClassifier] itself
+ * (which only ever runs on a real device/emulator), but this test needs a JSON parser that
+ * actually works on a plain JVM, hence Gson (already a project dependency, pure Java).
  */
 class ResumeMlClassifierTest {
 
@@ -26,21 +40,15 @@ class ResumeMlClassifierTest {
         "src/main/assets/resume_validator_weights.json",
     )
 
-    private val model: JSONObject by lazy { JSONObject(weightsFile.readText(Charsets.UTF_8)) }
+    private val model: WeightsFile by lazy {
+        Gson().fromJson(weightsFile.readText(Charsets.UTF_8), WeightsFile::class.java)
+    }
 
     private fun classify(text: String): Double {
-        val vocabJson = model.getJSONObject("vocabulary")
-        val vocabulary = HashMap<String, Int>(vocabJson.length())
-        val keys = vocabJson.keys()
-        while (keys.hasNext()) {
-            val term = keys.next()
-            vocabulary[term] = vocabJson.getInt(term)
-        }
-        val idfJson = model.getJSONArray("idf")
-        val idf = DoubleArray(idfJson.length()) { idfJson.getDouble(it) }
-        val weightsJson = model.getJSONArray("weights")
-        val weights = DoubleArray(weightsJson.length()) { weightsJson.getDouble(it) }
-        val bias = model.getDouble("bias")
+        val vocabulary = model.vocabulary
+        val idf = model.idf
+        val weights = model.weights
+        val bias = model.bias
 
         val tokenPattern = Regex("\\b\\w\\w+\\b")
         val termCounts = HashMap<Int, Int>()
