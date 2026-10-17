@@ -155,6 +155,17 @@ class ProfileRepository(private val context: Context) {
         }
 
 
+        // photoPath isn't part of the server round-trip (toDomain() always reads it back from
+        // local prefs, see loadFromPrefs below — the `profiles` row has nowhere to carry it in
+        // UserProfileRow), so the local copy saved below must be updated to the uploaded bucket
+        // path, not left as EditProfileFragment's local device file path (what `profile.photoPath`
+        // still is at this point). Leaving it as the local path meant ProfileFragment's
+        // loadAvatarPhoto() tried to treat that local path as a bucket path and silently failed to
+        // resolve a signed URL — the photo would show in Edit Profile (loaded directly as a local
+        // bitmap) but never reflect anywhere else. Declared outside the try/catch below so both
+        // the success and failure paths can save the corrected path if the upload got that far.
+        var profileToPersist = profile
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val client = SupabaseProvider.client
@@ -164,6 +175,7 @@ class ProfileRepository(private val context: Context) {
                 // user could finish onboarding.
                 // Upload the profile picture so the admin can see it. A failed upload never blocks saving.
                 val uploadedPhoto = uploadPhoto(uid, profile.photoPath)
+                if (uploadedPhoto != null) profileToPersist = profile.copy(photoPath = uploadedPhoto)
                 val payload = kotlinx.serialization.json.buildJsonObject {
                     put("user_id", JsonPrimitive(uid))
                     put("full_name", JsonPrimitive(profile.fullName.ifBlank { "${profile.firstName} ${profile.lastName}".trim() }))
@@ -191,13 +203,13 @@ class ProfileRepository(private val context: Context) {
                 } else {
                     client.from("profiles").update(payload) { filter { eq("user_id", uid) } }
                 }
-                saveLocally(uid, profile)
+                saveLocally(uid, profileToPersist)
                 context.getSharedPreferences("profile_$uid", Context.MODE_PRIVATE)
                     .edit().putBoolean("profile_sync_pending", false).apply()
                 withContext(Dispatchers.Main) { onComplete?.invoke(true) }
             } catch (e: Exception) {
                 com.mrdiy.careers.data.SafeDiagnostics.record("backend_request", e)
-                saveLocally(uid, profile)
+                saveLocally(uid, profileToPersist)
                 context.getSharedPreferences("profile_$uid", Context.MODE_PRIVATE)
                     .edit().putBoolean("profile_sync_pending", true).apply()
                 withContext(Dispatchers.Main) { onComplete?.invoke(true) }
